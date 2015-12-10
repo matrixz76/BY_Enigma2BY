@@ -128,9 +128,14 @@ class Enigma2BY extends IPSModule
     		}
     }
     
-    private function Enigma2BY_SendKey($IP, $Key)
+    private function Enigma2BY_SendKey($IP, $Key, $LongShort)
     {
+    		//$CommandArray noch sinnvoll sortieren, damit es im DropDown leicht zu bedienen ist
+    		$CommandArray = array("Power" => "Power", "1" => "2", "2" => "3", "4" => "5", "5" => "6", "6" => "7", "7" => "8", "8" => "9", "9" => "10", "0" => "11", "Previous" => "412", "Next" => "407", "VolumeUp" => "115", "MUTE" => "113", "BouquetUp" => "402", "VolumeDown" => "114", "Lame" => "174", "BouquetDown" => "403", "Info" => "358", "ArrowUp" => "103", "Menu" => "139", "ArrowLeft" => "105", "OK" => "352", "ArrowRight" => "106", "Audio" => "392", "ArrowDown" => "108", "Video" => "393", "RED" => "398", "GREEN" => "399", "YELLOW" => "400", "BLUE" => "401", "TV" => "377", "Radio" => "385", "Text" => "388", "Help" => "138");
+    		
     		// im $CommandArray den Key finden und dann die zugehörige Nummer in die Var $Command schreiben
+    		
+    		// $LongShort einbauen für langen und kurzen Tastendruck
     }
 
     private function SetValueBoolean($Ident, $value)
