@@ -2,6 +2,12 @@
 /* 2do *************************************************************************************
 > Antwort auswerten bei Frage und in Bool-Variable schreiben.
 > Frage z.B. nutzen für > Haustür klingelt, an der Dreambox kommt Frage "Tür öffnen?" und bei JA wird die Tür geöffnet, Timeout X Sekunden
+
+> Funktionen einbauen für "VolUp, VolDown, NextSender, PrevSender, Aktuelles Programm, Aktuelles EPG, ....)
+> VolumeVAR fuer aktuelle Lautstaerke in Variable (bedienbar machen wenn ins WebFront verlinkt - ActionSkript)
+> SenderVar fuer aktuellen Sender (nicht bedienbar)
+> SenderEPGInfoVAR fuer Detailinfos zur aktuellen Sendung (nicht bedienbar)
+
 >>> Detail-Infos >> http://dream.reichholf.net/wiki/Enigma2:WebInterface#Message
 ********************************************************************************************/
 
@@ -15,8 +21,9 @@ class Enigma2BY extends IPSModule
         
         //These lines are parsed on Symcon Startup or Instance creation
         //You cannot use variables here. Just static values.
-        $this->RegisterPropertyString("Enigma2IP", "");
-        //$this->RegisterPropertyInteger("TimeoutDefault", 5);
+        $this->RegisterPropertyString("Enigma2IP", "");  
+        $this->RegisterPropertyString("RCUdefault", "advanced");
+        $this->RegisterPropertyString("KeyDropDown", "Info");
     }
 
     public function Destroy()
@@ -30,15 +37,21 @@ class Enigma2BY extends IPSModule
         //Never delete this line!
         parent::ApplyChanges();
         
-        //Variablenprofil erstellen
+        //Variablenprofile erstellen
         $this->RegisterProfileIntegerEx("E2Nachr.JaNeinKA", "Information", "", "", Array(
                                              Array(0, "Nein",  "", -1),
                                              Array(1, "Ja",  "", -1),
                                              Array(2, "Keine Antwort",  "", -1)
         ));
+        $this->RegisterProfileIntegerEx("E2Nachr.PowerState", "Information", "", "", Array(
+                                             Array(0, "DeepStandby",  "", -1),
+                                             Array(1, "Standby",  "", -1),
+                                             Array(2, "AN",  "", -1)
+        ));
 
         //Variablen erstellen
-        $this->RegisterVariableInteger("FrageAntwort", "Frage-Antwort", "E2Nachr.JaNeinKA");
+        $this->RegisterVariableInteger("FrageAntwortVar", "Frage-Antwort", "E2BY.JaNeinKA");
+        $this->RegisterVariableInteger("PowerStateVar", "Power-State", "E2BY.PowerState");
     }
 
     public function MsgTest()
@@ -47,7 +60,7 @@ class Enigma2BY extends IPSModule
     		$Text_Test = "Das ist ein Test!";
     		$Type_Test = 1;
     		$Timeout_Test = 5;
-    		$result = $this->Enigma2BY_SEND($IP_Test, $Text_Test, $Type_Test, $Timeout_Test);
+    		$result = $this->Enigma2BY_SendMsg($IP_Test, $Text_Test, $Type_Test, $Timeout_Test);
     		if ($result)
     		{
     				echo "Test-Nachricht wurde erfolgreich gesendet.";
@@ -58,11 +71,27 @@ class Enigma2BY extends IPSModule
     		}
     }
     
+    public function KeyTest()
+    {
+    		$IP_Test = $this->ReadPropertyString("Enigma2IP");
+    		$Key_Test = $this->ReadPropertyString("KeyDropDown");
+    		$LongShort_Test = "short";
+    		$result = $this->SendKey($IP_Test, $Key_Test, $LongShort_Test);
+    		if ($result)
+    		{
+    				echo "Test-Taste wurde erfolgreich gesendet.";
+    		}
+    		else 
+    		{
+    				echo "Test-Taste konnte nicht gesendet werden!";
+    		}
+    }
+    
     public function Frage($Text, $Timeout)
     {
     		$IP = $this->ReadPropertyString("Enigma2IP");
     		$Type = 0;
-    		$result = $this->Enigma2BY_SEND($IP, $Text, $Type, $Timeout);
+    		$result = $this->Enigma2BY_SendMsg($IP, $Text, $Type, $Timeout);
     		return $result;
     }
     
@@ -70,7 +99,7 @@ class Enigma2BY extends IPSModule
     {
     		$IP = $this->ReadPropertyString("Enigma2IP");
     		$Type = 1;
-    		$result = $this->Enigma2BY_SEND($IP, $Text, $Type, $Timeout);
+    		$result = $this->Enigma2BY_SendMsg($IP, $Text, $Type, $Timeout);
     		return $result;
     }
     
@@ -78,7 +107,7 @@ class Enigma2BY extends IPSModule
     {
     		$IP = $this->ReadPropertyString("Enigma2IP");
     		$Type = 2;
-    		$result = $this->Enigma2BY_SEND($IP, $Text, $Type, $Timeout);
+    		$result = $this->Enigma2BY_SendMsg($IP, $Text, $Type, $Timeout);
     		return $result;
     }
     
@@ -86,70 +115,86 @@ class Enigma2BY extends IPSModule
     {
     		$IP = $this->ReadPropertyString("Enigma2IP");
     		$Type = 3;
-    		$result = $this->Enigma2BY_SEND($IP, $Text, $Type, $Timeout);
+    		$result = $this->Enigma2BY_SendMsg($IP, $Text, $Type, $Timeout);
     		return $result;
     }
     
-    private function Enigma2BY_SEND($IP, $Text, $Type, $Timeout)
+    private function Enigma2BY_SendMsg($IP, $Text, $Type, $Timeout)
     {
     		if (Sys_Ping($IP, 2000) == true)
     		{
     				$Text = urlencode(trim($Text));
     				$Text = str_replace('%A7', '%0A', $Text);
-    				$url = "http://".$IP."/web/message?text=".$Text."&type=".$Type."&timeout=".$Timeout;
+ 						$url = "http://".$IP."/web/message?text=".$Text."&type=".$Type."&timeout=".$Timeout;
     				$result = Sys_GetURLContent($url);
     				preg_match('|True|', $result, $resultmatch);
-						$result = (bool)$resultmatch;
-    				if (!$result)
-    				{
-    						IPS_Sleep(2000);
-    						$result = Sys_GetURLContent($url);
-    						preg_match('|True|', $result, $resultmatch);
-								$result = (bool)$resultmatch;
-    				}
     				
     				if ($Type == 0)
     				{
+    						$this->SendKey($IP, "ArrowDown", "short");
     						IPS_Sleep($Timeout * 1000 + 1000);
-								$result = Sys_GetURLContent("http://".$IP."/web/messageanswer?getanswer=now");
+								$result = @Sys_GetURLContent("http://".$IP."/web/messageanswer?getanswer=now");
 								preg_match('|Answer is.(.*)!.*|', $result, $antwortmatch);
-								
-								if ($antwortmatch[1] == "YES")
+								if ($antwortmatch[1] == "NO")
 								{
-									$AntwortBOOL = true;
+										$AntwortINT = 0;
 								}
-								elseif ($antwortmatch[1] == "NO")
+								elseif ($antwortmatch[1] == "YES")
 								{
-									$AntwortBOOL = false;
+										$AntwortINT = 1;
 								}
-								//$this->SetValueBoolean("FrageAntwort", $AntwortBOOL);
+								else
+								{
+										$AntwortINT = 2;
+										$this->SendKey($IP, "Exit", "short");
+								}
+								$this->SetValueInteger("FrageAntwortVar", $AntwortINT);
     				}
     				return $result;
     		}
     }
     
-    private function Enigma2BY_SendKey($IP, $Key, $LongShort)
+    public function SendKey($IP, $Key, $LongShort)
     {
-    		//$CommandArray noch sinnvoll sortieren, damit es im DropDown leicht zu bedienen ist
-    		$CommandArray = array("Power" => "Power", "1" => "2", "2" => "3", "4" => "5", "5" => "6", "6" => "7", "7" => "8", "8" => "9", "9" => "10", "0" => "11", "Previous" => "412", "Next" => "407", "VolumeUp" => "115", "MUTE" => "113", "BouquetUp" => "402", "VolumeDown" => "114", "Lame" => "174", "BouquetDown" => "403", "Info" => "358", "ArrowUp" => "103", "Menu" => "139", "ArrowLeft" => "105", "OK" => "352", "ArrowRight" => "106", "Audio" => "392", "ArrowDown" => "108", "Video" => "393", "RED" => "398", "GREEN" => "399", "YELLOW" => "400", "BLUE" => "401", "TV" => "377", "Radio" => "385", "Text" => "388", "Help" => "138");
-    		
-    		// im $CommandArray den Key finden und dann die zugehörige Nummer in die Var $Command schreiben
-    		
-    		// $LongShort einbauen für langen und kurzen Tastendruck
+    		$CommandArray = array("Power" => "Power", "1" => "2", "2" => "3", "4" => "5", "5" => "6", "6" => "7", "7" => "8", "8" => "9", "9" => "10", "0" => "11", "VolumeUp" => "115", "VolumeDown" => "114", "MUTE" => "113", "Previous" => "412", "Next" => "407", "BouquetUp" => "402", "BouquetDown" => "403", "ArrowUp" => "103", "ArrowDown" => "108", "ArrowLeft" => "105", "ArrowRight" => "106", "Menu" => "139", "OK" => "352", "Info" => "358", "Audio" => "392", "Video" => "393", "RED" => "398", "GREEN" => "399", "YELLOW" => "400", "BLUE" => "401", "TV" => "377", "Radio" => "385", "Text" => "388", "Help" => "138", "Exit" => "174");
+    		$Command = $CommandArray[$Key];
+    		if (($LongShort == "long") OR ($LongShort == "Long"))
+    		{
+    				$LongShort = "long";
+    		}
+    		elseif (($LongShort == "short") OR ($LongShort == "Short"))
+    		{
+    				$LongShort = "short";
+    		}
+    		$RCU = $this->ReadPropertyString("RCUdefault");
+    		$url = "http://".$IP."/web/remotecontrol?command=".$Command."&type=".$LongShort."&rcu=".$RCU;
+    		$result = Sys_GetURLContent($url);
+				
     }
 
-    private function SetValueBoolean($Ident, $value)
+    private function SetValueInteger($Ident, $Value)
     {
-        $id = $this->GetIDForIdent($Ident);
-        if (GetValueBoolean($id) <> $value)
+        $ID = $this->GetIDForIdent($Ident);
+        if (GetValueInteger($ID) <> $Value)
         {
-            SetValueBoolean($id, $value);
+            SetValueInteger($ID, $Value);
             return true;
         }
         return false;
     }
     
-    protected function RegisterProfileBooleanEx($Name, $Icon, $Prefix, $Suffix, $Associations) {
+    private function SetValueString($Ident, $Value)
+    {
+        $ID = $this->GetIDForIdent($Ident);
+        if (GetValueString($ID) <> $Value)
+        {
+            SetValueString($ID, $Value);
+            return true;
+        }
+        return false;
+    }
+    
+    protected function RegisterProfileIntegerEx($Name, $Icon, $Prefix, $Suffix, $Associations) {
         if ( sizeof($Associations) === 0 ){
             $MinValue = 0;
             $MaxValue = 0;

@@ -65,8 +65,14 @@ Schickt eine Nachricht mit einem "Achtung-Symbol" an den Receiver.
   Enigma2BY_Frage(integer $InstanzID, string $Text, integer $TimeoutSekunden);
 ```
 Schickt eine Nachricht mit Ja/Nein als Antwortmöglichkeit an den Receiver.
-Die Antwort steht dann in der Bool-Variable "Frage-Antwort" (false = Nein, true = Ja).
->>>> Diese Funktion steht noch nicht zur Verfügung, da es Probleme mit der Antwort von Enigma2 gibt.
+Die Antwort steht dann in der Integer-Variable "Frage-Antwort" (0 = Nein, 1 = Ja, 2 = Keine Antwort).
+
+```php
+  Enigma2BY_SendKey(integer $InstanzID, string $Key, string $LongShort);
+```
+Löst einen virtuellen Tastendruck, der gewählten Taste, am Receiver aus. Eine Liste
+der verfügbaren Tasten ist in der Modul-Instanz zu finden (DropDown-Auswahl).
+Bei $LongShort muss entweder "long" oder "short" angegeben werden (langer/kurzer Tastendruck).
 
 
 ## 5. Changelog

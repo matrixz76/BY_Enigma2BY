@@ -4,14 +4,63 @@
 
     { "type": "Label", "label": "IP-Adresse, unter der ein Receiver mit Enigma2 erreichbar ist:" },
     { "name": "Enigma2IP", "type": "ValidationTextBox", "caption": "Receiver IP-Adresse" },
-    //{ "type": "Label", "label": "Der Timeout definiert die Zeit, wann eine Nachricht am TV automatisch ausgeblendet wird." },
-    //{ "name": "TimeoutDefault", "type": "ValidationTextBox", "caption": "Default Nachrichten-Timeout" }
+    { "type": "Label", "label": "----------------------------------------------------------------------------------------------------------------------------" },
+    { "type": "Label", "label": "RCU-Einstellung nur ändern, wenn ihr Probleme mit falschen Tasten-Aktionen habt!" },
+    { "name": "RCUdefault", "type": "Select", "caption": "RCU",
+       "options": [
+                    { "label": "Advanced", "value": "advanced" },
+                    { "label": "Standard", "value": "standard" },
+                    { "label": "Keyboard", "value": "keyboard" }
+       ]}
 
   ],
   "actions":
   [
 
-    { "type": "Button", "label": "Test-Nachricht senden", "onClick": "Enigma2Nachricht_MsgTest($id);" }
+    { "type": "Button", "label": "Test-Nachricht senden", "onClick": "Enigma2Nachricht_MsgTest($id);" },
+    { "type": "Label", "label": "----------------------------------------------------------------------------------------------------------------------------" },
+    { "type": "Label", "label": "Hier kann eine Taste ausgewählt und an den Receiver gesendet werden:" },
+    { "name": "KeyDropDown", "type": "Select", "caption": "Taste",
+       "options": [
+                    
+                    { "label": "Power", "value": "Power" },
+                    { "label": "VolumeUp", "value": "115" },
+                    { "label": "VolumeDown", "value": "114" },
+                    { "label": "Mute", "value": "113" },
+                    { "label": "Menu", "value": "139" },
+                    { "label": "OK", "value": "352" },
+                    { "label": "Exit", "value": "174" },
+                    { "label": "Info", "value": "358" },
+                    { "label": "BouquetUp", "value": "402" },
+                    { "label": "BouquetDown", "value": "403" },
+                    { "label": "ArrowUp", "value": "103" },
+                    { "label": "ArrowDown", "value": "108" },
+                    { "label": "ArrowLeft", "value": "105" },
+                    { "label": "ArrowRight", "value": "106" },
+                    { "label": "Previous", "value": "412" },
+                    { "label": "Next", "value": "407" },
+                    { "label": "TV", "value": "377" },
+                    { "label": "Radio", "value": "385" },
+                    { "label": "Text", "value": "388" },
+                    { "label": "Help", "value": "138" },
+                    { "label": "Audio", "value": "392" },
+                    { "label": "Video", "value": "393" },
+                    { "label": "RED", "value": "398" },
+                    { "label": "GREEN", "value": "399" },
+                    { "label": "YELLOW", "value": "400" },
+                    { "label": "BLUE", "value": "401" },
+                    { "label": "0", "value": "11" },
+                    { "label": "1", "value": "2" },
+                    { "label": "2", "value": "3" },
+                    { "label": "3", "value": "4" },
+                    { "label": "4", "value": "5" },
+                    { "label": "5", "value": "6" },
+                    { "label": "6", "value": "7" },
+                    { "label": "7", "value": "8" },
+                    { "label": "8", "value": "9" },
+                    { "label": "9", "value": "10" }
+       ]},
+    { "type": "Button", "label": "Taste senden", "onClick": "Enigma2Nachricht_KeyTest($id);" }
 
   ]
 }
