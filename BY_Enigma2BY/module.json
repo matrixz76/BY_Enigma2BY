@@ -1,0 +1,14 @@
+{
+    "id": "{69A3FF58-5A35-40DA-B382-160BE257AC16}",
+    "name": "Enigma2BY",
+    "type": 3,
+    "vendor": "",
+    "aliases": 
+    [
+        "Enigma2BY"
+    ],
+    "parentRequirements": [],
+    "childRequirements": [],
+    "implemented": [],
+    "prefix": "Enigma2BY"
+}

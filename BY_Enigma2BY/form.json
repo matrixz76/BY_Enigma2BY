@@ -1,0 +1,17 @@
+{
+  "elements":
+  [
+
+    { "type": "Label", "label": "IP-Adresse, unter der ein Receiver mit Enigma2 erreichbar ist:" },
+    { "name": "Enigma2IP", "type": "ValidationTextBox", "caption": "Receiver IP-Adresse" },
+    //{ "type": "Label", "label": "Der Timeout definiert die Zeit, wann eine Nachricht am TV automatisch ausgeblendet wird." },
+    //{ "name": "TimeoutDefault", "type": "ValidationTextBox", "caption": "Default Nachrichten-Timeout" }
+
+  ],
+  "actions":
+  [
+
+    { "type": "Button", "label": "Test-Nachricht senden", "onClick": "Enigma2Nachricht_MsgTest($id);" }
+
+  ]
+}
