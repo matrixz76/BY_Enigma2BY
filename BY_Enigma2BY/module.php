@@ -1,5 +1,5 @@
 <?
-/* 2do *************************************************************************************
+/* 2do *************************************************************************************************
 >> Neue Funktionen die Daten abfragen in die Gruppenfunktion "Enigma2BY_UpdateAll" einbinden!!!
 
 
@@ -57,7 +57,7 @@ class Enigma2BY extends IPSModule
         
         //Variablenprofile erstellen
         $this->RegisterProfileInteger("E2BY.Minuten", "Clock", "", " Min.",  "", "", 1);
-        if ($this->ReadProperyBoolean("HDDverbaut") == true)
+        if ($this->ReadPropertyBoolean("HDDverbaut") == true)
 				{
         		$this->RegisterProfileInteger("E2BY.MB", "Information", "", " MB",  "", "", 1);
       	}
