@@ -309,9 +309,9 @@ class Enigma2BY extends IPSModule
 								$E2_SysInfo[] = $xml->e2about->e2hddinfo->model;
 								$E2_SysInfo[] = $xml->e2about->e2hddinfo->capacity;
 								$E2_SysInfo[] = $xml->e2about->e2hddinfo->free;
-								$this->SetValueString("HDDModelVAR", $E2_SysInfo[0]);
-								$this->SetValueInteger("HDDCapaVAR", $E2_SysInfo[1]);
-								$this->SetValueInteger("HDDCapaFreeVAR", $E2_SysInfo[2]);
+								$this->SetValueString("HDDModelVAR", $E2_SysInfo[2]);
+								$this->SetValueInteger("HDDCapaVAR", $E2_SysInfo[3]);
+								$this->SetValueInteger("HDDCapaFreeVAR", $E2_SysInfo[4]);
 						}
 						return $E2_SysInfo;
 				}
