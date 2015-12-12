@@ -100,6 +100,12 @@ class Enigma2BY extends IPSModule
 		        $this->RegisterVariableInteger("HDDCapaVAR", "HDD Kapazität (gesamt)", "E2BY.MB");
 		        $this->RegisterVariableInteger("HDDCapaFreeVAR", "HDD Kapazität (frei)", "E2BY.MB");
       	}
+      	else
+      	{
+		      	$this->UnregisterVariable("HDDModelVAR");
+						$this->UnregisterVariable("HDDCapaVAR");
+						$this->UnregisterVariable("HDDCapaFreeVAR");	
+      	}
       	
       	//Timer einstellen
       	$this->SetTimerInterval("Refresh_SysInfos", $this->ReadPropertyInteger("IntervallSysInfoRefresh"));
@@ -296,6 +302,8 @@ class Enigma2BY extends IPSModule
 						$E2_BoxModel = $xml->e2about->e2model;
 						$this->SetValueString("ImageVersionVAR", $E2_Imageversion);
 						$this->SetValueString("BoxModelVAR", $E2_BoxModel);
+						$E2_SysInfo[] = $E2_Imageversion;
+						$E2_SysInfo[] = $E2_BoxModel;
 						if ($this->ReadPropertyBoolean("HDDverbaut") == true)
 						{
 								$E2_SysInfo[] = $xml->e2about->e2hddinfo->model;
@@ -676,6 +684,17 @@ class Enigma2BY extends IPSModule
             if (!IPS_EventExists($id))
                 throw new Exception('Timer not present', E_USER_NOTICE);
             IPS_DeleteEvent($id);
+        }
+    }
+    
+    protected function UnregisterVariable($Name)
+    {
+        $id = @IPS_GetObjectIDByIdent($Name, $this->InstanceID);
+        if ($id > 0)
+        {
+            if (!IPS_VariableExists($id))
+                throw new Exception('Variable not present', E_USER_NOTICE);
+            IPS_DeleteVariable($id);
         }
     }
 
