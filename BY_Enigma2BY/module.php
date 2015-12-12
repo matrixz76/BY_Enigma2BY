@@ -37,7 +37,7 @@ class Enigma2BY extends IPSModule
         $this->RegisterPropertyString("IntervallSysInfoRefresh", "1800");
         $this->RegisterPropertyString("IntervallEPGInfoRefresh", "60");  
         $this->RegisterPropertyString("RCUdefault", "advanced");
-        $this->RegisterPropertyString("KeyDropDown", "Info");
+        $this->RegisterPropertyString("KeyDropDown", "");
         $this->RegisterTimer("Refresh_SysInfos", 0, 'Enigma2BY_GetSystemInfos($_IPS[\'TARGET\']);');
         $this->RegisterTimer("Refresh_EPGInfos", 0, 'Enigma2BY_GetEPGInfos($_IPS[\'TARGET\']);');
     }
@@ -158,11 +158,11 @@ class Enigma2BY extends IPSModule
     		$result = $this->SendKey($Key_Test, $LongShort_Test);
     		if ($result)
     		{
-    				echo "Test-Taste wurde erfolgreich gesendet.";
+    				echo "Taste wurde erfolgreich gesendet.";
     		}
     		else 
     		{
-    				echo "Test-Taste konnte nicht gesendet werden!";
+    				echo "Taste konnte nicht gesendet werden!";
     		}
     }
     
