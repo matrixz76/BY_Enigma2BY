@@ -4,6 +4,12 @@
 
     { "type": "Label", "label": "IP-Adresse, unter der ein Receiver mit Enigma2 erreichbar ist:" },
     { "name": "Enigma2IP", "type": "ValidationTextBox", "caption": "Receiver IP-Adresse" },
+    { "name": "HDDverbaut", "type": "CheckBox", "caption": "Receiver mit HDD" },
+    { "type": "Label", "label": "----------------------------------------------------------------------------------------------------------------------------" },
+    { "type": "Label", "label": "Intervall für Aktualisierung von System-Informationen:" },
+    { "type": "IntervalBox", "name": "IntervallSysInfoRefresh", "caption": "Sekunden" },
+    { "type": "Label", "label": "Intervall für Aktualisierung von EPG-Informationen:" },
+    { "type": "IntervalBox", "name": "IntervallEPGInfoRefresh", "caption": "Sekunden" },
     { "type": "Label", "label": "----------------------------------------------------------------------------------------------------------------------------" },
     { "type": "Label", "label": "RCU-Einstellung nur ändern, wenn ihr Probleme mit falschen Tasten-Aktionen habt!" },
     { "name": "RCUdefault", "type": "Select", "caption": "RCU",
@@ -17,6 +23,8 @@
   "actions":
   [
 
+    { "type": "Button", "label": "System-Infos aktualisieren", "onClick": "Enigma2Nachricht_GetSystemInfos($id);" },
+    { "type": "Button", "label": "EPG-Infos aktualisieren", "onClick": "Enigma2Nachricht_GetEPGInfos($id);" },
     { "type": "Button", "label": "Test-Nachricht senden", "onClick": "Enigma2Nachricht_MsgTest($id);" },
     { "type": "Label", "label": "----------------------------------------------------------------------------------------------------------------------------" },
     { "type": "Label", "label": "Hier kann eine Taste ausgewählt und an den Receiver gesendet werden:" },
