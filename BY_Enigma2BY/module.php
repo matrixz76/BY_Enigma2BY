@@ -1,5 +1,5 @@
 <?
-/* 2do *************************************************************************************************
+/* 2do ***********************************************************************************************
 >> Neue Funktionen die Daten abfragen in die Gruppenfunktion "Enigma2BY_UpdateAll" einbinden!!!
 
 
@@ -18,7 +18,7 @@ Hier gibt es alle Sendernamen + sRef (http://192.168.10.111/web/getallservices)
 > Umschalten > http://192.168.10.111/web/zap?sRef={servicereference}
 
 >>> Detail-Infos >> http://dream.reichholf.net/wiki/Enigma2:WebInterface#Message
-********************************************************************************************/
+******************************************************************************************************/
 
 class Enigma2BY extends IPSModule
 {
@@ -46,7 +46,7 @@ class Enigma2BY extends IPSModule
     		$this->UnregisterTimer("Refresh_SysInfos");
     		$this->UnregisterTimer("Refresh_EPGInfos");
     		
-        //Never delete this line!
+        //Never delete this line!!
         parent::Destroy();
     }
 
@@ -56,10 +56,10 @@ class Enigma2BY extends IPSModule
         parent::ApplyChanges();
         
         //Variablenprofile erstellen
-        $this->RegisterProfileInteger("E2BY.Minuten", "Clock", "", " Min.",  "", "", 1);
+        $this->RegisterProfileInteger("E2BY.Minuten", "Clock", "", " Min.",  "0", "300", 1);
         if ($this->ReadPropertyBoolean("HDDverbaut") == true)
 				{
-        		$this->RegisterProfileInteger("E2BY.MB", "Information", "", " MB",  "", "", 1);
+        		$this->RegisterProfileInteger("E2BY.MB", "Information", "", " MB",  "0", "10240000", 1);
       	}
         $this->RegisterProfileString("E2BY.Info", "Information", "", "",  "", "", 0);
         $this->RegisterProfileIntegerEx("E2BY.JaNeinKA", "Information", "", "", Array(
@@ -90,12 +90,12 @@ class Enigma2BY extends IPSModule
         $this->RegisterVariableInteger("NextSendungsdauerVAR", "Next Sendungsdauer Min.", "E2BY.Minuten");
         $this->RegisterVariableInteger("VolumeVAR", "Volume", "E2BY.Volume");
         $this->RegisterVariableBoolean("MuteVAR", "Mute");
-        $this->RegisterVariableInteger("TimerAnzahlVAR", "Timer Anzahl");
+        $this->RegisterVariableInteger("TimerAnzahlVAR", "Timerliste Anzahl");
         $this->RegisterVariableString("TimerlisteVAR", "Timerliste", "~HTMLBox");
         $this->RegisterVariableString("ImageVersionVAR", "Image-Version");
         $this->RegisterVariableString("ImageVersionVAR", "Image-Version");
         $this->RegisterVariableString("BoxModelVAR", "Receiver Modell");
-        if ($this->ReadProperyBoolean("HDDverbaut") == true)
+        if ($this->ReadPropertyBoolean("HDDverbaut") == true)
 				{
 		        $this->RegisterVariableString("HDDModelVAR", "HDD Modell");
 		        $this->RegisterVariableInteger("HDDCapaVAR", "HDD Kapazität (gesamt)", "E2BY.MB");
@@ -288,7 +288,7 @@ class Enigma2BY extends IPSModule
 						$E2_BoxModel = $xml->e2about->e2model;
 						$this->SetValueString("ImageVersionVAR", $E2_Imageversion);
 						$this->SetValueString("BoxModelVAR", $E2_BoxModel);
-						if ($this->ReadProperyBoolean("HDDverbaut") == true)
+						if ($this->ReadPropertyBoolean("HDDverbaut") == true)
 						{
 								$E2_SysInfo[] = $xml->e2about->e2hddinfo->model;
 								$E2_SysInfo[] = $xml->e2about->e2hddinfo->capacity;
