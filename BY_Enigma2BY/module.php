@@ -325,7 +325,7 @@ class Enigma2BY extends IPSModule
     		{
 		    		$url = "http://".$IP."/web/powerstate";
 						$xml = @simplexml_load_file($url);
-						if ($xml->e2instandby == false)
+						if ($xml->e2instandby == "false")
 						{
 								$PowerStateIST = 1;
 								$this->SetValueInteger("PowerStateVAR", 1); // AN
