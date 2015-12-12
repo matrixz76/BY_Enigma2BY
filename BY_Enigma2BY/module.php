@@ -31,7 +31,7 @@ class Enigma2BY extends IPSModule
         //These lines are parsed on Symcon Startup or Instance creation
         //You cannot use variables here. Just static values.
         $this->RegisterPropertyString("Enigma2IP", "");
-        $this->RegisterPropertyBoolean("HDDverbaut", true);
+        $this->RegisterPropertyBoolean("HDDverbaut", false);
         $this->RegisterPropertyString("IntervallSysInfoRefresh", "1800");
         $this->RegisterPropertyString("IntervallEPGInfoRefresh", "60");  
         $this->RegisterPropertyString("RCUdefault", "advanced");
