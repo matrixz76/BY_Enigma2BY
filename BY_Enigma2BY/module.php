@@ -107,10 +107,11 @@ class Enigma2BY extends IPSModule
       	$this->SetTimerInterval("Refresh_EPGInfos", $this->ReadPropertyInteger("IntervallEPGInfoRefresh"));
       	
       	//Daten in Variablen aktualisieren
-      	if (strlen($IP = $this->ReadPropertyString("Enigma2IP")) > 7)
+      	if (strlen($this->ReadPropertyString("Enigma2IP")) > 7)
       	{
 						$this->Enigma2BY_UpdateAll();
 		    }
+		}
     
     private function Enigma2BY_UpdateAll()
     {
