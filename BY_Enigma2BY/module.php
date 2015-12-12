@@ -93,7 +93,6 @@ class Enigma2BY extends IPSModule
         $this->RegisterVariableInteger("TimerAnzahlVAR", "Timerliste Anzahl");
         $this->RegisterVariableString("TimerlisteVAR", "Timerliste", "~HTMLBox");
         $this->RegisterVariableString("ImageVersionVAR", "Image-Version");
-        $this->RegisterVariableString("ImageVersionVAR", "Image-Version");
         $this->RegisterVariableString("BoxModelVAR", "Receiver Modell");
         if ($this->ReadPropertyBoolean("HDDverbaut") == true)
 				{
@@ -133,7 +132,7 @@ class Enigma2BY extends IPSModule
     		$Text_Test = "Das ist ein Test!";
     		$Type_Test = 1;
     		$Timeout_Test = 5;
-    		$result = $this->Msg($Text_Test, $Type_Test, $Timeout_Test);
+    		$result = $this->SendMsg($Text_Test, $Type_Test, $Timeout_Test);
     		if ($result)
     		{
     				echo "Test-Nachricht wurde erfolgreich gesendet.";
