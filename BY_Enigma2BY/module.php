@@ -550,7 +550,7 @@ class Enigma2BY extends IPSModule
         $ID = $this->GetIDForIdent($Ident);
         if (GetValueInteger($ID) <> $Value)
         {
-            SetValueInteger($ID, $Value);
+            SetValueInteger($ID, intval($Value));
             return true;
         }
         return false;
@@ -561,7 +561,7 @@ class Enigma2BY extends IPSModule
         $ID = $this->GetIDForIdent($Ident);
         if (GetValueString($ID) <> $Value)
         {
-            SetValueString($ID, $Value);
+            SetValueString($ID, strval($Value));
             return true;
         }
         return false;
@@ -572,7 +572,7 @@ class Enigma2BY extends IPSModule
         $ID = $this->GetIDForIdent($Ident);
         if (GetValueBoolean($ID) <> $Value)
         {
-            SetValueBoolean($ID, $Value);
+            SetValueBoolean($ID, boolval($Value));
             return true;
         }
         return false;
