@@ -17,17 +17,10 @@
                     { "label": "Advanced", "value": "advanced" },
                     { "label": "Standard", "value": "standard" },
                     { "label": "Keyboard", "value": "keyboard" }
-       ]}
-
-  ],
-  "actions":
-  [
-
-    { "type": "Button", "label": "System-Infos aktualisieren", "onClick": "Enigma2BY_GetSystemInfos($id);" },
-    { "type": "Button", "label": "EPG-Infos aktualisieren", "onClick": "Enigma2BY_GetEPGInfos($id);" },
-    { "type": "Button", "label": "Test-Nachricht senden", "onClick": "Enigma2BY_MsgTest($id);" },
+       ]},
     { "type": "Label", "label": "----------------------------------------------------------------------------------------------------------------------------" },
-    { "type": "Label", "label": "Hier kann eine Taste ausgewählt und an den Receiver gesendet werden:" },
+    { "type": "Label", "label": "Hier kann eine Taste ausgewählt werden, welche beim Drücken von 'Taste senden' an" },
+    { "type": "Label", "label": "den Receiver geschickt wird (!!! Erst auf 'Übernehmen' drücken!!!):" },
     { "name": "KeyDropDown", "type": "Select", "caption": "Taste",
        "options": [
                     
@@ -67,7 +60,15 @@
                     { "label": "7", "value": "8" },
                     { "label": "8", "value": "9" },
                     { "label": "9", "value": "10" }
-       ]},
+       ]}
+
+  ],
+  "actions":
+  [
+
+    { "type": "Button", "label": "System-Infos aktualisieren", "onClick": "Enigma2BY_GetSystemInfos($id);" },
+    { "type": "Button", "label": "EPG-Infos aktualisieren", "onClick": "Enigma2BY_GetEPGInfos($id);" },
+    { "type": "Button", "label": "Test-Nachricht senden", "onClick": "Enigma2BY_MsgTest($id);" },
     { "type": "Button", "label": "Taste senden", "onClick": "Enigma2BY_KeyTest($id);" }
 
   ]
