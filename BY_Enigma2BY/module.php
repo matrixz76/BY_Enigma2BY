@@ -61,7 +61,7 @@ class Enigma2BY extends IPSModule
 				{
         		$this->RegisterProfileInteger("E2BY.MB", "Information", "", " MB",  "0", "10240000", 1);
       	}
-        $this->RegisterProfileString("E2BY.Info", "Information", "", "",  "", "", 0);
+        $this->RegisterProfileString("E2BY.Info", "Information", "", "",  "0", "2", 0);
         $this->RegisterProfileIntegerEx("E2BY.JaNeinKA", "Information", "", "", Array(
                                              Array(0, "Nein",  "", -1),
                                              Array(1, "Ja",  "", -1),
@@ -72,7 +72,7 @@ class Enigma2BY extends IPSModule
                                              Array(1, "eingeschaltet",  "", -1),
                                              Array(2, "Standby",  "", -1)
         ));
-        $this->RegisterProfileInteger("E2BY.Volume", "Speaker", "", " %",  "", "", 1);
+        $this->RegisterProfileInteger("E2BY.Volume", "Speaker", "", " %",  "0", "100", 1);
 
         //Variablen erstellen
         $this->RegisterVariableInteger("PowerStateVAR", "Power-State", "E2BY.PowerState");
