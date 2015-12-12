@@ -3,6 +3,8 @@
 >> Neue Funktionen die Daten abfragen in die Gruppenfunktion "Enigma2BY_UpdateAll" einbinden!!!
 
 
+> "Power" wird im Keys-DropDown durch "Leistung" ersetzt, wenn paresy es nicht ändert, dann eine Alternative überlegen
+
 > VolumeVAR bedienbar machen wenn ins WebFront verlinkt - ActionSkript
 
 > Timer hinzufügen (http://IP_of_your_box/web/timeraddbyeventid?sRef=1:0:1:7926:A:70:1680000:0:0:0:&eventid=53779&dirname=/hdd/movie/)
@@ -151,7 +153,6 @@ class Enigma2BY extends IPSModule
     
     public function KeyTest()
     {
-    		$IP_Test = $this->ReadPropertyString("Enigma2IP");
     		$Key_Test = $this->ReadPropertyString("KeyDropDown");
     		$LongShort_Test = "short";
     		$result = $this->SendKey($Key_Test, $LongShort_Test);
@@ -165,7 +166,7 @@ class Enigma2BY extends IPSModule
     		}
     }
     
-    public function SendMsg($Type, $Text, $Timeout)
+    public function SendMsg($Text, $Type, $Timeout)
     {
     		if ($this->GetPowerState() == 1)
     		{
@@ -179,7 +180,7 @@ class Enigma2BY extends IPSModule
     				
     				if ($Type == 0)
     				{
-    						$this->SendKey($IP, "ArrowDown", "short");
+    						$this->SendKey("ArrowDown", "short");
     						IPS_Sleep($Timeout * 1000 + 1000);
 								$xml = @simplexml_load_file("http://".$IP."/web/messageanswer?getanswer=now");
 								if ($xml->e2statetext == "Answer is NO!")
@@ -193,9 +194,9 @@ class Enigma2BY extends IPSModule
 								elseif ($xml->e2statetext == "No answer in time")
 								{
 										$AntwortINT = 2;
-										$this->SendKey($IP, "Exit", "short");
+										$this->SendKey("Exit", "short");
 								}
-								$this->SetValueInteger("FrageAntwortVar", $AntwortINT);
+								$this->SetValueInteger("FrageAntwortVAR", $AntwortINT);
     				}
     				return $result;
     		}
@@ -225,7 +226,7 @@ class Enigma2BY extends IPSModule
 		    		$xml = @simplexml_load_file($url);
 						$result['e2state'] = $xml->e2state;
 						$result['e2statetext'] = $xml->e2statetext;
-						return $result;
+						return true;
 				}
 				else
 				{

@@ -62,7 +62,7 @@ Die neue Instanz findet ihr in der IPS-Console, in dem Ordner in dem ihr die Ins
 
 ## 4. Befehlsreferenz
 ```php
-  Enigma2BY_SendMsg(integer $InstanzID, integer $Type, string $Text, integer $TimeoutSekunden);
+  Enigma2BY_SendMsg(integer $InstanzID, string $Text, integer $Type, integer $TimeoutSekunden);
 ```
 Schickt eine Nachricht an den Receiver und dieser zeigt diese dann auf TV/Beamer an.
 Liefert ein Array mit Informationen zurück, ob die Nachricht erfolgreich gesendet wurde oder nicht.
