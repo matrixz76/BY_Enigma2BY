@@ -154,7 +154,7 @@ class Enigma2BY extends IPSModule
     		$IP_Test = $this->ReadPropertyString("Enigma2IP");
     		$Key_Test = $this->ReadPropertyString("KeyDropDown");
     		$LongShort_Test = "short";
-    		$result = $this->SendKey($IP_Test, $Key_Test, $LongShort_Test);
+    		$result = $this->SendKey($Key_Test, $LongShort_Test);
     		if ($result)
     		{
     				echo "Test-Taste wurde erfolgreich gesendet.";
