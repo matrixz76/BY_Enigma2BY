@@ -273,7 +273,7 @@ class Enigma2BY extends IPSModule
 						$this->SetValueString("NextSendungsnameVar", $E2_NextSendungsname);
 						$this->SetValueString("NextSendungsBeschrKurzVAR", $E2_NextSendungsBeschrKurz);
 						$this->SetValueString("NextSendungsBeschrLangVAR", $E2_NextSendungsBeschrLang);
-						$E2_NextSendungStart = date("H:i", $E2_NextSendungStart)." Uhr";
+						$E2_NextSendungStart = date("H:i", intval($E2_NextSendungStart))." Uhr";
 						$this->SetValueString("NextSendungsStartVAR", $E2_NextSendungStart);
 						$E2_NextSendungsdauerMin = $E2_NextSendungsdauerSek / 60;
 						$this->SetValueInteger("NextSendungsdauerVAR", $E2_NextSendungsdauerMin);
@@ -504,15 +504,15 @@ class Enigma2BY extends IPSModule
 								$TimerEintragSendungsende = $wochentage[$t];
 								$TimerEintragSendungsende .= " ".date("j.m.Y H:i", $TimerAR[$h]["Sendungsende"]);
 								// Sendungsbeschreibung-Anpassung
-								if ((strlen($TimerAR[$h]["SendungsbeschreibungKurz"]) > 5) AND (strlen($TimerAR[$h]["SendungsbeschreibungLang"]) > 5))
+								if ((strlen($TimerAR[$h]["SendungsbeschreibungKurz"]) > 10) AND (strlen($TimerAR[$h]["SendungsbeschreibungLang"]) > 10))
 								{
 										$TimerEintragBeschreibung = $TimerAR[$h]["SendungsbeschreibungKurz"].' || '.$TimerAR[$h]["SendungsbeschreibungLang"];
 								}
-								elseif ((strlen($TimerAR[$h]["SendungsbeschreibungKurz"]) < 5) AND (strlen($TimerAR[$h]["SendungsbeschreibungLang"]) > 5))
+								elseif ((strlen($TimerAR[$h]["SendungsbeschreibungKurz"]) < 10) AND (strlen($TimerAR[$h]["SendungsbeschreibungLang"]) > 10))
 								{
 								      $TimerEintragBeschreibung = $TimerAR[$h]["SendungsbeschreibungLang"];
 								}
-								elseif ((strlen($TimerAR[$h]["SendungsbeschreibungKurz"]) > 5) AND (strlen($TimerAR[$h]["SendungsbeschreibungLang"]) < 5))
+								elseif ((strlen($TimerAR[$h]["SendungsbeschreibungKurz"]) > 10) AND (strlen($TimerAR[$h]["SendungsbeschreibungLang"]) < 10))
 								{
 								      $TimerEintragBeschreibung = $TimerAR[$h]["SendungsbeschreibungKurz"];
 								}
