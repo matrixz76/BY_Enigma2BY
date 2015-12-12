@@ -20,7 +20,7 @@
        ]},
     { "type": "Label", "label": "----------------------------------------------------------------------------------------------------------------------------" },
     { "type": "Label", "label": "Hier kann eine Taste ausgewählt werden, welche dann an den Receiver geschickt wird. },
-    { "type": "Label", "label": ">>> Erst auf 'Übernehmen' drücken und dann auf 'Taste senden' <<<" },
+    { "type": "Label", "label": "!!! Erst auf -Übernehmen- drücken und dann auf -Taste senden- !!!" },
     { "name": "KeyDropDown", "type": "Select", "caption": "Taste",
        "options": [
                     
