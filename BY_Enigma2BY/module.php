@@ -520,15 +520,15 @@ class Enigma2BY extends IPSModule
 										$TimerEintragSendungsende = $wochentage[$t];
 										$TimerEintragSendungsende .= " ".date("j.m.Y H:i", $TimerAR[$h]["Sendungsende"]);
 										// Sendungsbeschreibung-Anpassung
-										if ((strlen($TimerAR[$h]["SendungsbeschreibungKurz"]) > 10) AND (strlen($TimerAR[$h]["SendungsbeschreibungLang"]) > 10))
+										if ((strlen($TimerAR[$h]["SendungsbeschreibungKurz"]) != 0) AND (strlen($TimerAR[$h]["SendungsbeschreibungLang"]) != 0))
 										{
 												$TimerEintragBeschreibung = $TimerAR[$h]["SendungsbeschreibungKurz"].' || '.$TimerAR[$h]["SendungsbeschreibungLang"];
 										}
-										elseif ((strlen($TimerAR[$h]["SendungsbeschreibungKurz"]) < 10) AND (strlen($TimerAR[$h]["SendungsbeschreibungLang"]) > 10))
+										elseif ((strlen($TimerAR[$h]["SendungsbeschreibungKurz"]) == 0) AND (strlen($TimerAR[$h]["SendungsbeschreibungLang"]) != 0))
 										{
 										      $TimerEintragBeschreibung = $TimerAR[$h]["SendungsbeschreibungLang"];
 										}
-										elseif ((strlen($TimerAR[$h]["SendungsbeschreibungKurz"]) > 10) AND (strlen($TimerAR[$h]["SendungsbeschreibungLang"]) < 10))
+										elseif ((strlen($TimerAR[$h]["SendungsbeschreibungKurz"]) != 0) AND (strlen($TimerAR[$h]["SendungsbeschreibungLang"]) == 0))
 										{
 										      $TimerEintragBeschreibung = $TimerAR[$h]["SendungsbeschreibungKurz"];
 										}
