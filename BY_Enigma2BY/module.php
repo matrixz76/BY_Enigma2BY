@@ -34,8 +34,7 @@ class Enigma2BY extends IPSModule
         //You cannot use variables here. Just static values.
         $this->RegisterPropertyString("Enigma2IP", "");
         $this->RegisterPropertyBoolean("HDDverbaut", false);
-        $this->RegisterPropertyString("IntervallSysInfoRefresh", "1800");
-        $this->RegisterPropertyString("IntervallEPGInfoRefresh", "60");  
+        $this->RegisterPropertyString("IntervallRefresh", "60");
         $this->RegisterPropertyString("RCUdefault", "advanced");
         $this->RegisterPropertyString("KeyDropDown", "");
         $this->RegisterTimer("Refresh_All", 0, 'Enigma2BY_UpdateAll($_IPS[\'TARGET\']);');
