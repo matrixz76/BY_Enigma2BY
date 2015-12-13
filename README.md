@@ -50,6 +50,9 @@ Receiver muss eine eigene Modul-Instanz angelegt werden.
 **Aufnahmenliste auslesen**
 - Liest die Aufnahmenliste aus dem Receiver aus, gibt diese als Array zurück und speichert die Daten in eine Variable (HTMLBox)
 
+**Senderliste auslesen**
+- Liest alle Sender der Senderliste mit ServiceReferenznummer aus und gibt es in einem Array zurück
+
 
 ## 2. Systemanforderungen
 - IP-Symcon ab Version 4.x
@@ -137,6 +140,18 @@ Variable (als HTML-Tabelle).
 ```
 Liefert ein Array mit allen Aufnahmen + Details zu allen aufgenommenen Sendungen
 zurück und schreibt die Daten in eine Variable (als HTML-Tabelle).
+
+```php
+  Enigma2BY_GetSenderliste(integer $InstanzID);
+```
+Liefert ein Array mit allen Sendernamen + ServiceReferenznummer zurück.
+
+```php
+  Enigma2BY_ZapTo(integer $InstanzID, string $Sendername);
+```
+Schaltet den Receiver auf den gewählten Sender. Der Sender muss 1:1 so geschrieben werden, wie
+er im Receiver gespeichert ist. Der genaue Name kann auch über die Funktion "Enigma2BY_GetSenderliste"
+herausgefunden werden.
 
 
 ## 5. Changelog

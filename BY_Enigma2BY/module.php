@@ -2,22 +2,11 @@
 /* 2do ***********************************************************************************************
 >> Neue Funktionen die Daten abfragen in die Gruppenfunktion "UpdateAll" einbinden!!!
 
+> Bei den Funktionen "SendKey", "ZapTo", ... (alle die einfach ohne Überprüfung mit "return true" antworten) müssen
+geändert werden. Damit die auch wirklich erst den e2state prüfen und je nach TRUE/FALSE dann entsprechend
+die Rückmeldung von der Funktion sind.
 
 > "Power" wird im Keys-DropDown durch "Leistung" ersetzt (+ weitere Tasten), wenn paresy es nicht ändert, dann eine Alternative überlegen
-
-> VolumeVAR bedienbar machen, wenn ins WebFront verlinkt - ActionSkript
-
-> Timer hinzufügen (http://IP_of_your_box/web/timeraddbyeventid?sRef=1:0:1:7926:A:70:1680000:0:0:0:&eventid=53779&dirname=/hdd/movie/)
-> Timer löschen (http://IP_of_your_box/web/timerdelete?sRef=1:0:1:7926:A:70:1680000:0:0:0:&begin=1330283100&end=1330285320)
-
-> Alle Sendernamen ueber Funktion auslesen und in Array zurueck schreiben
-
-> Favoriten-Sender in Form eintragen lassen (genauer name), damit man zu diesen direkt umschalten kann
-Hier gibt es alle Sendernamen + sRef (http://192.168.10.111/web/getallservices)
-
-> Umschalten > http://192.168.10.111/web/zap?sRef={servicereference}
-
->>> Detail-Infos >> http://dream.reichholf.net/wiki/Enigma2:WebInterface#Message
 ******************************************************************************************************/
 
 class Enigma2BY extends IPSModule
@@ -87,6 +76,7 @@ class Enigma2BY extends IPSModule
         $this->RegisterVariableInteger("NextSendungsdauerVAR", "Next Sendungsdauer Min.", "E2BY.Minuten");
         $this->RegisterVariableInteger("VolumeVAR", "Volume", "E2BY.Volume");
         $this->RegisterVariableBoolean("MuteVAR", "Mute");
+        $this->RegisterVariableInteger("SenderAnzahlVAR", "Sender-Anzahl");  
         $this->RegisterVariableInteger("TimerAnzahlVAR", "Timer-Anzahl");
 		    $this->RegisterVariableString("TimerlisteVAR", "Timerliste", "~HTMLBox");
 		    $this->RegisterVariableInteger("AufnahmenAnzahlVAR", "Aufnahmen-Anzahl");
@@ -611,6 +601,49 @@ class Enigma2BY extends IPSModule
 								$this->SetValueString("AufnahmenlisteVAR", $HTMLAufnahmenliste);
 								return false;
 						}						
+				}
+				else
+				{
+						return false;
+				}
+    }
+    
+    public function GetAufnahmenliste()
+    {
+    		if ($this->GetPowerState() != 0)
+    		{
+		    		$IP = $this->ReadPropertyString("Enigma2IP");
+		    		$url = "http://".$IP."/web/getallservices";
+						$xml = simplexml_load_file($url);
+		  			foreach ($xml->e2bouquet as $xmlnode1)
+						{
+						   foreach ($xmlnode1->e2servicelist->e2service as $xmlnode2)
+						   {
+									$Sendername = (string)$xmlnode2->e2servicename; // Sendername
+									$ServicesAR[$Sendername] = (string)$xmlnode2->e2servicereference; // SenderReference
+						   }
+						}
+						$SenderCount = count($ServicesAR);  // Anzahl der Sender
+						$this->SetValueInteger("SenderAnzahlVAR", $SenderCount);
+						return $ServicesAR;
+				}
+				else
+				{
+						return false;
+				}
+    }
+    
+    public function ZapTo($Sendername)
+    {
+    		if ($this->GetPowerState() != 0)
+    		{
+		    		$ServicesAR = $this->GetAufnahmenliste();
+		    		$ServiceRef = $ServicesAR[$Sendername];
+						$url = "http://192.168.10.111/web/zap?sRef=".$ServiceRef;
+						$xml = @simplexml_load_file($url);
+						$result['e2state'] = $xml->e2state;
+						$result['e2statetext'] = $xml->e2statetext;
+						return true;
 				}
 				else
 				{
