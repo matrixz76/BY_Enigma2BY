@@ -87,9 +87,9 @@ class Enigma2BY extends IPSModule
         $this->RegisterVariableInteger("NextSendungsdauerVAR", "Next Sendungsdauer Min.", "E2BY.Minuten");
         $this->RegisterVariableInteger("VolumeVAR", "Volume", "E2BY.Volume");
         $this->RegisterVariableBoolean("MuteVAR", "Mute");
-        $this->RegisterVariableInteger("TimerAnzahlVAR", "Timerliste Anzahl");
+        $this->RegisterVariableInteger("TimerAnzahlVAR", "Timer-Anzahl");
 		    $this->RegisterVariableString("TimerlisteVAR", "Timerliste", "~HTMLBox");
-		    $this->RegisterVariableInteger("AufnahmenAnzahlVAR", "Aufnahmenliste Anzahl");
+		    $this->RegisterVariableInteger("AufnahmenAnzahlVAR", "Aufnahmen-Anzahl");
 		    $this->RegisterVariableString("AufnahmenlisteVAR", "Aufnahmenliste", "~HTMLBox");
         $this->RegisterVariableString("EnigmaVersionVAR", "Enigma-Version");
         $this->RegisterVariableString("ImageVersionVAR", "Image-Version");
@@ -499,59 +499,68 @@ class Enigma2BY extends IPSModule
 							$i++;
 						}
 						$TimerCount = count($xml->e2timer);
-						
-						
-						// HTML Ausgabe generieren
-						$TitelAR = array("Sendername","Sendungstitel","Beschreibung","Beginn","Ende","Dauer","Art");
-						$HTMLTimerliste = '<html><table>';
-						$HTMLTimerliste .= '<tr><th>'.$TitelAR[3].'</th><th>'.$TitelAR[4].'</th><th>'.$TitelAR[0].'</th><th>'.$TitelAR[1].'</th><th colspan="2">'.$TitelAR[2].'</th><th>'.$TitelAR[5].'</th><th>'.$TitelAR[6].'</th></tr>';
-						for ($h=0; $h<count($TimerAR); $h++)
-						{
-								// Timerbeginn-Anpassung
-								$t = date("w", $TimerAR[$h]["Sendungsbeginn"]);
-								$wochentage = array('So.','Mo.','Di.','Mi.','Do.','Fr.','Sa.');
-								$TimerEintragSendungsbeginn = $wochentage[$t];
-								$TimerEintragSendungsbeginn .= " ".date("j.m.Y H:i", $TimerAR[$h]["Sendungsbeginn"]);
-								// Timerende-Anpassung
-								$t = date('w', $TimerAR[$h]["Sendungsende"]);
-								$wochentage = array('So.','Mo.','Di.','Mi.','Do.','Fr.','Sa.');
-								$TimerEintragSendungsende = $wochentage[$t];
-								$TimerEintragSendungsende .= " ".date("j.m.Y H:i", $TimerAR[$h]["Sendungsende"]);
-								// Sendungsbeschreibung-Anpassung
-								if ((strlen($TimerAR[$h]["SendungsbeschreibungKurz"]) > 10) AND (strlen($TimerAR[$h]["SendungsbeschreibungLang"]) > 10))
-								{
-										$TimerEintragBeschreibung = $TimerAR[$h]["SendungsbeschreibungKurz"].' || '.$TimerAR[$h]["SendungsbeschreibungLang"];
-								}
-								elseif ((strlen($TimerAR[$h]["SendungsbeschreibungKurz"]) < 10) AND (strlen($TimerAR[$h]["SendungsbeschreibungLang"]) > 10))
-								{
-								      $TimerEintragBeschreibung = $TimerAR[$h]["SendungsbeschreibungLang"];
-								}
-								elseif ((strlen($TimerAR[$h]["SendungsbeschreibungKurz"]) > 10) AND (strlen($TimerAR[$h]["SendungsbeschreibungLang"]) < 10))
-								{
-								      $TimerEintragBeschreibung = $TimerAR[$h]["SendungsbeschreibungKurz"];
-								}
-								else
-								{
-								      $TimerEintragBeschreibung = "";
-								}
-								// Sendungsdauer-Anpassung
-								$TimerEintragSendungsdauerMin = $TimerAR[$h]["SendungsdauerSek"] / 60;
-								// TimerArt-Anpassung
-								switch ($TimerAR[$h]["TimerArt"])
-								{
-									case 0:
-									      $TimerEintragArt = "Aufnahme";
-									break;
-									case 1:
-									      $TimerEintragArt = "Umschalten";
-									break;
-								}
-								$HTMLTimerliste .= '<tr><th>'.$TimerEintragSendungsbeginn.'</th><th>'.$TimerEintragSendungsende.'</th><th>'.$TimerAR[$h]["Sendername"].'</th><th>'.$TimerAR[$h]["Sendungsname"].'</th><th colspan="2">'.$TimerAR[$h]["SendungsbeschreibungKurz"].' || '.$TimerAR[$h]["SendungsbeschreibungLang"].'</th><th>'.$TimerEintragSendungsdauerMin.' Min.</th><th>'.$TimerEintragArt.'</th></tr>';
-						}
-						$HTMLTimerliste .= '</table></html>';
 						$this->SetValueInteger("TimerAnzahlVAR", $TimerCount);
-						$this->SetValueString("TimerlisteVAR", $HTMLTimerliste);
-						return $TimerAR;						
+						
+						if ($TimerCount > 0)
+						{
+								// HTML Ausgabe generieren
+								$TitelAR = array("Sendername","Sendungstitel","Beschreibung","Beginn","Ende","Dauer","Art");
+								$HTMLTimerliste = '<html><table>';
+								$HTMLTimerliste .= '<tr><th>'.$TitelAR[3].'</th><th>'.$TitelAR[4].'</th><th>'.$TitelAR[0].'</th><th>'.$TitelAR[1].'</th><th colspan="2">'.$TitelAR[2].'</th><th>'.$TitelAR[5].'</th><th>'.$TitelAR[6].'</th></tr>';
+								for ($h=0; $h<count($TimerAR); $h++)
+								{
+										// Timerbeginn-Anpassung
+										$t = date("w", $TimerAR[$h]["Sendungsbeginn"]);
+										$wochentage = array('So.','Mo.','Di.','Mi.','Do.','Fr.','Sa.');
+										$TimerEintragSendungsbeginn = $wochentage[$t];
+										$TimerEintragSendungsbeginn .= " ".date("j.m.Y H:i", $TimerAR[$h]["Sendungsbeginn"]);
+										// Timerende-Anpassung
+										$t = date('w', $TimerAR[$h]["Sendungsende"]);
+										$wochentage = array('So.','Mo.','Di.','Mi.','Do.','Fr.','Sa.');
+										$TimerEintragSendungsende = $wochentage[$t];
+										$TimerEintragSendungsende .= " ".date("j.m.Y H:i", $TimerAR[$h]["Sendungsende"]);
+										// Sendungsbeschreibung-Anpassung
+										if ((strlen($TimerAR[$h]["SendungsbeschreibungKurz"]) > 10) AND (strlen($TimerAR[$h]["SendungsbeschreibungLang"]) > 10))
+										{
+												$TimerEintragBeschreibung = $TimerAR[$h]["SendungsbeschreibungKurz"].' || '.$TimerAR[$h]["SendungsbeschreibungLang"];
+										}
+										elseif ((strlen($TimerAR[$h]["SendungsbeschreibungKurz"]) < 10) AND (strlen($TimerAR[$h]["SendungsbeschreibungLang"]) > 10))
+										{
+										      $TimerEintragBeschreibung = $TimerAR[$h]["SendungsbeschreibungLang"];
+										}
+										elseif ((strlen($TimerAR[$h]["SendungsbeschreibungKurz"]) > 10) AND (strlen($TimerAR[$h]["SendungsbeschreibungLang"]) < 10))
+										{
+										      $TimerEintragBeschreibung = $TimerAR[$h]["SendungsbeschreibungKurz"];
+										}
+										else
+										{
+										      $TimerEintragBeschreibung = "";
+										}
+										// Sendungsdauer-Anpassung
+										$TimerEintragSendungsdauerMin = $TimerAR[$h]["SendungsdauerSek"] / 60;
+										// TimerArt-Anpassung
+										switch ($TimerAR[$h]["TimerArt"])
+										{
+											case 0:
+											      $TimerEintragArt = "Aufnahme";
+											break;
+											case 1:
+											      $TimerEintragArt = "Umschalten";
+											break;
+										}
+										$HTMLTimerliste .= '<tr><th>'.$TimerEintragSendungsbeginn.'</th><th>'.$TimerEintragSendungsende.'</th><th>'.$TimerAR[$h]["Sendername"].'</th><th>'.$TimerAR[$h]["Sendungsname"].'</th><th colspan="2">'.$TimerAR[$h]["SendungsbeschreibungKurz"].' || '.$TimerAR[$h]["SendungsbeschreibungLang"].'</th><th>'.$TimerEintragSendungsdauerMin.' Min.</th><th>'.$TimerEintragArt.'</th></tr>';
+								}
+								
+								$HTMLTimerliste .= '</table></html>';
+								$this->SetValueString("TimerlisteVAR", $HTMLTimerliste);
+								return $TimerAR;
+						}
+						else
+						{
+								$HTMLTimerliste = '<html><b>Keine Timer vorhanden!</b></html>';
+								$this->SetValueString("TimerlisteVAR", $HTMLTimerliste);
+								return false;
+						}
 				}
 				else
 				{
@@ -577,23 +586,31 @@ class Enigma2BY extends IPSModule
 							$i++;
 						}
 						$AufnahmenCount = count($xml->e2movie);  // Anzahl der Aufnahmen
+						$this->SetValueInteger("AufnahmenAnzahlVAR", $AufnahmenCount);						
 						
-						
-						// HTML Ausgabe generieren
-						$TitelAR = array("Sendername","Sendungstitel","Beschreibung","Dauer","Dateigröße");
-						$HTMLAufnahmenliste = '<html><table>';
-						$HTMLAufnahmenliste .= '<tr><th>'.$TitelAR[0].'</th><th>'.$TitelAR[1].'</th><th>'.$TitelAR[2].'</th><th>'.$TitelAR[3].'</th><th>'.$TitelAR[4].'</th></tr>';
-						
-						for ($h=0; $h<count($AufnahmenAR); $h++)
+						if ($AufnahmenCount > 0)
 						{
-								// Dateigröße-Anpassung
-								$AufnahmeEintragDateigroesseGB = round((float)$AufnahmenAR[$h]["SendungsDateigroesse"] / 1024 / 1024 / 1024, 2);
-								$HTMLAufnahmenliste .= '<tr><th>'.$AufnahmenAR[$h]["Sendername"].'</th><th>'.$AufnahmenAR[$h]["Sendungstitel"].'</th><th>'.$AufnahmenAR[$h]["SendungsbeschreibungLang"].'</th><th>'.$AufnahmenAR[$h]["SendungsdauerMin"].' Min.</th><th>'.$AufnahmeEintragDateigroesseGB.' GB</th></tr>';
+								// HTML Ausgabe generieren
+								$TitelAR = array("Sendername","Sendungstitel","Beschreibung","Dauer","Dateigröße");
+								$HTMLAufnahmenliste = '<html><table>';
+								$HTMLAufnahmenliste .= '<tr><th>'.$TitelAR[0].'</th><th>'.$TitelAR[1].'</th><th>'.$TitelAR[2].'</th><th>'.$TitelAR[3].'</th><th>'.$TitelAR[4].'</th></tr>';
+								
+								for ($h=0; $h<count($AufnahmenAR); $h++)
+								{
+										// Dateigröße-Anpassung
+										$AufnahmeEintragDateigroesseGB = round((float)$AufnahmenAR[$h]["SendungsDateigroesse"] / 1024 / 1024 / 1024, 2);
+										$HTMLAufnahmenliste .= '<tr><th>'.$AufnahmenAR[$h]["Sendername"].'</th><th>'.$AufnahmenAR[$h]["Sendungstitel"].'</th><th>'.$AufnahmenAR[$h]["SendungsbeschreibungLang"].'</th><th>'.$AufnahmenAR[$h]["SendungsdauerMin"].' Min.</th><th>'.$AufnahmeEintragDateigroesseGB.' GB</th></tr>';
+								}
+								$HTMLAufnahmenliste .= '</table></html>';
+								$this->SetValueString("AufnahmenlisteVAR", $HTMLAufnahmenliste);
+								return $AufnahmenAR;
 						}
-						$HTMLAufnahmenliste .= '</table></html>';
-						$this->SetValueInteger("AufnahmenAnzahlVAR", $AufnahmenCount);
-						$this->SetValueString("AufnahmenlisteVAR", $HTMLAufnahmenliste);
-						return $AufnahmenAR;						
+						else
+						{
+								$HTMLAufnahmenliste = '<html><b>Keine Aufnahmen vorhanden!</b></html>';
+								$this->SetValueString("AufnahmenlisteVAR", $HTMLAufnahmenliste);
+								return false;
+						}						
 				}
 				else
 				{
