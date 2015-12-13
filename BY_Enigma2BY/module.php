@@ -639,7 +639,7 @@ class Enigma2BY extends IPSModule
     {
     		if ($this->GetPowerState() != 0)
     		{
-		    		$ServicesAR = $this->GetAufnahmenliste();
+		    		$ServicesAR = $this->GetSenderliste();
 		    		$ServiceRef = $ServicesAR[$Sendername];
 						$url = "http://192.168.10.111/web/zap?sRef=".$ServiceRef;
 						$xml = @simplexml_load_file($url);
