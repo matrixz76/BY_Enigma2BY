@@ -6,7 +6,7 @@
     { "name": "Enigma2IP", "type": "ValidationTextBox", "caption": "Receiver IP-Adresse" },
     { "name": "HDDverbaut", "type": "CheckBox", "caption": "Receiver mit HDD" },
     { "type": "Label", "label": "----------------------------------------------------------------------------------------------------------------------------" },
-    { "type": "Label", "label": "Intervall für Aktualisierung aller Daten:" },
+    { "type": "Label", "label": "Intervall für die Aktualisierung aller Daten:" },
     { "type": "IntervalBox", "name": "IntervallRefresh", "caption": "Sekunden" },
     { "type": "Label", "label": "----------------------------------------------------------------------------------------------------------------------------" },
     { "type": "Label", "label": "RCU-Einstellung nur ändern, wenn ihr Probleme mit falschen Tasten-Aktionen habt!" },
@@ -66,8 +66,7 @@
 
     { "type": "Button", "label": "Taste senden", "onClick": "Enigma2BY_KeyTest($id);" },
     { "type": "Button", "label": "Test-Nachricht senden", "onClick": "Enigma2BY_MsgTest($id);" },
-    { "type": "Button", "label": "EPG-Infos aktualisieren", "onClick": "Enigma2BY_GetEPGInfos($id);" },
-    { "type": "Button", "label": "System-Infos aktualisieren", "onClick": "Enigma2BY_GetSystemInfos($id);" }
+    { "type": "Button", "label": "Alle Daten aktualisieren", "onClick": "Enigma2BY_UpdateAll($id);" }
 
   ]
 }
