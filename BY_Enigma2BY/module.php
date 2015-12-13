@@ -548,7 +548,7 @@ class Enigma2BY extends IPSModule
 											      $TimerEintragArt = "Umschalten";
 											break;
 										}
-										$HTMLTimerliste .= '<tr><th>'.$TimerEintragSendungsbeginn.'</th><th>'.$TimerEintragSendungsende.'</th><th>'.$TimerAR[$h]["Sendername"].'</th><th>'.$TimerAR[$h]["Sendungsname"].'</th><th colspan="2">'.$TimerAR[$h]["SendungsbeschreibungKurz"].' || '.$TimerAR[$h]["SendungsbeschreibungLang"].'</th><th>'.$TimerEintragSendungsdauerMin.' Min.</th><th>'.$TimerEintragArt.'</th></tr>';
+										$HTMLTimerliste .= '<tr><th>'.$TimerEintragSendungsbeginn.' Uhr</th><th>'.$TimerEintragSendungsende.' Uhr</th><th>'.$TimerAR[$h]["Sendername"].'</th><th>'.$TimerAR[$h]["Sendungsname"].'</th><th colspan="2">'.$TimerEintragBeschreibung.'</th><th>'.$TimerEintragSendungsdauerMin.' Min.</th><th>'.$TimerEintragArt.'</th></tr>';
 								}
 								
 								$HTMLTimerliste .= '</table></html>';
