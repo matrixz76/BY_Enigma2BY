@@ -5,12 +5,10 @@
 
 > "Power" wird im Keys-DropDown durch "Leistung" ersetzt (+ weitere Tasten), wenn paresy es nicht ändert, dann eine Alternative überlegen
 
-> VolumeVAR bedienbar machen wenn ins WebFront verlinkt - ActionSkript
+> VolumeVAR bedienbar machen, wenn ins WebFront verlinkt - ActionSkript
 
 > Timer hinzufügen (http://IP_of_your_box/web/timeraddbyeventid?sRef=1:0:1:7926:A:70:1680000:0:0:0:&eventid=53779&dirname=/hdd/movie/)
 > Timer löschen (http://IP_of_your_box/web/timerdelete?sRef=1:0:1:7926:A:70:1680000:0:0:0:&begin=1330283100&end=1330285320)
-
-> Aufgenommene Filme auf HDD in HTMLBox stecken (direkt irgendwie auslesen oder Aufnahmepfad auslesen aus settings)
 
 > Alle Sendernamen ueber Funktion auslesen und in Array zurueck schreiben
 
@@ -77,12 +75,12 @@ class Enigma2BY extends IPSModule
         $this->RegisterVariableInteger("PowerStateVAR", "Power-State", "E2BY.PowerState");
         $this->RegisterVariableInteger("FrageAntwortVAR", "Frage-Antwort", "E2BY.JaNeinKA");
         $this->RegisterVariableString("AktSendernameVAR", "Akt. Sendername");
-        $this->RegisterVariableString("AktSendungsnameVAR", "Akt. Sendungsname");
+        $this->RegisterVariableString("AktSendungsnameVAR", "Akt. Sendungstitel");
         $this->RegisterVariableString("AktSendungsBeschrKurzVAR", "Akt. Sendungsbeschreibung kurz");
         $this->RegisterVariableString("AktSendungsBeschrLangVAR", "Akt. Sendungsbeschreibung lang");
         $this->RegisterVariableInteger("AktSendunsdauerVar", "Akt. Sendungsdauer Min.", "E2BY.Minuten");
         $this->RegisterVariableInteger("AktSendunsdauerRestVar", "Akt. Sendungsdauer Rest Min.", "E2BY.Minuten");
-        $this->RegisterVariableString("NextSendungsnameVar", "Next Sendungsname");
+        $this->RegisterVariableString("NextSendungsnameVar", "Next Sendungstitel");
         $this->RegisterVariableString("NextSendungsBeschrKurzVAR", "Next Sendungsbeschreibung kurz");
         $this->RegisterVariableString("NextSendungsBeschrLangVAR", "Next Sendungsbeschreibung lang");
         $this->RegisterVariableString("NextSendungsStartVAR", "Next Sendung Startzeit");
@@ -90,8 +88,12 @@ class Enigma2BY extends IPSModule
         $this->RegisterVariableInteger("VolumeVAR", "Volume", "E2BY.Volume");
         $this->RegisterVariableBoolean("MuteVAR", "Mute");
         $this->RegisterVariableInteger("TimerAnzahlVAR", "Timerliste Anzahl");
-        $this->RegisterVariableString("TimerlisteVAR", "Timerliste", "~HTMLBox");
+		    $this->RegisterVariableString("TimerlisteVAR", "Timerliste", "~HTMLBox");
+		    $this->RegisterVariableInteger("AufnahmenAnzahlVAR", "Aufnahmenliste Anzahl");
+		    $this->RegisterVariableString("AufnahmenlisteVAR", "Aufnahmenliste", "~HTMLBox");
+        $this->RegisterVariableString("EnigmaVersionVAR", "Enigma-Version");
         $this->RegisterVariableString("ImageVersionVAR", "Image-Version");
+        $this->RegisterVariableString("WebIfVersionVAR", "WebIf-Version");
         $this->RegisterVariableString("BoxModelVAR", "Receiver Modell");
         if ($this->ReadPropertyBoolean("HDDverbaut") == true)
 				{
@@ -127,6 +129,7 @@ class Enigma2BY extends IPSModule
 				    		$this->GetVolume();
 				    		$this->GetPowerState();
 				    		$this->GetTimerliste();
+				    		$this->GetAufnahmenliste();
       			}
       	}
     }
@@ -295,20 +298,26 @@ class Enigma2BY extends IPSModule
     		{
 		    		$url = "http://".$IP."/web/about";
 						$xml = @simplexml_load_file($url);
+						$E2_Enigmaversion = $xml->e2about->e2enigmaversion;
 						$E2_Imageversion = $xml->e2about->e2imageversion;
+						$E2_WebIfversion = $xml->e2about->e2webifversion;
 						$E2_BoxModel = $xml->e2about->e2model;
+						$this->SetValueString("EnigmaVersionVAR", $E2_Enigmaversion);
 						$this->SetValueString("ImageVersionVAR", $E2_Imageversion);
+						$this->SetValueString("WebIfVersionVAR", $E2_WebIfversion);
 						$this->SetValueString("BoxModelVAR", $E2_BoxModel);
+						$E2_SysInfo[] = $E2_Enigmaversion;
 						$E2_SysInfo[] = $E2_Imageversion;
+						$E2_SysInfo[] = $E2_WebIfversion;
 						$E2_SysInfo[] = $E2_BoxModel;
 						if ($this->ReadPropertyBoolean("HDDverbaut") == true)
 						{
 								$E2_SysInfo[] = $xml->e2about->e2hddinfo->model;
 								$E2_SysInfo[] = $xml->e2about->e2hddinfo->capacity;
 								$E2_SysInfo[] = $xml->e2about->e2hddinfo->free;
-								$this->SetValueString("HDDModelVAR", $E2_SysInfo[2]);
-								$this->SetValueInteger("HDDCapaVAR", $E2_SysInfo[3]);
-								$this->SetValueInteger("HDDCapaFreeVAR", $E2_SysInfo[4]);
+								$this->SetValueString("HDDModelVAR", $E2_SysInfo[4]);
+								$this->SetValueInteger("HDDCapaVAR", $E2_SysInfo[5]);
+								$this->SetValueInteger("HDDCapaFreeVAR", $E2_SysInfo[6]);
 						}
 						return $E2_SysInfo;
 				}
@@ -493,7 +502,7 @@ class Enigma2BY extends IPSModule
 						
 						
 						// HTML Ausgabe generieren
-						$TitelAR = array("Sendername","Sendungsname","Beschreibung","Beginn","Ende","Dauer","Art");
+						$TitelAR = array("Sendername","Sendungstitel","Beschreibung","Beginn","Ende","Dauer","Art");
 						$HTMLTimerliste = '<html><table>';
 						$HTMLTimerliste .= '<tr><th>'.$TitelAR[3].'</th><th>'.$TitelAR[4].'</th><th>'.$TitelAR[0].'</th><th>'.$TitelAR[1].'</th><th colspan="2">'.$TitelAR[2].'</th><th>'.$TitelAR[5].'</th><th>'.$TitelAR[6].'</th></tr>';
 						for ($h=0; $h<count($TimerAR); $h++)
@@ -543,6 +552,48 @@ class Enigma2BY extends IPSModule
 						$this->SetValueInteger("TimerAnzahlVAR", $TimerCount);
 						$this->SetValueString("TimerlisteVAR", $HTMLTimerliste);
 						return $TimerAR;						
+				}
+				else
+				{
+						return false;
+				}
+    }
+    
+    public function GetAufnahmenliste()
+    {
+    		$IP = $this->ReadPropertyString("Enigma2IP");
+    		if ($this->GetPowerState() != 0)
+    		{
+		    		$url = "http://".$IP."/web/movielist";
+						$xml = @simplexml_load_file($url);
+						$i = 0;
+						foreach ($xml->e2movie as $xmlnode)
+						{
+							$AufnahmenAR[$i]["Sendername"] = (string)$xmlnode->e2servicename; // Sendername
+							$AufnahmenAR[$i]["Sendungstitel"] = (string)$xmlnode->e2title; // Titel
+							$AufnahmenAR[$i]["SendungsbeschreibungLang"] = (string)$xmlnode->e2descriptionextended; // Sendungsbeschreibung lang
+							$AufnahmenAR[$i]["SendungsdauerMin"] = (int)$xmlnode->e2length; // Sendungsdauer Min.
+							$AufnahmenAR[$i]["SendungsDateigroesse"] = (int)$xmlnode->e2filesize; // Dateigröße der Sendung in Byte
+							$i++;
+						}
+						$AufnahmenCount = count($xml->e2movie);  // Anzahl der Aufnahmen
+						
+						
+						// HTML Ausgabe generieren
+						$TitelAR = array("Sendername","Sendungstitel","Beschreibung","Dauer","Dateigröße");
+						$HTMLAufnahmenliste = '<html><table>';
+						$HTMLAufnahmenliste .= '<tr><th>'.$TitelAR[0].'</th><th>'.$TitelAR[1].'</th><th>'.$TitelAR[2].'</th><th>'.$TitelAR[3].'</th><th>'.$TitelAR[4].'</th></tr>';
+						
+						for ($h=0; $h<count($AufnahmenAR); $h++)
+						{
+								// Dateigröße-Anpassung
+								$AufnahmeEintragDateigroesseGB = round((float)$AufnahmenAR[$h]["SendungsDateigroesse"] / 1024 / 1024 / 1024, 2);
+								$HTMLAufnahmenliste .= '<tr><th>'.$AufnahmenAR[$h]["Sendername"].'</th><th>'.$AufnahmenAR[$h]["Sendungstitel"].'</th><th>'.$AufnahmenAR[$h]["SendungsbeschreibungLang"].'</th><th>'.$AufnahmenAR[$h]["SendungsdauerMin"].' Min.</th><th>'.$AufnahmeEintragDateigroesseGB.' GB</th></tr>';
+						}
+						$HTMLAufnahmenliste .= '</table></html>';
+						$this->SetValueInteger("AufnahmenAnzahlVAR", $AufnahmenCount);
+						$this->SetValueString("AufnahmenlisteVAR", $HTMLAufnahmenliste);
+						return $AufnahmenAR;						
 				}
 				else
 				{

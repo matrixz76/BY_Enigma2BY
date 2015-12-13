@@ -47,6 +47,9 @@ Receiver muss eine eigene Modul-Instanz angelegt werden.
 **Timerliste auslesen**
 - Liest die Timerliste aus dem Receiver aus, gibt diese als Array zurück und speichert die Daten in eine Variable (HTMLBox)
 
+**Aufnahmenliste auslesen**
+- Liest die Aufnahmenliste aus dem Receiver aus, gibt diese als Array zurück und speichert die Daten in eine Variable (HTMLBox)
+
 
 ## 2. Systemanforderungen
 - IP-Symcon ab Version 4.x
@@ -126,7 +129,14 @@ Die anderen Parameter steuern lauter/leiser/Mute Toggle
 ```php
   Enigma2BY_GetTimerliste(integer $InstanzID);
 ```
-Liefert ein Array mit allen Timern + Details zurück und schreibt die Daten in eine Variable (als HTML-Tabelle)
+Liefert ein Array mit allen Timern + Details zurück und schreibt die Daten in eine
+Variable (als HTML-Tabelle).
+
+```php
+  Enigma2BY_GetAufnahmenliste(integer $InstanzID);
+```
+Liefert ein Array mit allen Aufnahmen + Details zu allen aufgenommenen Sendungen
+zurück und schreibt die Daten in eine Variable (als HTML-Tabelle).
 
 
 ## 5. Changelog
