@@ -6,6 +6,8 @@
 geändert werden. Damit die auch wirklich erst den e2state prüfen und je nach TRUE/FALSE dann entsprechend
 die Rückmeldung von der Funktion sind.
 
+> Eingabefeld in Instanz machen, wo man den Sendernamen eintragen kann, dann unten einen Button dazu "Auf Sender schalten" (nach Übernehmen)
+
 > "Power" wird im Keys-DropDown durch "Leistung" ersetzt (+ weitere Tasten), wenn paresy es nicht ändert, dann eine Alternative überlegen
 ******************************************************************************************************/
 
@@ -608,7 +610,7 @@ class Enigma2BY extends IPSModule
 				}
     }
     
-    public function GetAufnahmenliste()
+    public function GetSenderliste()
     {
     		if ($this->GetPowerState() != 0)
     		{
