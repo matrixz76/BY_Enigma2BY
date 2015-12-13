@@ -1,9 +1,9 @@
 <?
 /* 2do ***********************************************************************************************
->> Neue Funktionen die Daten abfragen in die Gruppenfunktion "Enigma2BY_UpdateAll" einbinden!!!
+>> Neue Funktionen die Daten abfragen in die Gruppenfunktion "UpdateAll" einbinden!!!
 
 
-> "Power" wird im Keys-DropDown durch "Leistung" ersetzt, wenn paresy es nicht ändert, dann eine Alternative überlegen
+> "Power" wird im Keys-DropDown durch "Leistung" ersetzt (+ weitere Tasten), wenn paresy es nicht ändert, dann eine Alternative überlegen
 
 > VolumeVAR bedienbar machen wenn ins WebFront verlinkt - ActionSkript
 
@@ -38,15 +38,13 @@ class Enigma2BY extends IPSModule
         $this->RegisterPropertyString("IntervallEPGInfoRefresh", "60");  
         $this->RegisterPropertyString("RCUdefault", "advanced");
         $this->RegisterPropertyString("KeyDropDown", "");
-        $this->RegisterTimer("Refresh_SysInfos", 0, 'Enigma2BY_GetSystemInfos($_IPS[\'TARGET\']);');
-        $this->RegisterTimer("Refresh_EPGInfos", 0, 'Enigma2BY_GetEPGInfos($_IPS[\'TARGET\']);');
+        $this->RegisterTimer("Refresh_All", 0, 'Enigma2BY_UpdateAll($_IPS[\'TARGET\']);');
     }
 
     public function Destroy()
     {
     		//Timer entfernen
-    		$this->UnregisterTimer("Refresh_SysInfos");
-    		$this->UnregisterTimer("Refresh_EPGInfos");
+    		$this->UnregisterTimer("Refresh_All");
     		
         //Never delete this line!!
         parent::Destroy();
@@ -110,17 +108,16 @@ class Enigma2BY extends IPSModule
       	}
       	
       	//Timer einstellen
-      	$this->SetTimerInterval("Refresh_SysInfos", $this->ReadPropertyInteger("IntervallSysInfoRefresh"));
-      	$this->SetTimerInterval("Refresh_EPGInfos", $this->ReadPropertyInteger("IntervallEPGInfoRefresh"));
+      	$this->SetTimerInterval("Refresh_All", $this->ReadPropertyInteger("IntervallRefresh"));
       	
       	//Daten in Variablen aktualisieren
       	if (strlen($this->ReadPropertyString("Enigma2IP")) > 7)
       	{
-						$this->Enigma2BY_UpdateAll();
+						$this->UpdateAll();
 		    }
 		}
     
-    private function Enigma2BY_UpdateAll()
+    public function UpdateAll()
     {
     		if (strlen($IP = $this->ReadPropertyString("Enigma2IP")) > 7)
       	{
