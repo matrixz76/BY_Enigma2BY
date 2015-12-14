@@ -2,7 +2,7 @@
 /*****************************************************************************************************
 >> Neue Funktionen die Daten abfragen in die Gruppenfunktion "UpdateAll" einbinden!!!
 
-> Bei ZapTo ein "strtolower" einbauen und dann die Benutzereingabe Lowercase gegen Lowercase Array vergleichen > !dann aber korrekte Schreibweise an Enigma2 senden!
+> Bei 2 Fragen gleichzeitig > Semaphore > in Readme drauf hinweisen, dass Timeout bei Fragen nicht zu lang gewählt wird, sonst Skript-Timeout
 
 > Bei "SendMsg" noch die Abfrage vom Newnigma Forum einbauen, ob der neue Parameter vorhanden ist oder nicht und dann jeweils verwenden
 >>> Dazu die message.xml abfragen und auf die neue "Funktion" - "default" pruefen
@@ -217,35 +217,43 @@ class Enigma2BY extends IPSModule
     {
     		if ($this->GetPowerState() == 1)
     		{
-    				$IP = $this->ReadPropertyString("Enigma2IP");
-    				$Text = urlencode(trim($Text));
-    				$Text = str_replace('%A7', '%0A', $Text);
- 						$url = "http://".$IP."/web/message?text=".$Text."&type=".$Type."&timeout=".$Timeout;
-    				$xml = @simplexml_load_file($url);
-						$result = $this->ResultAuswerten($xml->e2state);
-    				
-    				if ($Type == 0)
-    				{
-    						$this->SendKey("ArrowDown", "short");
-    						IPS_Sleep($Timeout * 1000 + 1000);
-								$xml = @simplexml_load_file("http://".$IP."/web/messageanswer?getanswer=now");
-								if ($xml->e2statetext == "Answer is NO!")
-								{
-										$AntwortINT = 0;
-								}
-								elseif ($xml->e2statetext == "Answer is YES!")
-								{
-										$AntwortINT = 1;
-								}
-								elseif ($xml->e2statetext == "No answer in time")
-								{
-										$AntwortINT = 2;
-										$this->SendKey("Exit", "short");
-								}
-								$this->SetValueInteger("FrageAntwortVAR", $AntwortINT);
-								return $AntwortINT;
-    				}
-    				return $result;
+    				if (IPS_SemaphoreEnter("Enigma2BY_SendMsg", 20000))
+						{
+		    				$IP = $this->ReadPropertyString("Enigma2IP");
+		    				$Text = urlencode(trim($Text));
+		    				$Text = str_replace('%A7', '%0A', $Text);
+		 						$url = "http://".$IP."/web/message?text=".$Text."&type=".$Type."&timeout=".$Timeout;
+		    				$xml = @simplexml_load_file($url);
+								$result = $this->ResultAuswerten($xml->e2state);
+		    				
+		    				if ($Type == 0)
+		    				{
+		    						$this->SendKey("ArrowDown", "short");
+		    						IPS_Sleep($Timeout * 1000 + 1000);
+										$xml = @simplexml_load_file("http://".$IP."/web/messageanswer?getanswer=now");
+										if ($xml->e2statetext == "Answer is NO!")
+										{
+												$AntwortINT = 0;
+										}
+										elseif ($xml->e2statetext == "Answer is YES!")
+										{
+												$AntwortINT = 1;
+										}
+										elseif ($xml->e2statetext == "No answer in time")
+										{
+												$AntwortINT = 2;
+												$this->SendKey("Exit", "short");
+										}
+										$this->SetValueInteger("FrageAntwortVAR", $AntwortINT);
+										return $AntwortINT;
+		    				}
+		    				IPS_SemaphoreLeave("Enigma2BY_SendMsg");
+		    				return $result;
+						}
+						else
+						{
+								return false;
+						}
     		}
     		else
     		{
@@ -308,19 +316,19 @@ class Enigma2BY extends IPSModule
 						$E2_NextSendungsdauerSek = (int)$xml->e2eventlist->e2event[1]->e2eventduration;
 						$E2_NextSendungEventID = (int)$xml->e2eventlist->e2event[1]->e2eventid;
 						//Return-Array befüllen
-						$E2_EPGInfo["AktSendername"] = $xml->e2service->e2servicename;
-						$E2_EPGInfo["AktSendungsname"] = $xml->e2eventlist->e2event[0]->e2eventname;
-						$E2_EPGInfo["AktSendungsBeschrKurz"] = $xml->e2eventlist->e2event[0]->e2eventdescription;
-						$E2_EPGInfo["AktSendungsBeschrLang"] = $xml->e2eventlist->e2event[0]->e2eventdescriptionextended;
-						$E2_EPGInfo["AktSendunsdauer"] = $xml->e2eventlist->e2event[0]->e2eventduration;
-						$E2_EPGInfo["AktSendunsdauerRest"] = $xml->e2eventlist->e2event[0]->e2eventremaining;
-						$E2_EPGInfo["AktSendungsEventID"] = $xml->e2eventlist->e2event[0]->e2eventid;
-						$E2_EPGInfo["NextSendungsname"] = $xml->e2eventlist->e2event[1]->e2eventname;
-						$E2_EPGInfo["NextSendungsBeschrKurz"] = $xml->e2eventlist->e2event[1]->e2eventdescription;
-						$E2_EPGInfo["NextSendungsBeschrLang"] = $xml->e2eventlist->e2event[1]->e2eventdescriptionextended;
-						$E2_EPGInfo["NextSendungsStart"] = $xml->e2eventlist->e2event[1]->e2eventstart;
-						$E2_EPGInfo["NextSendungsdauer"] = $xml->e2eventlist->e2event[1]->e2eventduration;
-						$E2_EPGInfo["NextSendungsEventID"] = $xml->e2eventlist->e2event[1]->e2eventid;
+						$E2_EPGInfo["AktSendername"] = $E2_CurSendername;
+						$E2_EPGInfo["AktSendungsname"] = $E2_CurSendungsname;
+						$E2_EPGInfo["AktSendungsBeschrKurz"] = $E2_CurSendungsBeschrKurz;
+						$E2_EPGInfo["AktSendungsBeschrLang"] = $E2_CurSendungsBeschrLang;
+						$E2_EPGInfo["AktSendunsdauer"] = $E2_CurSendungsdauerSek;
+						$E2_EPGInfo["AktSendunsdauerRest"] = $E2_CurSendungsrestdauerSek;
+						$E2_EPGInfo["AktSendungsEventID"] = $E2_CurSendungEventID;
+						$E2_EPGInfo["NextSendungsname"] = $E2_NextSendungsname;
+						$E2_EPGInfo["NextSendungsBeschrKurz"] = $E2_NextSendungsBeschrKurz;
+						$E2_EPGInfo["NextSendungsBeschrLang"] = $E2_NextSendungsBeschrLang;
+						$E2_EPGInfo["NextSendungsStart"] = $E2_NextSendungStart;
+						$E2_EPGInfo["NextSendungsdauer"] = $E2_NextSendungsdauerSek;
+						$E2_EPGInfo["NextSendungsEventID"] = $E2_NextSendungEventID;
 						//Variablen befüllen
 						$this->SetValueString("AktSendernameVAR", $E2_CurSendername);
 						$this->SetValueString("AktSendungsnameVAR", $E2_CurSendungsname);

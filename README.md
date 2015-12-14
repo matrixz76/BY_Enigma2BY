@@ -83,6 +83,8 @@ Die neue Instanz findet ihr in der IPS-Console, in dem Ordner in dem ihr die Ins
 ```
 Schickt eine Nachricht an den Receiver und dieser zeigt diese dann auf TV/Beamer an.
 Liefert ein Array mit Informationen zurück, ob die Nachricht erfolgreich gesendet wurde oder nicht.
+Diese Funktion läuft durch eine Semaphore mit max. 20 Sekunden, falls 2 Fragen gleichzeitig an den
+Receiver gesendet werden. Das muss bei der Wahl der Timeout-Länge beachtet werden!
 $Type:
    1 = Schickt eine Nachricht mit einem "Info-Symbol" an den Receiver.
    2 = Schickt eine Nachricht ohne Symbol an den Receiver.
