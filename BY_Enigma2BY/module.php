@@ -2,8 +2,6 @@
 /*****************************************************************************************************
 >> Neue Funktionen die Daten abfragen in die Gruppenfunktion "UpdateAll" einbinden!!!
 
-> TestKey senden funktioniert nicht mehr
-
 > Bei ZapTo ein "strtolower" einbauen und dann die Benutzereingabe Lowercase gegen Lowercase Array vergleichen > !dann aber korrekte Schreibweise an Enigma2 senden!
 
 > Bei "SendMsg" noch die Abfrage vom Newnigma Forum einbauen, ob der neue Parameter vorhanden ist oder nicht und dann jeweils verwenden
@@ -296,19 +294,19 @@ class Enigma2BY extends IPSModule
 		    		$IP = $this->ReadPropertyString("Enigma2IP");
 		    		$url = "http://".$IP."/web/getcurrent";
 						$xml = @simplexml_load_file($url);
-						$E2_CurSendername = $xml->e2service->e2servicename;
-						$E2_CurSendungsname = $xml->e2eventlist->e2event[0]->e2eventname;
-						$E2_CurSendungsBeschrKurz = $xml->e2eventlist->e2event[0]->e2eventdescription;
-						$E2_CurSendungsBeschrLang = $xml->e2eventlist->e2event[0]->e2eventdescriptionextended;
-						$E2_CurSendungsdauerSek = $xml->e2eventlist->e2event[0]->e2eventduration;
-						$E2_CurSendungsrestdauerSek = $xml->e2eventlist->e2event[0]->e2eventremaining;
-						$E2_CurSendungEventID = $xml->e2eventlist->e2event[0]->e2eventid;
-						$E2_NextSendungsname = $xml->e2eventlist->e2event[1]->e2eventname;
-						$E2_NextSendungsBeschrKurz = $xml->e2eventlist->e2event[1]->e2eventdescription;
-						$E2_NextSendungsBeschrLang = $xml->e2eventlist->e2event[1]->e2eventdescriptionextended;
-						$E2_NextSendungStart = $xml->e2eventlist->e2event[1]->e2eventstart;
-						$E2_NextSendungsdauerSek = $xml->e2eventlist->e2event[1]->e2eventduration;
-						$E2_NextSendungEventID = $xml->e2eventlist->e2event[1]->e2eventid;
+						$E2_CurSendername = (string)$xml->e2service->e2servicename;
+						$E2_CurSendungsname = (string)$xml->e2eventlist->e2event[0]->e2eventname;
+						$E2_CurSendungsBeschrKurz = (string)$xml->e2eventlist->e2event[0]->e2eventdescription;
+						$E2_CurSendungsBeschrLang = (string)$xml->e2eventlist->e2event[0]->e2eventdescriptionextended;
+						$E2_CurSendungsdauerSek = (int)$xml->e2eventlist->e2event[0]->e2eventduration;
+						$E2_CurSendungsrestdauerSek = (int)$xml->e2eventlist->e2event[0]->e2eventremaining;
+						$E2_CurSendungEventID = (int)$xml->e2eventlist->e2event[0]->e2eventid;
+						$E2_NextSendungsname = (string)$xml->e2eventlist->e2event[1]->e2eventname;
+						$E2_NextSendungsBeschrKurz = (string)$xml->e2eventlist->e2event[1]->e2eventdescription;
+						$E2_NextSendungsBeschrLang = (string)$xml->e2eventlist->e2event[1]->e2eventdescriptionextended;
+						$E2_NextSendungStart = (int)$xml->e2eventlist->e2event[1]->e2eventstart;
+						$E2_NextSendungsdauerSek = (int)$xml->e2eventlist->e2event[1]->e2eventduration;
+						$E2_NextSendungEventID = (int)$xml->e2eventlist->e2event[1]->e2eventid;
 						//Return-Array befüllen
 						$E2_EPGInfo["AktSendername"] = $xml->e2service->e2servicename;
 						$E2_EPGInfo["AktSendungsname"] = $xml->e2eventlist->e2event[0]->e2eventname;
@@ -354,10 +352,10 @@ class Enigma2BY extends IPSModule
     		{
 		    		$url = "http://".$IP."/web/about";
 						$xml = @simplexml_load_file($url);
-						$E2_Enigmaversion = $xml->e2about->e2enigmaversion;
-						$E2_Imageversion = $xml->e2about->e2imageversion;
-						$E2_WebIfversion = $xml->e2about->e2webifversion;
-						$E2_BoxModel = $xml->e2about->e2model;
+						$E2_Enigmaversion = (string)$xml->e2about->e2enigmaversion;
+						$E2_Imageversion = (string)$xml->e2about->e2imageversion;
+						$E2_WebIfversion = (string)$xml->e2about->e2webifversion;
+						$E2_BoxModel = (string)$xml->e2about->e2model;
 						$this->SetValueString("EnigmaVersionVAR", $E2_Enigmaversion);
 						$this->SetValueString("ImageVersionVAR", $E2_Imageversion);
 						$this->SetValueString("WebIfVersionVAR", $E2_WebIfversion);
@@ -368,9 +366,9 @@ class Enigma2BY extends IPSModule
 						$E2_SysInfo[] = $E2_BoxModel;
 						if ($this->ReadPropertyBoolean("HDDverbaut") == true)
 						{
-								$E2_SysInfo[] = $xml->e2about->e2hddinfo->model;
-								$E2_SysInfo[] = $xml->e2about->e2hddinfo->capacity;
-								$E2_SysInfo[] = $xml->e2about->e2hddinfo->free;
+								$E2_SysInfo[] = (string)$xml->e2about->e2hddinfo->model;
+								$E2_SysInfo[] = (int)$xml->e2about->e2hddinfo->capacity;
+								$E2_SysInfo[] = (int)$xml->e2about->e2hddinfo->free;
 								$this->SetValueString("HDDModelVAR", $E2_SysInfo[4]);
 								$this->SetValueInteger("HDDCapaVAR", $E2_SysInfo[5]);
 								$this->SetValueInteger("HDDCapaFreeVAR", $E2_SysInfo[6]);
@@ -482,7 +480,7 @@ class Enigma2BY extends IPSModule
     		{
 		    		$url = "http://".$IP."/web/powerstate?newstate=".$PowerStateNr; // 0=ToggleStandby,1=Deepstandby,2=Reboot,3=RestartGUI
 						$xml = @simplexml_load_file($url);
-						$E2_PowerstateStandby = $xml->e2instandby;
+						$E2_PowerstateStandby = (int)$xml->e2instandby;
 						
 						switch ($PowerStateNr)
 						{
