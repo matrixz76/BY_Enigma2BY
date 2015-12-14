@@ -390,10 +390,10 @@ class Enigma2BY extends IPSModule
     		{
 		    		$url = "http://".$IP."/web/vol";
 						$xml = @simplexml_load_file($url);
-						$E2_VolumeWert = $xml->e2current;
+						$E2_VolumeWert = (int)$xml->e2current;
 						$this->SetValueInteger("VolumeVAR", $E2_VolumeWert);
-						$E2_VolReturn[] = $xml->e2current;
-						$E2_VolReturn[] = $xml->e2ismuted;
+						$E2_VolReturn[] = (int)$xml->e2current;
+						$E2_VolReturn[] = (string)$xml->e2ismuted;
 						$result = $this->ResultAuswerten($xml->e2ismuted);
 						$this->SetValueBoolean("MuteVAR", $result);
 						return $E2_VolReturn;
@@ -438,8 +438,8 @@ class Enigma2BY extends IPSModule
 						$url = "http://".$IP."/web/vol?set=".$Befehl;
 						$xml = @simplexml_load_file($url);
 						$this->SetValueBoolean("MuteVAR", $result);
-						$E2_VolReturn[] = $xml->e2current;
-						$E2_VolReturn[] = $xml->e2ismuted;
+						$E2_VolReturn[] = (int)$xml->e2current;
+						$E2_VolReturn[] = (string)$xml->e2ismuted;
 						$result = $this->ResultAuswerten($xml->e2ismuted);
 						$this->SetValueBoolean("MuteVAR", $result);
 						return $E2_VolReturn;						
