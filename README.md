@@ -24,12 +24,12 @@ Receiver muss eine eigene Modul-Instanz angelegt werden.
 - Attention (Nachricht mit Attention-Symbol)
 - Ja/Nein Frage (Am TV kann mit Ja/Nein geantwortet werden und die Antwort wird in eine Variable geschrieben und von der Funktion zurückgegeben)
 
-    *Alle Nachrichten haben einen einstellbaren Timeout und werden automatisch nach den gewählten*
-    *X Sekunden wieder ausgeblendet. Wird als Timeout eine "0" angegeben, dann ist dieser inaktiv*
-    *und die Nachricht muss aktiv am Receiver weg gedrückt werden.*
+    > Alle Nachrichten haben einen einstellbaren Timeout und werden automatisch nach den gewählten
+    > X Sekunden wieder ausgeblendet. Wird als Timeout eine "0" angegeben, dann ist dieser inaktiv
+    > und die Nachricht muss aktiv am Receiver weg gedrückt werden.
 
-    *Ein Zeilenumbruch in der Nachricht kann mit dem Zeichen **§** erzeugt werden. Dieses Zeichen*
-    *wird vom Modul erkannt und automatisch in einen Zeilenumbruch umgewandelt.*
+    > Ein Zeilenumbruch in der Nachricht kann mit dem Zeichen **§** erzeugt werden. Dieses Zeichen
+    > wird vom Modul erkannt und automatisch in einen Zeilenumbruch umgewandelt.
 
 **Informationen über das Receiver-System auslesen (einstellbarer Intervall):**  
 - Enigma-Version
@@ -53,6 +53,7 @@ Receiver muss eine eigene Modul-Instanz angelegt werden.
 **Eingestellte Lautstärke vom Receiver auslesen und setzen**
 - Liest die aktuelle Receiver-Lautstärke aus (Volume 0-100 und Mute aktiv/inaktiv)
 - Steuert die Lautstärke des Receiver (bestimmter Wert, leiser, lauter, Toggle Mute)
+
     > !Achtung! Lautstärke kann nur geändert werden, wenn AC3-Ton im Receiver nicht als Default gewählt wurde!
 
 **Power-Zustand des Receiver auslesen und steuern**
