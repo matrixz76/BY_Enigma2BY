@@ -23,6 +23,7 @@ Receiver muss eine eigene Modul-Instanz angelegt werden.
 - Info (Nachricht mit Info-Symbol)
 - Message (Nachricht mit Message-Symbol)
 - Attention (Nachricht mit Attention-Symbol)
+
     *Alle Nachrichten haben einen einstellbaren Timeout und werden automatisch nach den gewählten*
     *X Sekunden wieder ausgeblendet. Wird als Timeout eine "0" angegeben, dann ist dieser inaktiv*
     *und die Nachricht muss aktiv am Receiver weg gedrückt werden.*
