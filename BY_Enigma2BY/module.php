@@ -2,7 +2,12 @@
 /*****************************************************************************************************
 >> Neue Funktionen die Daten abfragen in die Gruppenfunktion "UpdateAll" einbinden!!!
 
+> TestKey senden funktioniert nicht mehr
+
+> Bei ZapTo ein "strtolower" einbauen und dann die Benutzereingabe Lowercase gegen Lowercase Array vergleichen > !dann aber korrekte Schreibweise an Enigma2 senden!
+
 > Bei "SendMsg" noch die Abfrage vom Newnigma Forum einbauen, ob der neue Parameter vorhanden ist oder nicht und dann jeweils verwenden
+>>> Dazu die message.xml abfragen und auf die neue "Funktion" - "default" pruefen
 
 > "Power" wird im Keys-DropDown durch "Leistung" ersetzt (+ weitere Tasten), wenn paresy es nicht ändert, dann eine Alternative überlegen
 > /usr/lib/enigma2/python/Plugins/Extensions/WebInterface/web  (Alle XML, HTML, ... mit allen verfügbaren Möglichkeiten der Dreambox)
@@ -268,7 +273,7 @@ class Enigma2BY extends IPSModule
 		    		$RCU = $this->ReadPropertyString("RCUdefault");
 		    		$url = "http://".$IP."/web/remotecontrol?command=".$Command."&type=".$LongShort."&rcu=".$RCU;
 		    		$xml = @simplexml_load_file($url);
-						$result = $this->ResultAuswerten($xml->e2state);
+						$result = $this->ResultAuswerten($xml->e2result);
 						return $result;
 				}
 				else
