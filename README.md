@@ -82,8 +82,8 @@ $Type:
    2 = Schickt eine Nachricht ohne Symbol an den Receiver.
    3 = Schickt eine Nachricht mit einem "Achtung-Symbol" an den Receiver.
    0 = Schickt eine Nachricht/Frage mit Ja/Nein als Antwortmöglichkeit an den Receiver.
-       Die Antwort steht dann in der Integer-Variable "Frage-Antwort".
-       Antwort-Bedeutungen in Variable: 0 = Nein // 1 = Ja // 2 = Keine Antwort innerhalb Timeout-Zeit
+       Die Antwort steht dann in der Integer-Variable "Frage-Antwort" und in der Rückmeldung der Funktion.
+       Antwort-Bedeutungen: 0 = Nein // 1 = Ja // 2 = Keine Antwort innerhalb Timeout-Zeit
 
 ```php
   Enigma2BY_SendKey(integer $InstanzID, string $Key, string $LongShort);
@@ -91,7 +91,7 @@ $Type:
 Löst einen virtuellen Tastendruck, der gewählten Taste, am Receiver aus. Eine Liste
 der verfügbaren Tasten ist in der Modul-Instanz zu finden (DropDown-Auswahl).
 Bei $LongShort muss entweder "long" oder "short" angegeben werden (langer/kurzer Tastendruck).
-Liefert ein Array mit Informationen zurück, ob die Taste erfolgreich gesendet wurde oder nicht.
+Liefert true/false zurück, ob die Taste gesendet wurde oder nicht.
 
 ```php
   Enigma2BY_GetSystemInfos(integer $InstanzID);
@@ -114,11 +114,12 @@ Liefert den Power-Zustand des Receiver zurück (0 = ausgeschaltet // 1 = eingesc
   Enigma2BY_SetPowerState(integer $InstanzID, integer $PowerState);
 ```
 Steuert den Power-Zustand des Receiver (0 = Toggle Standby // 1 = Deep Standby // 2 = Reboot // 3 = Restart GUI).
+Liefert true/false zurück, ob der Power-State gesendet wurde oder nicht.
 
 ```php
   Enigma2BY_GetVolume(integer $InstanzID);
 ```
-Liefert ein Array mit Volume-Informationen zurück (Volume 0-100, Mute true/false)
+Liefert ein Array mit Volume-Informationen zurück (Volume 0-100, Mute true/false).
 
 ```php
   Enigma2BY_SetVolume(integer $InstanzID, integer $Volume);
@@ -126,8 +127,8 @@ Liefert ein Array mit Volume-Informationen zurück (Volume 0-100, Mute true/fals
   Enigma2BY_SetVolume(integer $InstanzID, string "-");
   Enigma2BY_SetVolume(integer $InstanzID, string "MUTE");
 ```
-Setzt die Lautstärke des Receiver auf den angegebenen Wert (0-100).
-Die anderen Parameter steuern lauter/leiser/Mute Toggle
+Setzt die Lautstärke des Receiver auf den angegebenen Wert (0-100). Die anderen Parameter steuern
+lauter/leiser/Mute Toggle. Liefert jeweils ein Array mit Volume-Informationen zurück (Volume 0-100, Mute true/false).
 
 ```php
   Enigma2BY_GetTimerliste(integer $InstanzID);

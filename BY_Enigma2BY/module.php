@@ -2,11 +2,13 @@
 /* 2do ***********************************************************************************************
 >> Neue Funktionen die Daten abfragen in die Gruppenfunktion "UpdateAll" einbinden!!!
 
+> Bei "SendMsg" noch die Abfrage vom Newnigma Forum einbauen, ob der neue Parameter vorhanden ist oder nicht und dann jeweils verwenden
+
 > Eingabefeld in Instanz machen, wo man den Sendernamen eintragen kann, dann unten einen Button dazu "Auf Sender schalten" (nach Übernehmen)
 
 > Bei den Funktionen "SendKey", "ZapTo", ... (alle die einfach ohne Überprüfung mit "return true" antworten) müssen
 geändert werden. Damit die auch wirklich erst den e2state prüfen und je nach TRUE/FALSE dann entsprechend
-die Rückmeldung von der Funktion sind.
+die Rückmeldung von der Funktion sind.  (Funktion bauen, durch die das result jeweils läuft und true/false zurück gibt)
 
 > "Power" wird im Keys-DropDown durch "Leistung" ersetzt (+ weitere Tasten), wenn paresy es nicht ändert, dann eine Alternative überlegen
 > /usr/lib/enigma2/python/Plugins/Extensions/WebInterface/web  (Alle XML, ... mit allen verfügbaren Möglichkeiten der Dreambox)
@@ -167,8 +169,7 @@ class Enigma2BY extends IPSModule
     				$Text = str_replace('%A7', '%0A', $Text);
  						$url = "http://".$IP."/web/message?text=".$Text."&type=".$Type."&timeout=".$Timeout;
     				$xml = @simplexml_load_file($url);
-						$result['e2state'] = $xml->e2state;
-						$result['e2statetext'] = $xml->e2statetext;
+						$result = $this->ResultAuswerten($xml->e2state);
     				
     				if ($Type == 0)
     				{
@@ -189,6 +190,7 @@ class Enigma2BY extends IPSModule
 										$this->SendKey("Exit", "short");
 								}
 								$this->SetValueInteger("FrageAntwortVAR", $AntwortINT);
+								return $AntwortINT;
     				}
     				return $result;
     		}
@@ -216,9 +218,8 @@ class Enigma2BY extends IPSModule
 		    		$RCU = $this->ReadPropertyString("RCUdefault");
 		    		$url = "http://".$IP."/web/remotecontrol?command=".$Command."&type=".$LongShort."&rcu=".$RCU;
 		    		$xml = @simplexml_load_file($url);
-						$result['e2state'] = $xml->e2state;
-						$result['e2statetext'] = $xml->e2statetext;
-						return true;
+						$result = $this->ResultAuswerten($xml->e2state);
+						return $result;
 				}
 				else
 				{
@@ -357,17 +358,8 @@ class Enigma2BY extends IPSModule
 						$this->SetValueInteger("VolumeVAR", $E2_VolumeWert);
 						$E2_VolReturn[] = $xml->e2current;
 						$E2_VolReturn[] = $xml->e2ismuted;
-						$E2_Mute = $xml->e2ismuted;
-						switch ($E2_Mute)
-						{
-							case "False";
-							   $E2_Mute = false;
-							break;
-							case "True";
-							   $E2_Mute = true;
-							break;
-						}
-						$this->SetValueBoolean("MuteVAR", $E2_Mute);
+						$result = $this->ResultAuswerten($xml->e2ismuted);
+						$this->SetValueBoolean("MuteVAR", $result);
 						return $E2_VolReturn;
 				}
 				else
@@ -402,19 +394,12 @@ class Enigma2BY extends IPSModule
 						}
 						$url = "http://".$IP."/web/vol?set=".$Befehl;
 						$xml = @simplexml_load_file($url);
-						$E2_VolumeWert = $xml->e2current;
-						$E2_Mute = $xml->e2ismuted;
-						switch ($E2_Mute)
-						{
-							case "False";
-							   $E2_Mute = false;
-							break;
-							case "True";
-							   $E2_Mute = true;
-							break;
-						}
-						$this->SetValueBoolean("MuteVAR", $E2_Mute);
-						
+						$this->SetValueBoolean("MuteVAR", $result);
+						$E2_VolReturn[] = $xml->e2current;
+						$E2_VolReturn[] = $xml->e2ismuted;
+						$result = $this->ResultAuswerten($xml->e2ismuted);
+						$this->SetValueBoolean("MuteVAR", $result);
+						return $E2_VolReturn;						
 				}
 				else
 				{
@@ -447,18 +432,18 @@ class Enigma2BY extends IPSModule
 								break;
 								
 								case 1:
-									$this->SetValueInteger("PowerStateVAR", 0); // AUS
-									return true;
+										$this->SetValueInteger("PowerStateVAR", 0); // AUS
+										return true;
 								break;
 								
 								case 2:
-									$this->SetValueInteger("PowerStateVAR", 0); // AUS
-									return true;
+										$this->SetValueInteger("PowerStateVAR", 0); // AUS
+										return true;;
 								break;
 								
 								case 3:
-									$this->SetValueInteger("PowerStateVAR", 1); // AN
-									return true;
+										$this->SetValueInteger("PowerStateVAR", 1); // AN
+										return true;
 								break;
 						}
 				}
@@ -627,8 +612,16 @@ class Enigma2BY extends IPSModule
 						   }
 						}
 						$SenderCount = count($ServicesAR);  // Anzahl der Sender
-						$this->SetValueInteger("SenderAnzahlVAR", $SenderCount);
-						return $ServicesAR;
+						if ($SenderCount > 0)
+						{
+								$this->SetValueInteger("SenderAnzahlVAR", $SenderCount);
+								return $ServicesAR;
+						}
+						else
+						{
+								return false;
+						}
+					
 				}
 				else
 				{
@@ -645,15 +638,27 @@ class Enigma2BY extends IPSModule
 						$IP = $this->ReadPropertyString("Enigma2IP");
 		    		$url = "http://".$IP."/web/zap?sRef=".$ServiceRef;
 						$xml = @simplexml_load_file($url);
-						$result['e2state'] = $xml->e2state;
-						$result['e2statetext'] = $xml->e2statetext;
-						return true;
+						$result = $this->ResultAuswerten($xml->e2state);
+						return $result;
 				}
 				else
 				{
 						return false;
 				}
     }
+    
+    private function ResultAuswerten($result)
+    {
+				switch ($result)
+				{
+						case "True":
+						   return true;
+						break;
+						case "False":
+						   return false;
+						break;
+				}
+		}
     
     private function SetValueInteger($Ident, $Value)
     {
