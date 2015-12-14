@@ -157,7 +157,15 @@ class Enigma2BY extends IPSModule
     
     public function MuteTest()
     {
-    		$this->SetVolume("MUTE");
+    		$result = $this->SetVolume("MUTE");
+    		if ($result[1] === true)
+    		{
+    				echo "Der Receiver hat jetzt den Mute-Status AKTIV.";
+    		}
+    		else
+    		{
+    				echo "Der Receiver hat jetzt den Mute-Status INAKTIV.";
+    		}
     }
     
     public function VolDown5Test()
@@ -168,7 +176,9 @@ class Enigma2BY extends IPSModule
     		{
     				$VolSOLL = 0;
     		}
-    		$this->SetVolume($VolSOLL);
+    		$result = $this->SetVolume($VolSOLL);
+    		$echoText = "Die Lautstärke des Receiver wurde auf ".$result[0]."% gestellt.";
+ 				echo $echoText;
     }
     
     public function VolUp5Test()
@@ -179,7 +189,9 @@ class Enigma2BY extends IPSModule
     		{
     				$VolSOLL = 100;
     		}
-    		$this->SetVolume($VolSOLL);
+    		$result = $this->SetVolume($VolSOLL);
+    		$echoText = "Die Lautstärke des Receiver wurde auf ".$result[0]."% gestellt.";
+ 				echo $echoText;
     }
     
     public function ZapTest()
@@ -188,11 +200,13 @@ class Enigma2BY extends IPSModule
     		$result = $this->ZapTo($Sendername);
     		if ($result)
     		{
-    				echo "Der Sender wurde erfolgreich eingeschaltet.";
+    				$echoText = "Der Receiver wurde erfolgreich auf den Sender '".$Sendername."' geschaltet.";
+    				echo $echoText;
     		}
     		else 
     		{
-    				echo "Der gewünschte Sender konnte nicht eingeschaltet werden.";
+    				$echoText = "Der Receiver konnte nicht auf den Sender '".$Sendername."' geschaltet werden! (Tippfehler? Ausgeschaltet?)";
+    				echo $echoText;
     		}
     }    
     
@@ -437,10 +451,10 @@ class Enigma2BY extends IPSModule
 						}
 						$url = "http://".$IP."/web/vol?set=".$Befehl;
 						$xml = @simplexml_load_file($url);
-						$E2_VolReturn[] = (int)$xml->e2current;
-						$E2_VolReturn[] = (string)$xml->e2ismuted;
 						$result = $this->ResultAuswerten($xml->e2ismuted);
-						$this->SetValueBoolean("MuteVAR", $result);
+						$E2_VolReturn[] = (int)$xml->e2current;
+						$E2_VolReturn[] = $this->ResultAuswerten($xml->e2ismuted);
+						$this->SetValueBoolean("MuteVAR", $E2_VolReturn[1]);
 						return $E2_VolReturn;						
 				}
 				else
