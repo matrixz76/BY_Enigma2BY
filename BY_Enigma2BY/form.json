@@ -69,7 +69,7 @@
   [
 
     { "type": "Button", "label": "Taste senden", "onClick": "Enigma2BY_KeyTest($id);" },
-    { "type": "Button", "label": "Sender umschalten", "onClick": "Enigma2BY_ZapTest($id);" }
+    { "type": "Button", "label": "Sender umschalten", "onClick": "Enigma2BY_ZapTest($id);" },
     { "type": "Button", "label": "Test-Nachricht senden", "onClick": "Enigma2BY_MsgTest($id);" },
     { "type": "Button", "label": "Alle Daten aktualisieren", "onClick": "Enigma2BY_UpdateAll($id);" }
 

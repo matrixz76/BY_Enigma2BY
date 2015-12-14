@@ -1,6 +1,3 @@
-# !!! TEST !!! NICHT VERWENDEN !!! TEST !!!
----
-
 ### IP-Symcon Modul // Enigma2BY
 ---
 
