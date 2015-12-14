@@ -124,7 +124,7 @@ class Enigma2BY extends IPSModule
       	}
     }
 
-    public function MsgTest()
+    protected function MsgTest()
     {
     		$Text_Test = "Das ist ein Test!";
     		$Type_Test = 1;
@@ -140,7 +140,7 @@ class Enigma2BY extends IPSModule
     		}
     }
     
-    public function KeyTest()
+    protected function KeyTest()
     {
     		$Key_Test = $this->ReadPropertyString("KeyDropDown");
     		$LongShort_Test = "short";
@@ -155,7 +155,7 @@ class Enigma2BY extends IPSModule
     		}
     }
     
-    public function MuteTest()
+    protected function MuteTest()
     {
     		$result = $this->SetVolume("MUTE");
     		if ($result[1] === true)
@@ -168,7 +168,7 @@ class Enigma2BY extends IPSModule
     		}
     }
     
-    public function VolDown5Test()
+    protected function VolDown5Test()
     {
     		$VolIST = $this->GetVolume();
     		$VolSOLL = $VolIST[0] - 5;
@@ -181,7 +181,7 @@ class Enigma2BY extends IPSModule
  				echo $echoText;
     }
     
-    public function VolUp5Test()
+    protected function VolUp5Test()
     {
     		$VolIST = $this->GetVolume();
     		$VolSOLL = $VolIST[0] + 5;
@@ -194,7 +194,7 @@ class Enigma2BY extends IPSModule
  				echo $echoText;
     }
     
-    public function ZapTest()
+    protected function ZapTest()
     {
     		$Sendername = $this->ReadPropertyString("SenderZapTo");
     		$result = $this->ZapTo($Sendername);
