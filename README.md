@@ -116,7 +116,7 @@ gibt die Daten als Array zurück.
 ```php
   Enigma2BY_GetTimerliste(integer $InstanzID);
 ```
-Liest alle Daten aus dem Receiver aus und aktualisiert die Variablen.
+Liest alle Daten aus dem Receiver aus, aktualisiert die Variable und gibt die Daten als Array zurück.
 
 ```php
   Enigma2BY_GetPowerState(integer $InstanzID);
@@ -166,7 +166,7 @@ Liefert ein Array mit allen Sendernamen + ServiceReferenznummer zurück.
 ```
 Schaltet den Receiver auf den gewählten Sender. Der Sender muss 1:1 so geschrieben werden, wie
 er im Receiver gespeichert ist. Der genaue Name kann auch über die Funktion "Enigma2BY_GetSenderliste"
-herausgefunden werden.
+ermittelt werden.
 
 
 ## 5. Changelog
