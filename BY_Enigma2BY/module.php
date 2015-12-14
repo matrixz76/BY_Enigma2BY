@@ -417,7 +417,7 @@ class Enigma2BY extends IPSModule
 		    				}
 		    				else
 		    				{
-		    						$Befehl = "set".$VolWert;
+		    						$Befehl = "set".$Parameter;
 		    				}
 		    		}
 		    		elseif (($Parameter == "+") OR ($Parameter == "up"))
@@ -437,7 +437,6 @@ class Enigma2BY extends IPSModule
 						}
 						$url = "http://".$IP."/web/vol?set=".$Befehl;
 						$xml = @simplexml_load_file($url);
-						$this->SetValueBoolean("MuteVAR", $result);
 						$E2_VolReturn[] = (int)$xml->e2current;
 						$E2_VolReturn[] = (string)$xml->e2ismuted;
 						$result = $this->ResultAuswerten($xml->e2ismuted);
