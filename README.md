@@ -19,10 +19,10 @@ Receiver muss eine eigene Modul-Instanz angelegt werden.
 
 ###### Übersicht der Features (die Funktionen findet ihr in der Befehlsreferenz):
 **Nachrichten an Receiver senden:**
-- Ja/Nein Frage (Am TV kann mit Ja/Nein geantwortet werden und die Antwort wird in eine Variable geschrieben und von der Funktion zurückgegeben)
 - Info (Nachricht mit Info-Symbol)
 - Message (Nachricht mit Message-Symbol)
 - Attention (Nachricht mit Attention-Symbol)
+- Ja/Nein Frage (Am TV kann mit Ja/Nein geantwortet werden und die Antwort wird in eine Variable geschrieben und von der Funktion zurückgegeben)
 
     *Alle Nachrichten haben einen einstellbaren Timeout und werden automatisch nach den gewählten*
     *X Sekunden wieder ausgeblendet. Wird als Timeout eine "0" angegeben, dann ist dieser inaktiv*
