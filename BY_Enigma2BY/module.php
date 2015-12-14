@@ -1,16 +1,4 @@
 <?
-/*****************************************************************************************************
->> Neue Funktionen die Daten abfragen in die Gruppenfunktion "UpdateAll" einbinden!!!
-
-> Bei 2 Fragen gleichzeitig > Semaphore > in Readme drauf hinweisen, dass Timeout bei Fragen nicht zu lang gewählt wird, sonst Skript-Timeout
-
-> Bei "SendMsg" noch die Abfrage vom Newnigma Forum einbauen, ob der neue Parameter vorhanden ist oder nicht und dann jeweils verwenden
->>> Dazu die message.xml abfragen und auf die neue "Funktion" - "default" pruefen
-
-> "Power" wird im Keys-DropDown durch "Leistung" ersetzt (+ weitere Tasten), wenn paresy es nicht ändert, dann eine Alternative überlegen
-> /usr/lib/enigma2/python/Plugins/Extensions/WebInterface/web  (Alle XML, HTML, ... mit allen verfügbaren Möglichkeiten der Dreambox)
-******************************************************************************************************/
-
 class Enigma2BY extends IPSModule
 {
 
