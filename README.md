@@ -52,6 +52,7 @@ Receiver muss eine eigene Modul-Instanz angelegt werden.
 **Eingestellte Lautstärke vom Receiver auslesen und setzen**
 - Liest die aktuelle Receiver-Lautstärke aus (Volume 0-100 und Mute aktiv/inaktiv)
 - Steuert die Lautstärke des Receiver (bestimmter Wert, leiser, lauter, Toggle Mute)
+    > !Achtung! Lautstärke kann nur geändert werden, wenn AC3-Ton im Receiver nicht als Default gewählt wurde!
 
 **Power-Zustand des Receiver auslesen und steuern**
 - Liest den Power-Status des Receiver aus (eingeschaltet, ausgeschaltet, Standby)
@@ -139,6 +140,7 @@ Liefert ein Array mit Volume-Informationen zurück (Volume 0-100, Mute true/fals
 ```
 Setzt die Lautstärke des Receiver auf den angegebenen Wert (0-100). Die anderen Parameter steuern
 lauter/leiser/Mute Toggle. Liefert jeweils ein Array mit Volume-Informationen zurück (Volume 0-100, Mute true/false).
+> !Achtung! Lautstärke kann nur geändert werden, wenn AC3-Ton im Receiver nicht als Default gewählt wurde!
 
 ```php
   Enigma2BY_GetTimerliste(integer $InstanzID);

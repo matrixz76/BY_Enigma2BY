@@ -155,6 +155,33 @@ class Enigma2BY extends IPSModule
     		}
     }
     
+    public function MuteTest()
+    {
+    		$this->SetVolume("MUTE");
+    }
+    
+    public function VolDown5Test()
+    {
+    		$VolIST = $this->GetVolume();
+    		$VolSOLL = $VolIST[0] - 5;
+    		if ($VolSOLL < 0)
+    		{
+    				$VolSOLL = 0;
+    		}
+    		$this->SetVolume($VolSOLL);
+    }
+    
+    public function VolUp5Test()
+    {
+    		$VolIST = $this->GetVolume();
+    		$VolSOLL = $VolIST[0] + 5;
+    		if ($VolSOLL > 100)
+    		{
+    				$VolSOLL = 100;
+    		}
+    		$this->SetVolume($VolSOLL);
+    }
+    
     public function ZapTest()
     {
     		$Sendername = $this->ReadPropertyString("SenderZapTo");
@@ -384,7 +411,14 @@ class Enigma2BY extends IPSModule
     		{
 		    		if (is_int($Parameter))
 		    		{
-		    				$Befehl = "set".$VolWert;
+		    				if (($Parameter < 0) OR ($Parameter > 100))
+		    				{
+		    						return "Ungültiger Wert! Erlaubte Werte sind 0 bis 100.";
+		    				}
+		    				else
+		    				{
+		    						$Befehl = "set".$VolWert;
+		    				}
 		    		}
 		    		elseif (($Parameter == "+") OR ($Parameter == "up"))
 		    		{
