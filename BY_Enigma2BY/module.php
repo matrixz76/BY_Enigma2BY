@@ -2,13 +2,14 @@
 /* 2do ***********************************************************************************************
 >> Neue Funktionen die Daten abfragen in die Gruppenfunktion "UpdateAll" einbinden!!!
 
+> Eingabefeld in Instanz machen, wo man den Sendernamen eintragen kann, dann unten einen Button dazu "Auf Sender schalten" (nach Übernehmen)
+
 > Bei den Funktionen "SendKey", "ZapTo", ... (alle die einfach ohne Überprüfung mit "return true" antworten) müssen
 geändert werden. Damit die auch wirklich erst den e2state prüfen und je nach TRUE/FALSE dann entsprechend
 die Rückmeldung von der Funktion sind.
 
-> Eingabefeld in Instanz machen, wo man den Sendernamen eintragen kann, dann unten einen Button dazu "Auf Sender schalten" (nach Übernehmen)
-
 > "Power" wird im Keys-DropDown durch "Leistung" ersetzt (+ weitere Tasten), wenn paresy es nicht ändert, dann eine Alternative überlegen
+> /usr/lib/enigma2/python/Plugins/Extensions/WebInterface/web  (Alle XML, ... mit allen verfügbaren Möglichkeiten der Dreambox)
 ******************************************************************************************************/
 
 class Enigma2BY extends IPSModule
@@ -641,7 +642,8 @@ class Enigma2BY extends IPSModule
     		{
 		    		$ServicesAR = $this->GetSenderliste();
 		    		$ServiceRef = $ServicesAR[$Sendername];
-						$url = "http://192.168.10.111/web/zap?sRef=".$ServiceRef;
+						$IP = $this->ReadPropertyString("Enigma2IP");
+		    		$url = "http://".$IP."/web/zap?sRef=".$ServiceRef;
 						$xml = @simplexml_load_file($url);
 						$result['e2state'] = $xml->e2state;
 						$result['e2statetext'] = $xml->e2statetext;
