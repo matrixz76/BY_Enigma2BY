@@ -124,7 +124,7 @@ class Enigma2BY extends IPSModule
       	}
     }
 
-    protected function MsgTest()
+    public function TestMsg()
     {
     		$Text_Test = "Das ist ein Test!";
     		$Type_Test = 1;
@@ -140,7 +140,7 @@ class Enigma2BY extends IPSModule
     		}
     }
     
-    protected function KeyTest()
+    public function TestKey()
     {
     		$Key_Test = $this->ReadPropertyString("KeyDropDown");
     		$LongShort_Test = "short";
@@ -155,7 +155,7 @@ class Enigma2BY extends IPSModule
     		}
     }
     
-    protected function MuteTest()
+    public function TestMute()
     {
     		$result = $this->SetVolume("MUTE");
     		if ($result[1] === true)
@@ -168,7 +168,7 @@ class Enigma2BY extends IPSModule
     		}
     }
     
-    protected function VolDown5Test()
+    public function TestVolDown5()
     {
     		$VolIST = $this->GetVolume();
     		$VolSOLL = $VolIST[0] - 5;
@@ -181,7 +181,7 @@ class Enigma2BY extends IPSModule
  				echo $echoText;
     }
     
-    protected function VolUp5Test()
+    public function TestVolUp5()
     {
     		$VolIST = $this->GetVolume();
     		$VolSOLL = $VolIST[0] + 5;
@@ -194,7 +194,7 @@ class Enigma2BY extends IPSModule
  				echo $echoText;
     }
     
-    protected function ZapTest()
+    public function TestZap()
     {
     		$Sendername = $this->ReadPropertyString("SenderZapTo");
     		$result = $this->ZapTo($Sendername);
@@ -690,12 +690,19 @@ class Enigma2BY extends IPSModule
     		if ($this->GetPowerState() != 0)
     		{
 		    		$ServicesAR = $this->GetSenderliste();
-		    		$ServiceRef = $ServicesAR[$Sendername];
-						$IP = $this->ReadPropertyString("Enigma2IP");
-		    		$url = "http://".$IP."/web/zap?sRef=".$ServiceRef;
-						$xml = @simplexml_load_file($url);
-						$result = $this->ResultAuswerten($xml->e2state);
-						return $result;
+		    		$ServiceRef = @$ServicesAR[$Sendername];
+		    		if ($ServiceRef != NULL)
+						{
+								$IP = $this->ReadPropertyString("Enigma2IP");
+					    	$url = "http://".$IP."/web/zap?sRef=".$ServiceRef;
+								$xml = @simplexml_load_file($url);
+								$result = $this->ResultAuswerten($xml->e2state);
+								return $result;
+						}
+						else
+						{
+								return false;
+						}
 				}
 				else
 				{
