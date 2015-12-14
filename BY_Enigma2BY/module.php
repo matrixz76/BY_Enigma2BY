@@ -1,14 +1,8 @@
 <?
-/* 2do ***********************************************************************************************
+/*****************************************************************************************************
 >> Neue Funktionen die Daten abfragen in die Gruppenfunktion "UpdateAll" einbinden!!!
 
 > Bei "SendMsg" noch die Abfrage vom Newnigma Forum einbauen, ob der neue Parameter vorhanden ist oder nicht und dann jeweils verwenden
-
-> Eingabefeld in Instanz machen, wo man den Sendernamen eintragen kann, dann unten einen Button dazu "Auf Sender schalten" (nach Übernehmen)
-
-> Bei den Funktionen "SendKey", "ZapTo", ... (alle die einfach ohne Überprüfung mit "return true" antworten) müssen
-geändert werden. Damit die auch wirklich erst den e2state prüfen und je nach TRUE/FALSE dann entsprechend
-die Rückmeldung von der Funktion sind.  (Funktion bauen, durch die das result jeweils läuft und true/false zurück gibt)
 
 > "Power" wird im Keys-DropDown durch "Leistung" ersetzt (+ weitere Tasten), wenn paresy es nicht ändert, dann eine Alternative überlegen
 > /usr/lib/enigma2/python/Plugins/Extensions/WebInterface/web  (Alle XML, ... mit allen verfügbaren Möglichkeiten der Dreambox)
@@ -29,6 +23,7 @@ class Enigma2BY extends IPSModule
         $this->RegisterPropertyString("IntervallRefresh", "60");
         $this->RegisterPropertyString("RCUdefault", "advanced");
         $this->RegisterPropertyString("KeyDropDown", "");
+        $this->RegisterPropertyString("SenderZapTo", "");
         $this->RegisterTimer("Refresh_All", 0, 'Enigma2BY_UpdateAll($_IPS[\'TARGET\']);');
     }
 
@@ -159,6 +154,20 @@ class Enigma2BY extends IPSModule
     				echo "Taste konnte nicht gesendet werden!";
     		}
     }
+    
+    public function ZapTest()
+    {
+    		$Sendername = $this->ReadPropertyString("SenderZapTo");
+    		$result = $this->ZapTo($Sendername);
+    		if ($result)
+    		{
+    				echo "Der Sender wurde erfolgreich eingeschaltet.";
+    		}
+    		else 
+    		{
+    				echo "Der gewünschte Sender konnte nicht eingeschaltet werden.";
+    		}
+    }    
     
     public function SendMsg($Text, $Type, $Timeout)
     {

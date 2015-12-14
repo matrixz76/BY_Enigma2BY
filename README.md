@@ -22,7 +22,7 @@ Receiver muss eine eigene Modul-Instanz angelegt werden.
 
 ###### Übersicht der Features (die Funktionen findet ihr in der Befehlsreferenz):
 **Nachrichten an Receiver senden:**
-- Ja/Nein Frage (Am TV kann mit Ja/Nein geantwortet werden und die Antwort wird in eine Variable geschrieben)
+- Ja/Nein Frage (Am TV kann mit Ja/Nein geantwortet werden und die Antwort wird in eine Variable geschrieben und von der Funktion zurückgegeben)
 - Info (Nachricht mit Info-Symbol)
 - Message (Nachricht mit Message-Symbol)
 - Attention (Nachricht mit Attention-Symbol)
@@ -30,11 +30,13 @@ Receiver muss eine eigene Modul-Instanz angelegt werden.
     *X Sekunden wieder ausgeblendet. Wird als Timeout eine "0" angegeben, dann ist dieser inaktiv*
     *und die Nachricht muss aktiv am Receiver weg gedrückt werden.*
 
-    *Ein Zeilenumbruch in der Nachricht kann mit dem Zeichen § erzeugt werden. Dieses Zeichen*
+    *Ein Zeilenumbruch in der Nachricht kann mit dem Zeichen **§** erzeugt werden. Dieses Zeichen*
     *wird vom Modul erkannt und automatisch in einen Zeilenumbruch umgewandelt.*
 
 **Informationen über das Receiver-System auslesen (einstellbarer Intervall):**  
+- Enigma-Version
 - Image-Version
+- WebIf-Version
 - Festplatte > Modell    *wenn HDD verbaut*
 - Festplatte > Kapazität (in MB)    *wenn HDD verbaut*
 - Festplatte > Freie Kapazität (in MB)    *wenn HDD verbaut*
@@ -44,14 +46,25 @@ Receiver muss eine eigene Modul-Instanz angelegt werden.
   Sendungsrestdauer, EventID
 - Nächster Sendungsname, Sendungsbeschreibung kurz, Sendungsbeschreibung lang, Sendungsstart, Sendungsdauer, EventID
 
-**Timerliste auslesen**
+**Timerliste auslesen (einstellbarer Intervall)**
 - Liest die Timerliste aus dem Receiver aus, gibt diese als Array zurück und speichert die Daten in eine Variable (HTMLBox)
 
-**Aufnahmenliste auslesen**
+**Aufnahmenliste auslesen (einstellbarer Intervall)**
 - Liest die Aufnahmenliste aus dem Receiver aus, gibt diese als Array zurück und speichert die Daten in eine Variable (HTMLBox)
+
+**Eingestellte Lautstärke vom Receiver auslesen und setzen**
+- Liest die aktuelle Receiver-Lautstärke aus (Volume 0-100 und Mute aktiv/inaktiv)
+- Steuert die Lautstärke des Receiver (bestimmter Wert, leiser, lauter, Toggle Mute)
+
+**Power-Zustand des Receiver auslesen und steuern**
+- Liest den Power-Status des Receiver aus (eingeschaltet, ausgeschaltet, Standby)
+- Steuert den Power-Status des Receiver (Toggle Standby, Deep Standby, Reboot, Restart GUI)
 
 **Senderliste auslesen**
 - Liest alle Sender der Senderliste mit ServiceReferenznummer aus und gibt es in einem Array zurück
+
+**Sender umschalten**
+- Schaltet auf den Receiver auf den angegeben Sender um
 
 
 ## 2. Systemanforderungen
@@ -67,11 +80,6 @@ Die neue Instanz findet ihr in der IPS-Console, in dem Ordner in dem ihr die Ins
 
 
 ## 4. Befehlsreferenz
-```php
-  Enigma2BY_GetTimerliste(integer $InstanzID);
-```
-Liest alle Daten aus dem Receiver aus und aktualisiert die Variablen.
-
 ```php
   Enigma2BY_SendMsg(integer $InstanzID, string $Text, integer $Type, integer $TimeoutSekunden);
 ```
@@ -94,16 +102,21 @@ Bei $LongShort muss entweder "long" oder "short" angegeben werden (langer/kurzer
 Liefert true/false zurück, ob die Taste gesendet wurde oder nicht.
 
 ```php
+  Enigma2BY_GetEPGInfos(integer $InstanzID);
+```
+Liest EPG-Infos vom Receiver aus (siehe Funktionsumfang), speichert diese in Variablen und
+gibt die Daten als Array zurück.
+
+```php
   Enigma2BY_GetSystemInfos(integer $InstanzID);
 ```
 Liest Systeminfos vom Receiver aus (siehe Funktionsumfang), speichert diese in Variablen und
 gibt die Daten als Array zurück.
 
 ```php
-  Enigma2BY_GetEPGInfos(integer $InstanzID);
+  Enigma2BY_GetTimerliste(integer $InstanzID);
 ```
-Liest EPG-Infos vom Receiver aus (siehe Funktionsumfang), speichert diese in Variablen und
-gibt die Daten als Array zurück.
+Liest alle Daten aus dem Receiver aus und aktualisiert die Variablen.
 
 ```php
   Enigma2BY_GetPowerState(integer $InstanzID);
