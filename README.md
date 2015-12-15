@@ -87,12 +87,19 @@ Schickt eine Nachricht an den Receiver und dieser zeigt diese dann auf TV/Beamer
 Liefert ein Array mit Informationen zurück, ob die Nachricht erfolgreich gesendet wurde oder nicht.
 Diese Funktion läuft durch eine Semaphore mit max. 20 Sekunden, falls 2 Fragen gleichzeitig an den
 Receiver gesendet werden. Das muss bei der Wahl der Timeout-Länge beachtet werden!
+
 > $Type:
+
     > 1 = Schickt eine Nachricht mit einem "Info-Symbol" an den Receiver.
+
     > 2 = Schickt eine Nachricht ohne Symbol an den Receiver.
+
     > 3 = Schickt eine Nachricht mit einem "Achtung-Symbol" an den Receiver.
+
     > 0 = Schickt eine Nachricht/Frage mit Ja/Nein als Antwortmöglichkeit an den Receiver.
+
        > Die Antwort steht dann in der Integer-Variable "Frage-Antwort" und in der Rückmeldung der Funktion.
+
        > Antwort-Bedeutungen: 0 = Nein // 1 = Ja // 2 = Keine Antwort innerhalb Timeout-Zeit
 
 ```php
