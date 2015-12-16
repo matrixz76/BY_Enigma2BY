@@ -124,7 +124,7 @@ class Enigma2BY extends IPSModule
       	
       	if ($this->ReadPropertyBoolean("ErwInformationen") == true)
 				{
-		        $this->RegisterVariableFloat("SignalSnrDbVAR", "Signal - SNR db");
+		        $this->RegisterVariableFloat("SignalSnrDbVAR", "Signal - SNR db", "E2BY.SNRdb");
 		        $this->RegisterVariableInteger("SignalSnrVAR", "Signal - SNR");
 		        $this->RegisterVariableInteger("SignalBerVAR", "Signal - BER");
 		        $this->RegisterVariableInteger("SignalBerVAR", "Signal - ACG");
@@ -488,9 +488,9 @@ class Enigma2BY extends IPSModule
 						if ($this->ReadPropertyBoolean("ErwInformationen") == true)
 						{
 								$this->SetValueFloat("SignalSnrDbVAR", $E2_Enigmaversion);
-								$this->SetValueFloat("SignalSnrVAR", $E2_Imageversion);
-								$this->SetValueFloat("SignalBerVAR", $E2_WebIfversion);
-								$this->SetValueFloat("SignalAcgVAR", $E2_BoxModel);
+								$this->SetValueInteger("SignalSnrVAR", $E2_Imageversion);
+								$this->SetValueInteger("SignalBerVAR", $E2_WebIfversion);
+								$this->SetValueInteger("SignalAcgVAR", $E2_BoxModel);
 						}
 						return $E2_SignalInfo;
 				}
@@ -865,6 +865,17 @@ class Enigma2BY extends IPSModule
         if (GetValueInteger($ID) <> $Value)
         {
             SetValueInteger($ID, intval($Value));
+            return true;
+        }
+        return false;
+    }
+    
+    private function SetValueFloat($Ident, $Value)
+    {
+        $ID = $this->GetIDForIdent($Ident);
+        if (GetValueFloat($ID) <> $Value)
+        {
+            SetValueFloat($ID, intval($Value));
             return true;
         }
         return false;
