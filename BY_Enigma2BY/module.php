@@ -127,7 +127,7 @@ class Enigma2BY extends IPSModule
 		        $this->RegisterVariableFloat("SignalSnrDbVAR", "Signal - SNR db", "E2BY.SNRdb");
 		        $this->RegisterVariableInteger("SignalSnrVAR", "Signal - SNR");
 		        $this->RegisterVariableInteger("SignalBerVAR", "Signal - BER");
-		        $this->RegisterVariableInteger("SignalBerVAR", "Signal - ACG");
+		        $this->RegisterVariableInteger("SignalAvgVAR", "Signal - ACG");
 		        $this->RegisterVariableString("LanIpVAR", "LAN - IP");
 		        $this->RegisterVariableString("LanMacVAR", "LAN - MAC");
 		        $this->RegisterVariableBoolean("LanDhcpVAR", "LAN - DHCP", "E2BY.inaktiv.aktiv");
@@ -487,10 +487,10 @@ class Enigma2BY extends IPSModule
 						$E2_SignalInfo["SignalACG"] = $E2_SignalACG;
 						if ($this->ReadPropertyBoolean("ErwInformationen") == true)
 						{
-								$this->SetValueFloat("SignalSnrDbVAR", $E2_Enigmaversion);
-								$this->SetValueInteger("SignalSnrVAR", $E2_Imageversion);
-								$this->SetValueInteger("SignalBerVAR", $E2_WebIfversion);
-								$this->SetValueInteger("SignalAcgVAR", $E2_BoxModel);
+								$this->SetValueFloat("SignalSnrDbVAR", $E2_SignalSNRdb);
+								$this->SetValueInteger("SignalSnrVAR", $E2_SignalSNR);
+								$this->SetValueInteger("SignalBerVAR", $E2_SignalBER);
+								$this->SetValueInteger("SignalAcgVAR", $E2_SignalACG);
 						}
 						return $E2_SignalInfo;
 				}
