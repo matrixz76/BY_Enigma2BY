@@ -43,6 +43,7 @@ Receiver muss eine eigene Modul-Instanz angelegt werden.
 - Festplatte > Modell    *wenn HDD verbaut*
 - Festplatte > Kapazität (in MB)    *wenn HDD verbaut*
 - Festplatte > Freie Kapazität (in MB)    *wenn HDD verbaut*
+- Netzwerk-Infos > IP, Mac, GW, Netzmaske, DHCP    *nur in Variablen, wenn "Erw. Informationen" aktiv*
 
 **Informationen über den aktuellen/nächsten Sender/Sendung (einstellbarer Intervall):**
 - Aktueller Sendername, Sendungsname, Sendungsbeschreibung kurz, Sendungsbeschreibung lang, Sendungsdauer,
@@ -70,6 +71,12 @@ Receiver muss eine eigene Modul-Instanz angelegt werden.
 
 **Sender umschalten**
 - Schaltet auf den Receiver auf den angegeben Sender um
+
+**Signalstärke auslesen**
+- Liest die Signalstärke aus (SNR db, SNR, BER, ACG), schreibt sie ggf. in die Variablen und gibt alles in einem Array zurück.
+  *nur in Variablen, wenn "Erw. Informationen" aktiv*
+
+
 
 
 ## 2. Systemanforderungen
@@ -174,6 +181,11 @@ Liefert ein Array mit allen Sendernamen + ServiceReferenznummer zurück.
 Schaltet den Receiver auf den gewählten Sender. Der Sender muss 1:1 so geschrieben werden, wie
 er im Receiver gespeichert ist. Der genaue Name kann auch über die Funktion "Enigma2BY_GetSenderliste"
 ermittelt werden.
+
+```php
+  Enigma2BY_GetSignalInfos(integer $InstanzID);
+```
+Liest die aktuellen Signalstärken aus dem Receiver aus (SNR db, SNR, BER, ACG).
 
 
 ## 5. Changelog

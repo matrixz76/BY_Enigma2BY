@@ -1,4 +1,29 @@
 <?
+/* 2do **************************************************************************************************************************
+> Verfügbare Tonspuren + Infos auslesen (Beschreibung, TrackID, PID, Status) >> (Vars Erw. Features)
+> Bestimmte Tonspur aktivieren/setzen
+> PIcons (Bild-URL) 
+> Bildinformationen der aktuellen Sendung/Sender >> (Vars Erw. Features)
+> ...
+
+> MultiEPG
+> EPG Similar
+> EPG Next (mit Angabe vom Sender oder alle Sender)
+> EPGSearch
+> EPG Kram allgemein
+/web/epgbouquet?bRef=&time= 
+/web/epgmulti?bRef=&time=&endTime= 
+/web/epgnext?bRef= 
+/web/epgnow?bRef= 
+/web/epgnownext?bRef= 
+/web/epgsearch.rss?search= 
+/web/epgsearch?search= 
+/web/epgservice?sRef=&time=&endTime= 
+/web/epgservicenext?sRef= 
+/web/epgservicenow?sRef= 
+/web/epgsimilar?sRef=&eventid=  
+
+*********************************************************************************************************************************/
 class Enigma2BY extends IPSModule
 {
 
@@ -12,6 +37,7 @@ class Enigma2BY extends IPSModule
         $this->RegisterPropertyString("Enigma2IP", "");
         $this->RegisterPropertyInteger("Enigma2WebPort", 80);
         $this->RegisterPropertyBoolean("HDDverbaut", false);
+        $this->RegisterPropertyBoolean("ErwInformationen", false);
         $this->RegisterPropertyString("IntervallRefresh", "60");
         $this->RegisterPropertyString("RCUdefault", "advanced");
         $this->RegisterPropertyString("KeyDropDown", "");
@@ -50,7 +76,12 @@ class Enigma2BY extends IPSModule
                                              Array(1, "eingeschaltet",  "", -1),
                                              Array(2, "Standby",  "", -1)
         ));
+        $this->RegisterProfileStringEx("E2BY.inaktiv.aktiv", "Information", "", "", Array(
+                                             Array(false, "inaktiv",  "", -1),
+                                             Array(true, "aktiv",  "", -1)
+        ));
         $this->RegisterProfileInteger("E2BY.Volume", "Speaker", "", " %",  "0", "100", 1);
+        $this->RegisterProfileFloat("E2BY.SNRdb", "Speaker", "", " db",  "0", "100", 0.01);
 
         //Variablen erstellen
         $this->RegisterVariableInteger("PowerStateVAR", "Power-State", "E2BY.PowerState");
@@ -77,6 +108,7 @@ class Enigma2BY extends IPSModule
         $this->RegisterVariableString("ImageVersionVAR", "Image-Version");
         $this->RegisterVariableString("WebIfVersionVAR", "WebIf-Version");
         $this->RegisterVariableString("BoxModelVAR", "Receiver Modell");
+        
         if ($this->ReadPropertyBoolean("HDDverbaut") == true)
 				{
 		        $this->RegisterVariableString("HDDModelVAR", "HDD Modell");
@@ -89,6 +121,32 @@ class Enigma2BY extends IPSModule
 						$this->UnregisterVariable("HDDCapaVAR");
 						$this->UnregisterVariable("HDDCapaFreeVAR");	
       	}
+      	
+      	if ($this->ReadPropertyBoolean("ErwInformationen") == true)
+				{
+		        $this->RegisterVariableFloat("SignalSnrDbVAR", "Signal - SNR db");
+		        $this->RegisterVariableInteger("SignalSnrVAR", "Signal - SNR");
+		        $this->RegisterVariableInteger("SignalBerVAR", "Signal - BER");
+		        $this->RegisterVariableInteger("SignalBerVAR", "Signal - ACG");
+		        $this->RegisterVariableString("LanIpVAR", "LAN - IP");
+		        $this->RegisterVariableString("LanMacVAR", "LAN - MAC");
+		        $this->RegisterVariableBoolean("LanDhcpVAR", "LAN - DHCP", "E2BY.inaktiv.aktiv");
+		        $this->RegisterVariableString("LanGwVAR", "LAN - Gateway");
+		        $this->RegisterVariableString("LanNetzmaskeVAR", "LAN - Netzmaske");
+      	}
+      	else
+      	{
+		      	$this->UnregisterVariable("SignalSnrDbVAR");
+						$this->UnregisterVariable("SignalSnrVAR");
+						$this->UnregisterVariable("SignalBerVAR");
+						$this->UnregisterVariable("SignalBerVAR");
+						$this->UnregisterVariable("LanIpVAR");
+						$this->UnregisterVariable("LanMacVAR");
+						$this->UnregisterVariable("LanDhcpVAR");
+						$this->UnregisterVariable("LanGwVAR");
+						$this->UnregisterVariable("LanNetzmaskeVAR");
+      	}
+      	
       	
       	//Timer einstellen
       	$this->SetTimerInterval("Refresh_All", $this->ReadPropertyInteger("IntervallRefresh"));
@@ -113,6 +171,10 @@ class Enigma2BY extends IPSModule
 				    		$this->GetTimerliste();
 				    		$this->GetAufnahmenliste();
 				    		$this->GetSenderliste();
+				    		if ($this->ReadPropertyBoolean("ErwInformationen") == true)
+								{
+				    				$this->GetSignalInfos();
+				    		}
       			}
       	}
     }
@@ -373,20 +435,64 @@ class Enigma2BY extends IPSModule
 						$this->SetValueString("ImageVersionVAR", $E2_Imageversion);
 						$this->SetValueString("WebIfVersionVAR", $E2_WebIfversion);
 						$this->SetValueString("BoxModelVAR", $E2_BoxModel);
-						$E2_SysInfo[] = $E2_Enigmaversion;
-						$E2_SysInfo[] = $E2_Imageversion;
-						$E2_SysInfo[] = $E2_WebIfversion;
-						$E2_SysInfo[] = $E2_BoxModel;
+						$E2_SysInfo["EnigmaVersion"] = $E2_Enigmaversion;
+						$E2_SysInfo["ImageVersion"] = $E2_Imageversion;
+						$E2_SysInfo["WebIfVersion"] = $E2_WebIfversion;
+						$E2_SysInfo["ReceiverModell"] = $E2_BoxModel;
 						if ($this->ReadPropertyBoolean("HDDverbaut") == true)
 						{
-								$E2_SysInfo[] = (string)trim($xml->e2about->e2hddinfo->model);
-								$E2_SysInfo[] = (int)trim($xml->e2about->e2hddinfo->capacity);
-								$E2_SysInfo[] = (int)trim($xml->e2about->e2hddinfo->free);
-								$this->SetValueString("HDDModelVAR", $E2_SysInfo[4]);
-								$this->SetValueInteger("HDDCapaVAR", $E2_SysInfo[5]);
-								$this->SetValueInteger("HDDCapaFreeVAR", $E2_SysInfo[6]);
+								$E2_SysInfo["HDDModell"] = (string)trim($xml->e2about->e2hddinfo->model);
+								$E2_SysInfo["HDDKapazitaetGB"] = (int)trim($xml->e2about->e2hddinfo->capacity);
+								$E2_SysInfo["HDDKapazitaetFreiGB"] = (int)trim($xml->e2about->e2hddinfo->free);
+								$this->SetValueString("HDDModelVAR", $E2_SysInfo["HDDModell"]);
+								$this->SetValueInteger("HDDCapaVAR", $E2_SysInfo["HDDKapazitaetGB"]);
+								$this->SetValueInteger("HDDCapaFreeVAR", $E2_SysInfo["HDDKapazitaetFreiGB"]);
+						}
+						if ($this->ReadPropertyBoolean("ErwInformationen") == true)
+						{
+								$E2_SysInfo["LanIP"] = (string)trim($xml->e2about->e2lanip);
+								$E2_SysInfo["LanMAC"] = (string)trim($xml->e2about->e2lanmac);
+								$E2_SysInfo["LanDHCP"] = (string)trim($xml->e2about->e2landhcp);
+								$E2_SysInfo["LanGW"] = (string)trim($xml->e2about->e2langw);
+								$E2_SysInfo["LanNETZMASKE"] = (string)trim($xml->e2about->e2lanmask);
+								$this->SetValueString("HDDModelVAR", $E2_SysInfo["LanIP"]);
+								$this->SetValueString("HDDModelVAR", $E2_SysInfo["LanMAC"]);
+								$this->SetValueBoolean("HDDModelVAR", $E2_SysInfo["LanDHCP"]);
+								$this->SetValueString("HDDModelVAR", $E2_SysInfo["LanGW"]);
+								$this->SetValueString("HDDModelVAR", $E2_SysInfo["LanNETZMASKE"]);
 						}
 						return $E2_SysInfo;
+				}
+				else
+				{
+						return false;
+				}
+    }
+    
+    public function GetSignalInfos()
+    {
+    		$IP = $this->ReadPropertyString("Enigma2IP");
+    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+    		if ($this->GetPowerState() != 0)
+    		{
+		    		$url = "http://".$IP.":".$WebPort."/web/signal?";
+						$xml = @simplexml_load_file($url);
+						$E2_SignalSNRdb = (string)trim($xml->e2snrdb);
+						$E2_SignalSNR = (string)trim($xml->e2snr);
+						$E2_SignalBER = (string)trim($xml->e2ber);
+						$E2_SignalACG = (string)trim($xml->e2acg);
+						$E2_SignalInfo["SignalSNRdb"] = $E2_SignalSNRdb;
+						$E2_SignalInfo["SignalSNR"] = $E2_SignalSNR;
+						$E2_SignalInfo["SignalBER"] = $E2_SignalBER;
+						$E2_SignalInfo["SignalACG"] = $E2_SignalACG;
+						if ($this->ReadPropertyBoolean("ErwInformationen") == true)
+						{
+								$this->SetValueFloat("SignalSnrDbVAR", $E2_Enigmaversion);
+								$this->SetValueFloat("SignalSnrVAR", $E2_Imageversion);
+								$this->SetValueFloat("SignalBerVAR", $E2_WebIfversion);
+								$this->SetValueFloat("SignalAcgVAR", $E2_BoxModel);
+						}
+						return $E2_SignalInfo;
 				}
 				else
 				{
@@ -431,8 +537,8 @@ class Enigma2BY extends IPSModule
 						$xml = @simplexml_load_file($url);
 						$E2_VolumeWert = (int)$xml->e2current;
 						$this->SetValueInteger("VolumeVAR", $E2_VolumeWert);
-						$E2_VolReturn[] = (int)trim($xml->e2current);
-						$E2_VolReturn[] = (string)trim($xml->e2ismuted);
+						$E2_VolReturn["Volume"] = (int)trim($xml->e2current);
+						$E2_VolReturn["Mute"] = (string)trim($xml->e2ismuted);
 						$result = $this->ResultAuswerten($xml->e2ismuted);
 						$this->SetValueBoolean("MuteVAR", $result);
 						return $E2_VolReturn;
@@ -478,8 +584,8 @@ class Enigma2BY extends IPSModule
 						$url = "http://".$IP.":".$WebPort."/web/vol?set=".$Befehl;
 						$xml = @simplexml_load_file($url);
 						$result = $this->ResultAuswerten($xml->e2ismuted);
-						$E2_VolReturn[] = (int)trim($xml->e2current);
-						$E2_VolReturn[] = $this->ResultAuswerten($xml->e2ismuted);
+						$E2_VolReturn["Volume"] = (int)trim($xml->e2current);
+						$E2_VolReturn["Mute"] = $this->ResultAuswerten($xml->e2ismuted);
 						$this->SetValueBoolean("MuteVAR", $E2_VolReturn[1]);
 						return $E2_VolReturn;						
 				}
@@ -801,6 +907,23 @@ class Enigma2BY extends IPSModule
         IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize);
     }
     
+    protected function RegisterProfileStringEx($Name, $Icon, $Prefix, $Suffix, $Associations) {
+        if ( sizeof($Associations) === 0 ){
+            $MinValue = 0;
+            $MaxValue = 0;
+        } else {
+            $MinValue = $Associations[0][0];
+            $MaxValue = $Associations[sizeof($Associations)-1][0];
+        }
+        
+        $this->RegisterProfileInteger($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, 0);
+        
+        foreach($Associations as $Association) {
+            IPS_SetVariableProfileAssociation($Name, $Association[0], $Association[1], $Association[2], $Association[3]);
+        }
+        
+    }
+    
     protected function RegisterProfileInteger($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize)
 		{
 				if (!IPS_VariableProfileExists($Name))
@@ -811,6 +934,23 @@ class Enigma2BY extends IPSModule
       	{
       			$profile = IPS_GetVariableProfile($Name);
             if ($profile['ProfileType'] != 1)
+            		throw new Exception("Variable profile type does not match for profile " . $Name);
+      	}
+      	IPS_SetVariableProfileIcon($Name, $Icon);
+      	IPS_SetVariableProfileText($Name, $Prefix, $Suffix);
+      	IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize);
+		}
+		
+		protected function RegisterProfileFloat($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize)
+		{
+				if (!IPS_VariableProfileExists($Name))
+      	{
+      			IPS_CreateVariableProfile($Name, 2);
+      	}
+      	else
+      	{
+      			$profile = IPS_GetVariableProfile($Name);
+            if ($profile['ProfileType'] != 2)
             		throw new Exception("Variable profile type does not match for profile " . $Name);
       	}
       	IPS_SetVariableProfileIcon($Name, $Icon);
