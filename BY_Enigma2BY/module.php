@@ -1,5 +1,4 @@
 <?
-/**/
 class Enigma2BY extends IPSModule
 {
 
