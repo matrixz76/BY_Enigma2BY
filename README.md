@@ -198,7 +198,22 @@ in Variablen und gibt die Informationen in einem Array zurück.
 Liest die verfügbaren Tonspuren der Sendung aus, speichert die Daten ggf. in Variablen und gibt die
 Informationen in einem Array zurück.
 
+```php
+  Enigma2BY_SetTonspur(integer $InstanzID, integer $TonspurID);
+```
+Setzt die gewählte Tonspur für die aktuelle Sendung und gibt true/false zurück, wenn die Tonspur gesetzt oder
+nicht gesetzt werden konnte. Die verfügbaren Tonspuren mit ID kann man über "Enigma2BY_GetTonspuren" auslesen.
+
 
 ## 5. Changelog
 Version 1.0:
   - Erster Release
+  
+Version 1.1:
+  - NEU # GetSignalInfos, GetTonspuren, SetTonspur, Netzwerkinformationen, Bildinformationen
+  - NEU # Neustart und GUI-Neustart jetzt direkt in der Instanz möglich
+  - NEU # Eingabe eines Port für das WebInterface des Receivers
+  - FIX # HDD Werte wurden in MB angezeigt, statt in GB
+  - FIX # Bei XTrend/VU+ wurde die Kapazität der HDD teilweise in TB zurückgegeben, wird jetzt in GB umgerechnet
+  - CHANGE # Die Result-Arrays haben jetzt bessere Bezeichnungen, damit man sieht welche Daten was beinhalten
+ 

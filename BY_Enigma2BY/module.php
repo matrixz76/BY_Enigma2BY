@@ -1,29 +1,4 @@
 <?
-/* 2do **************************************************************************************************************************
-> Verfügbare Tonspuren + Infos auslesen (Beschreibung, TrackID, PID, Status) >> (Vars Erw. Features)
-> Bestimmte Tonspur aktivieren/setzen
-> PIcons (Bild-URL) 
-> Bildinformationen der aktuellen Sendung/Sender >> (Vars Erw. Features)
-> ...
-
-> MultiEPG
-> EPG Similar
-> EPG Next (mit Angabe vom Sender oder alle Sender)
-> EPGSearch
-> EPG Kram allgemein
-/web/epgbouquet?bRef=&time= 
-/web/epgmulti?bRef=&time=&endTime= 
-/web/epgnext?bRef= 
-/web/epgnow?bRef= 
-/web/epgnownext?bRef= 
-/web/epgsearch.rss?search= 
-/web/epgsearch?search= 
-/web/epgservice?sRef=&time=&endTime= 
-/web/epgservicenext?sRef= 
-/web/epgservicenow?sRef= 
-/web/epgsimilar?sRef=&eventid=  
-
-*********************************************************************************************************************************/
 class Enigma2BY extends IPSModule
 {
 
@@ -452,9 +427,44 @@ class Enigma2BY extends IPSModule
 						$E2_SysInfo["ReceiverModell"] = $E2_BoxModel;
 						if ($this->ReadPropertyBoolean("HDDverbaut") == true)
 						{
+								//HDD Kapazität in welcher Größe angegeben?
+								$HDDkapa = trim($xml->e2about->e2hddinfo->capacity);
+								preg_match('|TB|', $HDDkapa, $matchTB);
+								if ($matchTB)
+								{
+									$HDDkapa = $HDDkapa * 1024;
+								}
+								preg_match('|GB|', $HDDkapa, $matchGB);
+								if ($matchGB)
+								{
+									$HDDkapa = $HDDkapa;
+								}
+								preg_match('|MB|', $HDDwert, $matchMB);
+								if ($matchMB)
+								{
+									$HDDkapa = $HDDkapa / 1024;
+								}
+								//HDD freie Kapazität in welcher Größe angegeben?
+								$HDDkapafree = trim($xml->e2about->e2hddinfo->free);
+								preg_match('|TB|', $HDDkapafree, $matchfreeTB);
+								if ($matchfreeTB)
+								{
+									$HDDkapafree = $HDDkapafree * 1024;
+								}
+								preg_match('|GB|', $HDDkapafree, $matchfreeGB);
+								if ($matchfreeGB)
+								{
+									$HDDkapafree = $HDDkapafree;
+								}
+								preg_match('|MB|', $HDDwert, $matchfreeMB);
+								if ($matchfreeMB)
+								{
+									$HDDkapafree = $HDDkapafree / 1024;
+								}
+								//Variablen füllen und result zusammenstellen
 								$E2_SysInfo["HDDModell"] = (string)trim($xml->e2about->e2hddinfo->model);
-								$E2_SysInfo["HDDKapazitaetGB"] = (int)trim($xml->e2about->e2hddinfo->capacity);
-								$E2_SysInfo["HDDKapazitaetFreiGB"] = (int)trim($xml->e2about->e2hddinfo->free);
+								$E2_SysInfo["HDDKapazitaetGB"] = $HDDkapa;
+								$E2_SysInfo["HDDKapazitaetFreiGB"] = $HDDkapafree;
 								$this->SetValueString("HDDModelVAR", $E2_SysInfo["HDDModell"]);
 								$this->SetValueInteger("HDDCapaVAR", $E2_SysInfo["HDDKapazitaetGB"]);
 								$this->SetValueInteger("HDDCapaFreeVAR", $E2_SysInfo["HDDKapazitaetFreiGB"]);
@@ -544,6 +554,30 @@ class Enigma2BY extends IPSModule
 				return $PowerStateIST;
     }
     
+    public function SetTonspur($TonspurID)
+    {
+    		$IP = $this->ReadPropertyString("Enigma2IP");
+    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+    		if ($this->GetPowerState() == 1)
+    		{
+		    		$url = "http://".$IP.":".$WebPort."/web/selectaudiotrack?id=".$TonspurID;;
+						$xml = @simplexml_load_file($url);
+						$result = (string)trim($xml[0]);
+						if ($result == "Success")
+						{
+								return true;
+						}
+						else {
+								return false;
+						}
+						$this->GetTonspuren();
+				}
+				else
+				{
+						return false;
+				}
+    }
+    
     public function GetTonspuren()
     {
     		$IP = $this->ReadPropertyString("Enigma2IP");
@@ -552,22 +586,28 @@ class Enigma2BY extends IPSModule
     		{
 		    		$url = "http://".$IP.":".$WebPort."/web/getaudiotracks";
 						$xml = @simplexml_load_file($url);
-						$i = 0;
-						foreach ($xml->e2audiotrack as $xmlnode)
-						{
-							$TonspurenAR[$i]["TonspurBeschreibung"] = (string)$xmlnode->e2audiotrackdescription;
-							$TonspurenAR[$i]["TonspurID"] = (string)$xmlnode->e2audiotrackid;
-							$TonspurenAR[$i]["TonspurPID"] = (string)$xmlnode->e2audiotrackpid;
-							$TonspurenAR[$i]["TonspurAktiv"] = $this->ResultAuswerten(trim($xmlnode->e2audiotrackactive));
-							if ($TonspurenAR[$i]["TonspurAktiv"] === true)
-							{
-									$TonspurAktivVarText = "ID=".$TonspurenAR[$i]["TonspurID"]."//PID=".$TonspurenAR[$i]["TonspurPID"]."//Beschreibung=".$TonspurenAR[$i]["TonspurBeschreibung"];
-									$this->SetValueString("TonspurAktivVAR", $TonspurAktivVarText);
-							}
-							$i++;
-						}
 						$TonspurenCount = count($xml->e2audiotrack);  // Anzahl der verfügbaren Tonspuren
-						$this->SetValueInteger("TonspurenAnzahlVAR", $TonspurenCount);						
+						$this->SetValueInteger("TonspurenAnzahlVAR", $TonspurenCount);
+						if ($TonspurenCount > 0)
+						{
+								$i = 0;
+								foreach ($xml->e2audiotrack as $xmlnode)
+								{
+										$TonspurenAR[$i]["TonspurBeschreibung"] = (string)$xmlnode->e2audiotrackdescription;
+										$TonspurenAR[$i]["TonspurID"] = (string)$xmlnode->e2audiotrackid;
+										$TonspurenAR[$i]["TonspurPID"] = (string)$xmlnode->e2audiotrackpid;
+										$TonspurenAR[$i]["TonspurAktiv"] = $this->ResultAuswerten(trim($xmlnode->e2audiotrackactive));
+										if ($TonspurenAR[$i]["TonspurAktiv"] === true)
+										{
+												$this->SetValueString("TonspurAktivVAR", $TonspurenAR[$i]["TonspurBeschreibung"]);
+										}
+										$i++;
+								}
+						}
+						else
+						{
+								return false;
+						}
 				}
 				else
 				{
@@ -635,6 +675,7 @@ class Enigma2BY extends IPSModule
 						$E2_VolReturn["Volume"] = (int)trim($xml->e2current);
 						$E2_VolReturn["Mute"] = $this->ResultAuswerten($xml->e2ismuted);
 						$this->SetValueBoolean("MuteVAR", $E2_VolReturn["Mute"]);
+						$this->GetVolume();
 						return $E2_VolReturn;						
 				}
 				else
@@ -881,6 +922,7 @@ class Enigma2BY extends IPSModule
 					    	$url = "http://".$IP.":".$WebPort."/web/zap?sRef=".$ServiceRef;
 								$xml = @simplexml_load_file($url);
 								$result = $this->ResultAuswerten($xml->e2state);
+								$this->GetEPGInfos();
 								return $result;
 						}
 						else
