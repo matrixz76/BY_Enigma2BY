@@ -439,7 +439,7 @@ class Enigma2BY extends IPSModule
 								{
 									$HDDkapa = $HDDkapa;
 								}
-								preg_match('|MB|', $HDDwert, $matchMB);
+								preg_match('|MB|', $HDDkapa, $matchMB);
 								if ($matchMB)
 								{
 									$HDDkapa = $HDDkapa / 1024;
@@ -456,7 +456,7 @@ class Enigma2BY extends IPSModule
 								{
 									$HDDkapafree = $HDDkapafree;
 								}
-								preg_match('|MB|', $HDDwert, $matchfreeMB);
+								preg_match('|MB|', $HDDkapafree, $matchfreeMB);
 								if ($matchfreeMB)
 								{
 									$HDDkapafree = $HDDkapafree / 1024;
