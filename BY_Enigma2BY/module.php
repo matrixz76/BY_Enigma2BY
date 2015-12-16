@@ -219,15 +219,15 @@ class Enigma2BY extends IPSModule
 		    						$this->SendKey("ArrowDown", "short");
 		    						IPS_Sleep($Timeout * 1000 + 1000);
 										$xml = @simplexml_load_file("http://".$IP."/web/messageanswer?getanswer=now");
-										if ($xml->e2statetext == "Answer is NO!")
+										if (trim($xml->e2statetext) == "Answer is NO!")
 										{
 												$AntwortINT = 0;
 										}
-										elseif ($xml->e2statetext == "Answer is YES!")
+										elseif (trim($xml->e2statetext) == "Answer is YES!")
 										{
 												$AntwortINT = 1;
 										}
-										elseif ($xml->e2statetext == "No answer in time")
+										elseif (trim($xml->e2statetext) == "No answer in time")
 										{
 												$AntwortINT = 2;
 												$this->SendKey("Exit", "short");
@@ -290,19 +290,19 @@ class Enigma2BY extends IPSModule
 		    		$IP = $this->ReadPropertyString("Enigma2IP");
 		    		$url = "http://".$IP."/web/getcurrent";
 						$xml = @simplexml_load_file($url);
-						$E2_CurSendername = (string)$xml->e2service->e2servicename;
-						$E2_CurSendungsname = (string)$xml->e2eventlist->e2event[0]->e2eventname;
-						$E2_CurSendungsBeschrKurz = (string)$xml->e2eventlist->e2event[0]->e2eventdescription;
-						$E2_CurSendungsBeschrLang = (string)$xml->e2eventlist->e2event[0]->e2eventdescriptionextended;
-						$E2_CurSendungsdauerSek = (int)$xml->e2eventlist->e2event[0]->e2eventduration;
-						$E2_CurSendungsrestdauerSek = (int)$xml->e2eventlist->e2event[0]->e2eventremaining;
-						$E2_CurSendungEventID = (int)$xml->e2eventlist->e2event[0]->e2eventid;
-						$E2_NextSendungsname = (string)$xml->e2eventlist->e2event[1]->e2eventname;
-						$E2_NextSendungsBeschrKurz = (string)$xml->e2eventlist->e2event[1]->e2eventdescription;
-						$E2_NextSendungsBeschrLang = (string)$xml->e2eventlist->e2event[1]->e2eventdescriptionextended;
-						$E2_NextSendungStart = (int)$xml->e2eventlist->e2event[1]->e2eventstart;
-						$E2_NextSendungsdauerSek = (int)$xml->e2eventlist->e2event[1]->e2eventduration;
-						$E2_NextSendungEventID = (int)$xml->e2eventlist->e2event[1]->e2eventid;
+						$E2_CurSendername = (string)trim($xml->e2service->e2servicename);
+						$E2_CurSendungsname = (string)trim($xml->e2eventlist->e2event[0]->e2eventname);
+						$E2_CurSendungsBeschrKurz = (string)trim($xml->e2eventlist->e2event[0]->e2eventdescription);
+						$E2_CurSendungsBeschrLang = (string)trim($xml->e2eventlist->e2event[0]->e2eventdescriptionextended);
+						$E2_CurSendungsdauerSek = (int)trim($xml->e2eventlist->e2event[0]->e2eventduration);
+						$E2_CurSendungsrestdauerSek = (int)trim($xml->e2eventlist->e2event[0]->e2eventremaining);
+						$E2_CurSendungEventID = (int)trim($xml->e2eventlist->e2event[0]->e2eventid);
+						$E2_NextSendungsname = (string)trim($xml->e2eventlist->e2event[1]->e2eventname);
+						$E2_NextSendungsBeschrKurz = (string)trim($xml->e2eventlist->e2event[1]->e2eventdescription);
+						$E2_NextSendungsBeschrLang = (string)trim($xml->e2eventlist->e2event[1]->e2eventdescriptionextended);
+						$E2_NextSendungStart = (int)trim($xml->e2eventlist->e2event[1]->e2eventstart);
+						$E2_NextSendungsdauerSek = (int)trim($xml->e2eventlist->e2event[1]->e2eventduration);
+						$E2_NextSendungEventID = (int)trim($xml->e2eventlist->e2event[1]->e2eventid);
 						//Return-Array befüllen
 						$E2_EPGInfo["AktSendername"] = $E2_CurSendername;
 						$E2_EPGInfo["AktSendungsname"] = $E2_CurSendungsname;
@@ -348,10 +348,10 @@ class Enigma2BY extends IPSModule
     		{
 		    		$url = "http://".$IP."/web/about";
 						$xml = @simplexml_load_file($url);
-						$E2_Enigmaversion = (string)$xml->e2about->e2enigmaversion;
-						$E2_Imageversion = (string)$xml->e2about->e2imageversion;
-						$E2_WebIfversion = (string)$xml->e2about->e2webifversion;
-						$E2_BoxModel = (string)$xml->e2about->e2model;
+						$E2_Enigmaversion = (string)trim($xml->e2about->e2enigmaversion);
+						$E2_Imageversion = (string)trim($xml->e2about->e2imageversion);
+						$E2_WebIfversion = (string)trim($xml->e2about->e2webifversion);
+						$E2_BoxModel = (string)trim($xml->e2about->e2model);
 						$this->SetValueString("EnigmaVersionVAR", $E2_Enigmaversion);
 						$this->SetValueString("ImageVersionVAR", $E2_Imageversion);
 						$this->SetValueString("WebIfVersionVAR", $E2_WebIfversion);
@@ -362,9 +362,9 @@ class Enigma2BY extends IPSModule
 						$E2_SysInfo[] = $E2_BoxModel;
 						if ($this->ReadPropertyBoolean("HDDverbaut") == true)
 						{
-								$E2_SysInfo[] = (string)$xml->e2about->e2hddinfo->model;
-								$E2_SysInfo[] = (int)$xml->e2about->e2hddinfo->capacity;
-								$E2_SysInfo[] = (int)$xml->e2about->e2hddinfo->free;
+								$E2_SysInfo[] = (string)trim($xml->e2about->e2hddinfo->model);
+								$E2_SysInfo[] = (int)trim($xml->e2about->e2hddinfo->capacity);
+								$E2_SysInfo[] = (int)trim($xml->e2about->e2hddinfo->free);
 								$this->SetValueString("HDDModelVAR", $E2_SysInfo[4]);
 								$this->SetValueInteger("HDDCapaVAR", $E2_SysInfo[5]);
 								$this->SetValueInteger("HDDCapaFreeVAR", $E2_SysInfo[6]);
@@ -412,8 +412,8 @@ class Enigma2BY extends IPSModule
 						$xml = @simplexml_load_file($url);
 						$E2_VolumeWert = (int)$xml->e2current;
 						$this->SetValueInteger("VolumeVAR", $E2_VolumeWert);
-						$E2_VolReturn[] = (int)$xml->e2current;
-						$E2_VolReturn[] = (string)$xml->e2ismuted;
+						$E2_VolReturn[] = (int)trim($xml->e2current);
+						$E2_VolReturn[] = (string)trim($xml->e2ismuted);
 						$result = $this->ResultAuswerten($xml->e2ismuted);
 						$this->SetValueBoolean("MuteVAR", $result);
 						return $E2_VolReturn;
@@ -433,7 +433,7 @@ class Enigma2BY extends IPSModule
 		    		{
 		    				if (($Parameter < 0) OR ($Parameter > 100))
 		    				{
-		    						return "Ungültiger Wert! Erlaubte Werte sind 0 bis 100.";
+		    						return "Ungültiger Wert für die Lautstärke! Erlaubte Werte sind 0 bis 100.";
 		    				}
 		    				else
 		    				{
@@ -458,7 +458,7 @@ class Enigma2BY extends IPSModule
 						$url = "http://".$IP."/web/vol?set=".$Befehl;
 						$xml = @simplexml_load_file($url);
 						$result = $this->ResultAuswerten($xml->e2ismuted);
-						$E2_VolReturn[] = (int)$xml->e2current;
+						$E2_VolReturn[] = (int)trim($xml->e2current);
 						$E2_VolReturn[] = $this->ResultAuswerten($xml->e2ismuted);
 						$this->SetValueBoolean("MuteVAR", $E2_VolReturn[1]);
 						return $E2_VolReturn;						
@@ -476,7 +476,7 @@ class Enigma2BY extends IPSModule
     		{
 		    		$url = "http://".$IP."/web/powerstate?newstate=".$PowerStateNr; // 0=ToggleStandby,1=Deepstandby,2=Reboot,3=RestartGUI
 						$xml = @simplexml_load_file($url);
-						$E2_PowerstateStandby = (int)$xml->e2instandby;
+						$E2_PowerstateStandby = (int)trim($xml->e2instandby);
 						
 						switch ($PowerStateNr)
 						{
@@ -500,7 +500,7 @@ class Enigma2BY extends IPSModule
 								
 								case 2:
 										$this->SetValueInteger("PowerStateVAR", 0); // AUS
-										return true;;
+										return true;
 								break;
 								
 								case 3:
@@ -693,7 +693,7 @@ class Enigma2BY extends IPSModule
     
     public function ZapTo($Sendername)
     {
-    		if ($this->GetPowerState() != 0)
+    		if ($this->GetPowerState() == 1)
     		{
 		    		$ServicesAR = $this->GetSenderliste();
 		    		$ServiceRef = @$ServicesAR[$Sendername];
