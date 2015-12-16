@@ -6,8 +6,6 @@
     { "name": "Enigma2IP", "type": "ValidationTextBox", "caption": "Receiver IP-Adresse" },
     { "type": "NumberSpinner", "name": "Enigma2WebPort", "caption": "Receiver Web-Port" },
     { "name": "HDDverbaut", "type": "CheckBox", "caption": "Receiver mit HDD" },
-    { "type": "Label", "label": "Zusätzliche Variablen (~ANZAHL) anlegen für Bildgröße,Tonspur,Erw. EPG-Infos:" },
-    { "name": "ExtraVariablen", "type": "CheckBox", "caption": "Erw. Variablen" },
     { "type": "Label", "label": "--------------------------------------------------------------------------------------------------------------------------------------------------------" },
     { "type": "Label", "label": "Intervall für die Aktualisierung aller Daten:" },
     { "type": "IntervalBox", "name": "IntervallRefresh", "caption": "Sekunden" },
