@@ -455,11 +455,11 @@ class Enigma2BY extends IPSModule
 								$E2_SysInfo["LanDHCP"] = $this->ResultAuswerten(trim($xml->e2about->e2landhcp));
 								$E2_SysInfo["LanGW"] = (string)trim($xml->e2about->e2langw);
 								$E2_SysInfo["LanNETZMASKE"] = (string)trim($xml->e2about->e2lanmask);
-								$this->SetValueString("HDDModelVAR", $E2_SysInfo["LanIP"]);
-								$this->SetValueString("HDDModelVAR", $E2_SysInfo["LanMAC"]);
-								$this->SetValueBoolean("HDDModelVAR", $E2_SysInfo["LanDHCP"]);
-								$this->SetValueString("HDDModelVAR", $E2_SysInfo["LanGW"]);
-								$this->SetValueString("HDDModelVAR", $E2_SysInfo["LanNETZMASKE"]);
+								$this->SetValueString("LanIpVAR", $E2_SysInfo["LanIP"]);
+								$this->SetValueString("LanMacVAR", $E2_SysInfo["LanMAC"]);
+								$this->SetValueBoolean("LanDhcpVAR", $E2_SysInfo["LanDHCP"]);
+								$this->SetValueString("LanGwVAR", $E2_SysInfo["LanGW"]);
+								$this->SetValueString("LanNetzmaskeVAR", $E2_SysInfo["LanNETZMASKE"]);
 						}
 						return $E2_SysInfo;
 				}
@@ -895,7 +895,6 @@ class Enigma2BY extends IPSModule
     private function SetValueBoolean($Ident, $Value)
     {
         $ID = $this->GetIDForIdent($Ident);
-        echo $ID;
         if (GetValueBoolean($ID) <> $Value)
         {
             SetValueBoolean($ID, boolval($Value));
