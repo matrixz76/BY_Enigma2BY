@@ -213,7 +213,7 @@ class Enigma2BY extends IPSModule
     public function TestMute()
     {
     		$result = $this->SetVolume("MUTE");
-    		if ($result[1] === true)
+    		if ($result["Mute"] === true)
     		{
     				echo "Der Receiver hat jetzt den Mute-Status AKTIV.";
     		}
@@ -226,26 +226,26 @@ class Enigma2BY extends IPSModule
     public function TestVolDown5()
     {
     		$VolIST = $this->GetVolume();
-    		$VolSOLL = $VolIST[0] - 5;
+    		$VolSOLL = $VolIST["Volume"] - 5;
     		if ($VolSOLL < 0)
     		{
     				$VolSOLL = 0;
     		}
     		$result = $this->SetVolume($VolSOLL);
-    		$echoText = "Die Lautstärke des Receiver wurde auf ".$result[0]."% gestellt.";
+    		$echoText = "Die Lautstärke des Receiver wurde auf ".$result["Volume"]."% gestellt.";
  				echo $echoText;
     }
     
     public function TestVolUp5()
     {
     		$VolIST = $this->GetVolume();
-    		$VolSOLL = $VolIST[0] + 5;
+    		$VolSOLL = $VolIST["Volume"] + 5;
     		if ($VolSOLL > 100)
     		{
     				$VolSOLL = 100;
     		}
     		$result = $this->SetVolume($VolSOLL);
-    		$echoText = "Die Lautstärke des Receiver wurde auf ".$result[0]."% gestellt.";
+    		$echoText = "Die Lautstärke des Receiver wurde auf ".$result["Volume"]."% gestellt.";
  				echo $echoText;
     }
     
@@ -586,7 +586,7 @@ class Enigma2BY extends IPSModule
 						$result = $this->ResultAuswerten($xml->e2ismuted);
 						$E2_VolReturn["Volume"] = (int)trim($xml->e2current);
 						$E2_VolReturn["Mute"] = $this->ResultAuswerten($xml->e2ismuted);
-						$this->SetValueBoolean("MuteVAR", $E2_VolReturn[1]);
+						$this->SetValueBoolean("MuteVAR", $E2_VolReturn["Mute"]);
 						return $E2_VolReturn;						
 				}
 				else
