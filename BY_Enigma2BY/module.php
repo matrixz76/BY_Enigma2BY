@@ -341,7 +341,7 @@ class Enigma2BY extends IPSModule
 							$this->SetValueString("AktSendernameVAR", "");
 							$this->SetValueString("AktSendungsnameVAR", "");
 							$this->SetValueString("AktSendungsBeschrKurzVAR", "");
-							$this->SetValueString("AktSendungsBeschrLangVAR", """");
+							$this->SetValueString("AktSendungsBeschrLangVAR", "");
 							$this->SetValueInteger("AktSendunsdauerVar", 0);
 							$this->SetValueInteger("AktSendunsdauerRestVar", 0);
 							$this->SetValueString("NextSendungsnameVar", "");
