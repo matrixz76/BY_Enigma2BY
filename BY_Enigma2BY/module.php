@@ -10,6 +10,7 @@ class Enigma2BY extends IPSModule
         //These lines are parsed on Symcon Startup or Instance creation
         //You cannot use variables here. Just static values.
         $this->RegisterPropertyString("Enigma2IP", "");
+        $this->RegisterPropertyInteger("Enigma2WebPort", 80);
         $this->RegisterPropertyBoolean("HDDverbaut", false);
         $this->RegisterPropertyString("IntervallRefresh", "60");
         $this->RegisterPropertyString("RCUdefault", "advanced");
@@ -209,9 +210,10 @@ class Enigma2BY extends IPSModule
     				if (IPS_SemaphoreEnter("Enigma2BY_SendMsg", 20000))
 						{
 		    				$IP = $this->ReadPropertyString("Enigma2IP");
+		    				$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
 		    				$Text = urlencode(trim($Text));
 		    				$Text = str_replace('%A7', '%0A', $Text);
-		 						$url = "http://".$IP."/web/message?text=".$Text."&type=".$Type."&timeout=".$Timeout;
+		 						$url = "http://".$IP.":".$WebPort."/web/message?text=".$Text."&type=".$Type."&timeout=".$Timeout;
 		    				$xml = @simplexml_load_file($url);
 								$result = $this->ResultAuswerten($xml->e2state);
 		    				
@@ -219,7 +221,7 @@ class Enigma2BY extends IPSModule
 		    				{
 		    						$this->SendKey("ArrowDown", "short");
 		    						IPS_Sleep($Timeout * 1000 + 1000);
-										$xml = @simplexml_load_file("http://".$IP."/web/messageanswer?getanswer=now");
+										$xml = @simplexml_load_file("http://".$IP.":".$WebPort."/web/messageanswer?getanswer=now");
 										if (trim($xml->e2statetext) == "Answer is NO!")
 										{
 												$AntwortINT = 0;
@@ -255,6 +257,7 @@ class Enigma2BY extends IPSModule
     		if ($this->GetPowerState() == 1)
     		{
 		    		$IP = $this->ReadPropertyString("Enigma2IP");
+		    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
 		    		$CommandArray = array("Power" => "Power", "1" => "2", "2" => "3", "4" => "5", "5" => "6", "6" => "7", "7" => "8", "8" => "9", "9" => "10", "0" => "11", "VolumeUp" => "115", "VolumeDown" => "114", "MUTE" => "113", "Previous" => "412", "Next" => "407", "BouquetUp" => "402", "BouquetDown" => "403", "ArrowUp" => "103", "ArrowDown" => "108", "ArrowLeft" => "105", "ArrowRight" => "106", "Menu" => "139", "OK" => "352", "Info" => "358", "Audio" => "392", "Video" => "393", "RED" => "398", "GREEN" => "399", "YELLOW" => "400", "BLUE" => "401", "TV" => "377", "Radio" => "385", "Text" => "388", "Help" => "138", "Exit" => "174");
 		    		$Command = $CommandArray[$Key];
 		    		if ($Command != NULL)
@@ -268,7 +271,7 @@ class Enigma2BY extends IPSModule
 				    				$LongShort = "short";
 				    		}
 				    		$RCU = $this->ReadPropertyString("RCUdefault");
-				    		$url = "http://".$IP."/web/remotecontrol?command=".$Command."&type=".$LongShort."&rcu=".$RCU;
+				    		$url = "http://".$IP.":".$WebPort."/web/remotecontrol?command=".$Command."&type=".$LongShort."&rcu=".$RCU;
 				    		$xml = @simplexml_load_file($url);
 								$result = $this->ResultAuswerten($xml->e2result);
 								return $result;
@@ -289,7 +292,8 @@ class Enigma2BY extends IPSModule
     		if ($this->GetPowerState() == 1)
     		{
 		    		$IP = $this->ReadPropertyString("Enigma2IP");
-		    		$url = "http://".$IP."/web/getcurrent";
+		    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+		    		$url = "http://".$IP.":".$WebPort."/web/getcurrent";
 						$xml = @simplexml_load_file($url);
 						$E2_CurSendername = (string)trim($xml->e2service->e2servicename);
 						$E2_CurSendungsname = (string)trim($xml->e2eventlist->e2event[0]->e2eventname);
@@ -356,9 +360,10 @@ class Enigma2BY extends IPSModule
     public function GetSystemInfos()
     {
     		$IP = $this->ReadPropertyString("Enigma2IP");
+    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
     		if ($this->GetPowerState() != 0)
     		{
-		    		$url = "http://".$IP."/web/about";
+		    		$url = "http://".$IP.":".$WebPort."/web/about";
 						$xml = @simplexml_load_file($url);
 						$E2_Enigmaversion = (string)trim($xml->e2about->e2enigmaversion);
 						$E2_Imageversion = (string)trim($xml->e2about->e2imageversion);
@@ -392,6 +397,7 @@ class Enigma2BY extends IPSModule
     public function GetPowerState()
     {
     		$IP = $this->ReadPropertyString("Enigma2IP");
+    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
     		if (Sys_Ping($IP, 2000) == false)
     		{
     				$PowerStateIST = 0;
@@ -399,7 +405,7 @@ class Enigma2BY extends IPSModule
     		}
     		else
     		{
-		    		$url = "http://".$IP."/web/powerstate";
+		    		$url = "http://".$IP.":".$WebPort."/web/powerstate";
 						$xml = @simplexml_load_file($url);
 						if (($this->ResultAuswerten(@$xml->e2instandby) == "false") OR (trim(@$xml->e2instandby) == "false"))
 						{
@@ -418,9 +424,10 @@ class Enigma2BY extends IPSModule
     public function GetVolume()
     {
     		$IP = $this->ReadPropertyString("Enigma2IP");
+    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
     		if ($this->GetPowerState() == 1)
     		{
-		    		$url = "http://".$IP."/web/vol";
+		    		$url = "http://".$IP.":".$WebPort."/web/vol";
 						$xml = @simplexml_load_file($url);
 						$E2_VolumeWert = (int)$xml->e2current;
 						$this->SetValueInteger("VolumeVAR", $E2_VolumeWert);
@@ -439,6 +446,7 @@ class Enigma2BY extends IPSModule
     public function SetVolume($Parameter)
     {
     		$IP = $this->ReadPropertyString("Enigma2IP");
+    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
     		if ($this->GetPowerState() == 1)
     		{
 		    		if (is_int($Parameter))
@@ -467,7 +475,7 @@ class Enigma2BY extends IPSModule
 						else {
 								return "Unbekannter Befehl für die Funktion -SetVolume-";
 						}
-						$url = "http://".$IP."/web/vol?set=".$Befehl;
+						$url = "http://".$IP.":".$WebPort."/web/vol?set=".$Befehl;
 						$xml = @simplexml_load_file($url);
 						$result = $this->ResultAuswerten($xml->e2ismuted);
 						$E2_VolReturn[] = (int)trim($xml->e2current);
@@ -484,9 +492,10 @@ class Enigma2BY extends IPSModule
     public function SetPowerState($PowerStateNr)
     {
     		$IP = $this->ReadPropertyString("Enigma2IP");
+    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
     		if ($this->GetPowerState() != 0)
     		{
-		    		$url = "http://".$IP."/web/powerstate?newstate=".$PowerStateNr; // 0=ToggleStandby,1=Deepstandby,2=Reboot,3=RestartGUI
+		    		$url = "http://".$IP.":".$WebPort."/web/powerstate?newstate=".$PowerStateNr; // 0=ToggleStandby,1=Deepstandby,2=Reboot,3=RestartGUI
 						$xml = @simplexml_load_file($url);
 						$E2_PowerstateStandby = (int)trim($xml->e2instandby);
 						
@@ -530,9 +539,10 @@ class Enigma2BY extends IPSModule
 		public function GetTimerliste()
     {
     		$IP = $this->ReadPropertyString("Enigma2IP");
+    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
     		if ($this->GetPowerState() != 0)
     		{
-		    		$url = "http://".$IP."/web/timerlist";
+		    		$url = "http://".$IP.":".$WebPort."/web/timerlist";
 						$xml = @simplexml_load_file($url);
 						$i = 0;
 						foreach ($xml->e2timer as $xmlnode)
@@ -623,9 +633,10 @@ class Enigma2BY extends IPSModule
     public function GetAufnahmenliste()
     {
     		$IP = $this->ReadPropertyString("Enigma2IP");
+    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
     		if ($this->GetPowerState() != 0)
     		{
-		    		$url = "http://".$IP."/web/movielist";
+		    		$url = "http://".$IP.":".$WebPort."/web/movielist";
 						$xml = @simplexml_load_file($url);
 						$i = 0;
 						foreach ($xml->e2movie as $xmlnode)
@@ -675,7 +686,8 @@ class Enigma2BY extends IPSModule
     		if ($this->GetPowerState() != 0)
     		{
 		    		$IP = $this->ReadPropertyString("Enigma2IP");
-		    		$url = "http://".$IP."/web/getallservices";
+		    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+		    		$url = "http://".$IP.":".$WebPort."/web/getallservices";
 						$xml = simplexml_load_file($url);
 		  			foreach ($xml->e2bouquet as $xmlnode1)
 						{
@@ -712,7 +724,7 @@ class Enigma2BY extends IPSModule
 		    		if ($ServiceRef != NULL)
 						{
 								$IP = $this->ReadPropertyString("Enigma2IP");
-					    	$url = "http://".$IP."/web/zap?sRef=".$ServiceRef;
+					    	$url = "http://".$IP.":".$WebPort."/web/zap?sRef=".$ServiceRef;
 								$xml = @simplexml_load_file($url);
 								$result = $this->ResultAuswerten($xml->e2state);
 								return $result;

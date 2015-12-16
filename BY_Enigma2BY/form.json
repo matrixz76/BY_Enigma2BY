@@ -2,9 +2,12 @@
   "elements":
   [
 
-    { "type": "Label", "label": "IP-Adresse, unter der ein Receiver mit Enigma2 erreichbar ist:" },
+    { "type": "Label", "label": "IP-Adresse und WebIf-Port, unter der ein Receiver mit Enigma2 erreichbar ist:" },
     { "name": "Enigma2IP", "type": "ValidationTextBox", "caption": "Receiver IP-Adresse" },
+    { "type": "NumberSpinner", "name": "Enigma2WebPort", "caption": "Receiver Web-Port" },
     { "name": "HDDverbaut", "type": "CheckBox", "caption": "Receiver mit HDD" },
+    { "type": "Label", "label": "Zusätzliche Variablen (~ANZAHL) anlegen für Bildgröße,Tonspur,Erw. EPG-Infos:" },
+    { "name": "ExtraVariablen", "type": "CheckBox", "caption": "Erw. Variablen" },
     { "type": "Label", "label": "--------------------------------------------------------------------------------------------------------------------------------------------------------" },
     { "type": "Label", "label": "Intervall für die Aktualisierung aller Daten:" },
     { "type": "IntervalBox", "name": "IntervallRefresh", "caption": "Sekunden" },
@@ -75,6 +78,9 @@
 		{ "type": "Button", "label": "Lautstärke -5", "onClick": "Enigma2BY_TestVolDown5($id);" },
 		{ "type": "Button", "label": "Lautstärke +5", "onClick": "Enigma2BY_TestVolUp5($id);" },
 		{ "type": "Button", "label": "Mute Toggle", "onClick": "Enigma2BY_TestMute($id);" },
+		{ "type": "Label", "label": "--------------------------------------------------------------------------------------------------------------------------------------------------------" },
+		{ "type": "Button", "label": "Receiver Neustart", "onClick": "Enigma2BY_SetPowerState($id, 2);" },
+    { "type": "Button", "label": "Receiver GUI-Neustart", "onClick": "Enigma2BY_SetPowerState($id, 3);" },
 		{ "type": "Label", "label": "--------------------------------------------------------------------------------------------------------------------------------------------------------" },
 		{ "type": "Button", "label": "Alle Daten aktualisieren", "onClick": "Enigma2BY_UpdateAll($id);" }
 
