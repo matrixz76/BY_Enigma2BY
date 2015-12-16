@@ -76,7 +76,7 @@ class Enigma2BY extends IPSModule
                                              Array(1, "eingeschaltet",  "", -1),
                                              Array(2, "Standby",  "", -1)
         ));
-        $this->RegisterProfileStringEx("E2BY.inaktiv.aktiv", "Information", "", "", Array(
+        $this->RegisterProfileBooleanEx("E2BY.inaktiv.aktiv", "Information", "", "", Array(
                                              Array(false, "inaktiv",  "", -1),
                                              Array(true, "aktiv",  "", -1)
         ));
@@ -162,7 +162,7 @@ class Enigma2BY extends IPSModule
     {
     		if (strlen($IP = $this->ReadPropertyString("Enigma2IP")) > 7)
       	{
-      			if (Sys_Ping($IP, 2000) == true)
+      			if (@Sys_Ping($IP, 2000) == true)
       			{
       					$this->GetSystemInfos();
 				    		$this->GetEPGInfos();
@@ -903,6 +903,38 @@ class Enigma2BY extends IPSModule
         return false;
     }
     
+    protected function RegisterProfileBoolean($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize) {
+        
+        if(!IPS_VariableProfileExists($Name)) {
+            IPS_CreateVariableProfile($Name, 0);
+        } else {
+            $profile = IPS_GetVariableProfile($Name);
+            if($profile['ProfileType'] != 0)
+            throw new Exception("Variable profile type does not match for profile ".$Name);
+        }
+        
+        IPS_SetVariableProfileIcon($Name, $Icon);
+        IPS_SetVariableProfileText($Name, $Prefix, $Suffix);
+        IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize);
+    }
+    
+    protected function RegisterProfileBooleanEx($Name, $Icon, $Prefix, $Suffix, $Associations) {
+        if ( sizeof($Associations) === 0 ){
+            $MinValue = 0;
+            $MaxValue = 0;
+        } else {
+            $MinValue = $Associations[0][0];
+            $MaxValue = $Associations[sizeof($Associations)-1][0];
+        }
+        
+        $this->RegisterProfileBoolean($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, 0);
+        
+        foreach($Associations as $Association) {
+            IPS_SetVariableProfileAssociation($Name, $Association[0], $Association[1], $Association[2], $Association[3]);
+        }
+        
+    }
+    
     protected function RegisterProfileString($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize) {
         
         if(!IPS_VariableProfileExists($Name)) {
@@ -927,7 +959,7 @@ class Enigma2BY extends IPSModule
             $MaxValue = $Associations[sizeof($Associations)-1][0];
         }
         
-        $this->RegisterProfileInteger($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, 0);
+        $this->RegisterProfileString($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, 0);
         
         foreach($Associations as $Association) {
             IPS_SetVariableProfileAssociation($Name, $Association[0], $Association[1], $Association[2], $Association[3]);
@@ -952,23 +984,6 @@ class Enigma2BY extends IPSModule
       	IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize);
 		}
 		
-		protected function RegisterProfileFloat($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize)
-		{
-				if (!IPS_VariableProfileExists($Name))
-      	{
-      			IPS_CreateVariableProfile($Name, 2);
-      	}
-      	else
-      	{
-      			$profile = IPS_GetVariableProfile($Name);
-            if ($profile['ProfileType'] != 2)
-            		throw new Exception("Variable profile type does not match for profile " . $Name);
-      	}
-      	IPS_SetVariableProfileIcon($Name, $Icon);
-      	IPS_SetVariableProfileText($Name, $Prefix, $Suffix);
-      	IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize);
-		}
-    
     protected function RegisterProfileIntegerEx($Name, $Icon, $Prefix, $Suffix, $Associations) {
         if ( sizeof($Associations) === 0 ){
             $MinValue = 0;
@@ -985,6 +1000,23 @@ class Enigma2BY extends IPSModule
         }
         
     }
+    
+    protected function RegisterProfileFloat($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize)
+		{
+				if (!IPS_VariableProfileExists($Name))
+      	{
+      			IPS_CreateVariableProfile($Name, 2);
+      	}
+      	else
+      	{
+      			$profile = IPS_GetVariableProfile($Name);
+            if ($profile['ProfileType'] != 2)
+            		throw new Exception("Variable profile type does not match for profile " . $Name);
+      	}
+      	IPS_SetVariableProfileIcon($Name, $Icon);
+      	IPS_SetVariableProfileText($Name, $Prefix, $Suffix);
+      	IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize);
+		}
     
     protected function RegisterTimer($Name, $Interval, $Script)
     {
