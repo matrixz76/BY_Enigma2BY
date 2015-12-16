@@ -63,7 +63,7 @@ class Enigma2BY extends IPSModule
         $this->RegisterProfileInteger("E2BY.Minuten", "Clock", "", " Min.",  "0", "300", 1);
         if ($this->ReadPropertyBoolean("HDDverbaut") == true)
 				{
-        		$this->RegisterProfileInteger("E2BY.MB", "Information", "", " MB",  "0", "10240000", 1);
+        		$this->RegisterProfileInteger("E2BY.GB", "Information", "", " GB",  "0", "10240000", 1);
       	}
         $this->RegisterProfileString("E2BY.Info", "Information", "", "",  "0", "2", 0);
         $this->RegisterProfileIntegerEx("E2BY.JaNeinKA", "Information", "", "", Array(
@@ -112,8 +112,8 @@ class Enigma2BY extends IPSModule
         if ($this->ReadPropertyBoolean("HDDverbaut") == true)
 				{
 		        $this->RegisterVariableString("HDDModelVAR", "HDD Modell");
-		        $this->RegisterVariableInteger("HDDCapaVAR", "HDD Kapazität (gesamt)", "E2BY.MB");
-		        $this->RegisterVariableInteger("HDDCapaFreeVAR", "HDD Kapazität (frei)", "E2BY.MB");
+		        $this->RegisterVariableInteger("HDDCapaVAR", "HDD Kapazität (gesamt)", "E2BY.GB");
+		        $this->RegisterVariableInteger("HDDCapaFreeVAR", "HDD Kapazität (frei)", "E2BY.GB");
       	}
       	else
       	{
