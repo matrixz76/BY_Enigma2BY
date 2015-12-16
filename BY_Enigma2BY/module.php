@@ -895,6 +895,7 @@ class Enigma2BY extends IPSModule
     private function SetValueBoolean($Ident, $Value)
     {
         $ID = $this->GetIDForIdent($Ident);
+        echo $ID;
         if (GetValueBoolean($ID) <> $Value)
         {
             SetValueBoolean($ID, boolval($Value));
