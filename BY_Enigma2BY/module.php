@@ -127,7 +127,7 @@ class Enigma2BY extends IPSModule
 		        $this->RegisterVariableFloat("SignalSnrDbVAR", "Signal - SNR db", "E2BY.SNRdb");
 		        $this->RegisterVariableInteger("SignalSnrVAR", "Signal - SNR");
 		        $this->RegisterVariableInteger("SignalBerVAR", "Signal - BER");
-		        $this->RegisterVariableInteger("SignalAvgVAR", "Signal - ACG");
+		        $this->RegisterVariableInteger("SignalAcgVAR", "Signal - ACG");
 		        $this->RegisterVariableString("LanIpVAR", "LAN - IP");
 		        $this->RegisterVariableString("LanMacVAR", "LAN - MAC");
 		        $this->RegisterVariableBoolean("LanDhcpVAR", "LAN - DHCP", "E2BY.inaktiv.aktiv");
@@ -139,7 +139,7 @@ class Enigma2BY extends IPSModule
 		      	$this->UnregisterVariable("SignalSnrDbVAR");
 						$this->UnregisterVariable("SignalSnrVAR");
 						$this->UnregisterVariable("SignalBerVAR");
-						$this->UnregisterVariable("SignalBerVAR");
+						$this->UnregisterVariable("SignalAcgVAR");
 						$this->UnregisterVariable("LanIpVAR");
 						$this->UnregisterVariable("LanMacVAR");
 						$this->UnregisterVariable("LanDhcpVAR");
@@ -452,7 +452,7 @@ class Enigma2BY extends IPSModule
 						{
 								$E2_SysInfo["LanIP"] = (string)trim($xml->e2about->e2lanip);
 								$E2_SysInfo["LanMAC"] = (string)trim($xml->e2about->e2lanmac);
-								$E2_SysInfo["LanDHCP"] = (string)trim($xml->e2about->e2landhcp);
+								$E2_SysInfo["LanDHCP"] = $this->ResultAuswerten(trim($xml->e2about->e2landhcp));
 								$E2_SysInfo["LanGW"] = (string)trim($xml->e2about->e2langw);
 								$E2_SysInfo["LanNETZMASKE"] = (string)trim($xml->e2about->e2lanmask);
 								$this->SetValueString("HDDModelVAR", $E2_SysInfo["LanIP"]);
