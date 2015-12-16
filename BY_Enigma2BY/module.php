@@ -111,6 +111,7 @@ class Enigma2BY extends IPSModule
 				    		$this->GetPowerState();
 				    		$this->GetTimerliste();
 				    		$this->GetAufnahmenliste();
+				    		$this->GetSenderliste();
       			}
       	}
     }
