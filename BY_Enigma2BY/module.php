@@ -338,6 +338,17 @@ class Enigma2BY extends IPSModule
 				}
 				else
 				{
+							$this->SetValueString("AktSendernameVAR", "");
+							$this->SetValueString("AktSendungsnameVAR", "");
+							$this->SetValueString("AktSendungsBeschrKurzVAR", "");
+							$this->SetValueString("AktSendungsBeschrLangVAR", """");
+							$this->SetValueInteger("AktSendunsdauerVar", 0);
+							$this->SetValueInteger("AktSendunsdauerRestVar", 0);
+							$this->SetValueString("NextSendungsnameVar", "");
+							$this->SetValueString("NextSendungsBeschrKurzVAR", "");
+							$this->SetValueString("NextSendungsBeschrLangVAR", "");
+							$this->SetValueString("NextSendungsStartVAR", "");
+							$this->SetValueInteger("NextSendungsdauerVAR", 0);
 							return false;
 				}
     }
@@ -345,7 +356,7 @@ class Enigma2BY extends IPSModule
     public function GetSystemInfos()
     {
     		$IP = $this->ReadPropertyString("Enigma2IP");
-    		if ($this->GetPowerState() == 1)
+    		if ($this->GetPowerState() != 0)
     		{
 		    		$url = "http://".$IP."/web/about";
 						$xml = @simplexml_load_file($url);
@@ -390,7 +401,7 @@ class Enigma2BY extends IPSModule
     		{
 		    		$url = "http://".$IP."/web/powerstate";
 						$xml = @simplexml_load_file($url);
-						if (($this->ResultAuswerten($xml->e2instandby) == "false") OR (trim($xml->e2instandby) == "false"))
+						if (($this->ResultAuswerten(@$xml->e2instandby) == "false") OR (trim(@$xml->e2instandby) == "false"))
 						{
 								$PowerStateIST = 1;
 								$this->SetValueInteger("PowerStateVAR", 1); // AN
