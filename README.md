@@ -44,6 +44,7 @@ Receiver muss eine eigene Modul-Instanz angelegt werden.
 - Festplatte > Kapazität (in MB)    *wenn HDD verbaut*
 - Festplatte > Freie Kapazität (in MB)    *wenn HDD verbaut*
 - Netzwerk-Infos > IP, Mac, GW, Netzmaske, DHCP    *nur in Variablen, wenn "Erw. Informationen" aktiv*
+- Bildinformationen (Breite x Höhe in Pixel)    *nur in Variablen, wenn "Erw. Informationen" aktiv*
 
 **Informationen über den aktuellen/nächsten Sender/Sendung (einstellbarer Intervall):**
 - Aktueller Sendername, Sendungsname, Sendungsbeschreibung kurz, Sendungsbeschreibung lang, Sendungsdauer,
@@ -75,7 +76,10 @@ Receiver muss eine eigene Modul-Instanz angelegt werden.
 **Signalstärke auslesen**
 - Liest die Signalstärke aus (SNR db, SNR, BER, ACG), schreibt sie ggf. in die Variablen und gibt alles in einem Array zurück.
   *nur in Variablen, wenn "Erw. Informationen" aktiv*
-
+  
+**Tonspuren auslesen**
+- Liest die verfügbaren Tonspuren der Sendung aus, gibt die Infos als Array zurück und speichert die Infos in Variablen.
+  *nur in Variablen, wenn "Erw. Informationen" aktiv*
 
 
 
@@ -185,7 +189,14 @@ ermittelt werden.
 ```php
   Enigma2BY_GetSignalInfos(integer $InstanzID);
 ```
-Liest die aktuellen Signalstärken aus dem Receiver aus (SNR db, SNR, BER, ACG).
+Liest die aktuellen Signalstärken aus dem Receiver aus (SNR db, SNR, BER, ACG), speichert die Daten ggf.
+in Variablen und gibt die Informationen in einem Array zurück.
+
+```php
+  Enigma2BY_GetTonspuren(integer $InstanzID);
+```
+Liest die verfügbaren Tonspuren der Sendung aus, speichert die Daten ggf. in Variablen und gibt die
+Informationen in einem Array zurück.
 
 
 ## 5. Changelog

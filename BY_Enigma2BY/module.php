@@ -133,6 +133,11 @@ class Enigma2BY extends IPSModule
 		        $this->RegisterVariableBoolean("LanDhcpVAR", "LAN - DHCP", "E2BY.inaktiv.aktiv");
 		        $this->RegisterVariableString("LanGwVAR", "LAN - Gateway");
 		        $this->RegisterVariableString("LanNetzmaskeVAR", "LAN - Netzmaske");
+		        $this->RegisterVariableInteger("VideoBreiteVAR", "Video - Breite");
+		        $this->RegisterVariableInteger("VideoHoeheVAR", "Video - Höhe");
+		        $this->RegisterVariableString("VideoBreiteHoeheVAR", "Video - Breite x Höhe");
+		        $this->RegisterVariableInteger("TonspurenAnzahlVAR", "Tonspuren-Anzahl");
+		        $this->RegisterVariableString("TonspurAktivVAR", "Tonspur-Aktiv");
       	}
       	else
       	{
@@ -145,6 +150,11 @@ class Enigma2BY extends IPSModule
 						$this->UnregisterVariable("LanDhcpVAR");
 						$this->UnregisterVariable("LanGwVAR");
 						$this->UnregisterVariable("LanNetzmaskeVAR");
+						$this->UnregisterVariable("VideoBreiteVAR");
+						$this->UnregisterVariable("VideoHoeheVAR");
+						$this->UnregisterVariable("VideoBreiteHoeheVAR");
+						$this->UnregisterVariable("TonspurenAnzahlVAR");
+						$this->UnregisterVariable("TonspurAktivVAR");
       	}
       	
       	
@@ -174,6 +184,7 @@ class Enigma2BY extends IPSModule
 				    		if ($this->ReadPropertyBoolean("ErwInformationen") == true)
 								{
 				    				$this->GetSignalInfos();
+				    				$this->GetTonspuren();
 				    		}
       			}
       	}
@@ -455,11 +466,17 @@ class Enigma2BY extends IPSModule
 								$E2_SysInfo["LanDHCP"] = $this->ResultAuswerten(trim($xml->e2about->e2landhcp));
 								$E2_SysInfo["LanGW"] = (string)trim($xml->e2about->e2langw);
 								$E2_SysInfo["LanNETZMASKE"] = (string)trim($xml->e2about->e2lanmask);
+								$E2_SysInfo["VideoBreite"] = (int)trim($xml->e2about->e2videowidth);
+								$E2_SysInfo["VideoHoehe"] = (int)trim($xml->e2about->e2videoheight);
+								$E2_SysInfo["VideoBreiteHoehe"] = (string)trim($xml->e2about->e2servicevideosize);
 								$this->SetValueString("LanIpVAR", $E2_SysInfo["LanIP"]);
 								$this->SetValueString("LanMacVAR", $E2_SysInfo["LanMAC"]);
 								$this->SetValueBoolean("LanDhcpVAR", $E2_SysInfo["LanDHCP"]);
 								$this->SetValueString("LanGwVAR", $E2_SysInfo["LanGW"]);
 								$this->SetValueString("LanNetzmaskeVAR", $E2_SysInfo["LanNETZMASKE"]);
+								$this->SetValueInteger("VideoBreiteVAR", $E2_SysInfo["VideoBreite"]);
+								$this->SetValueInteger("VideoHoeheVAR", $E2_SysInfo["VideoHoehe"]);
+								$this->SetValueString("VideoBreiteHoeheVAR", $E2_SysInfo["VideoBreiteHoehe"]);
 						}
 						return $E2_SysInfo;
 				}
@@ -525,6 +542,37 @@ class Enigma2BY extends IPSModule
 						}
 				}
 				return $PowerStateIST;
+    }
+    
+    public function GetTonspuren()
+    {
+    		$IP = $this->ReadPropertyString("Enigma2IP");
+    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+    		if ($this->GetPowerState() == 1)
+    		{
+		    		$url = "http://".$IP.":".$WebPort."/web/getaudiotracks";
+						$xml = @simplexml_load_file($url);
+						$i = 0;
+						foreach ($xml->e2audiotrack as $xmlnode)
+						{
+							$TonspurenAR[$i]["TonspurBeschreibung"] = (string)$xmlnode->e2audiotrackdescription;
+							$TonspurenAR[$i]["TonspurID"] = (string)$xmlnode->e2audiotrackid;
+							$TonspurenAR[$i]["TonspurPID"] = (string)$xmlnode->e2audiotrackpid;
+							$TonspurenAR[$i]["TonspurAktiv"] = $this->ResultAuswerten(trim($xmlnode->e2audiotrackactive));
+							if ($TonspurenAR[$i]["TonspurAktiv"] === true)
+							{
+									$TonspurAktivVarText = "ID=".$TonspurenAR[$i]["TonspurID"]."//PID=".$TonspurenAR[$i]["TonspurPID"]."//Beschreibung=".$TonspurenAR[$i]["TonspurBeschreibung"];
+									$this->SetValueString("TonspurAktivVAR", $TonspurAktivVarText);
+							}
+							$i++;
+						}
+						$TonspurenCount = count($xml->e2audiotrack);  // Anzahl der verfügbaren Tonspuren
+						$this->SetValueInteger("TonspurenAnzahlVAR", $TonspurenCount);						
+				}
+				else
+				{
+						return false;
+				}
     }
     
     public function GetVolume()
