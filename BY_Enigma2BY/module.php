@@ -17,6 +17,7 @@ class Enigma2BY extends IPSModule
         $this->RegisterPropertyString("RCUdefault", "advanced");
         $this->RegisterPropertyString("KeyDropDown", "");
         $this->RegisterPropertyString("SenderZapTo", "");
+        $this->RegisterPropertyString("EPGSuchstring", "");
         $this->RegisterTimer("Refresh_All", 0, 'Enigma2BY_UpdateAll($_IPS[\'TARGET\']);');
     }
 
@@ -83,6 +84,8 @@ class Enigma2BY extends IPSModule
         $this->RegisterVariableString("ImageVersionVAR", "Image-Version");
         $this->RegisterVariableString("WebIfVersionVAR", "WebIf-Version");
         $this->RegisterVariableString("BoxModelVAR", "Receiver Modell");
+        $this->RegisterVariableInteger("EPGSucheErgebnisAnzahlVAR", "EPGSuchergebnis-Anzahl");
+		    $this->RegisterVariableString("EPGSucheErgebnisVAR", "EPGSuchergebnis", "~HTMLBox");
         
         if ($this->ReadPropertyBoolean("HDDverbaut") == true)
 				{
@@ -245,6 +248,22 @@ class Enigma2BY extends IPSModule
  				echo $echoText;
     }
     
+    public function TestEPGSuche()
+    {
+    		$Suchstring = $this->ReadPropertyString("EPGSuchstring");
+    		$result = $this->EPGSuche($Suchstring);
+    		if ($result)
+    		{
+    				$echoText = "EPG-Suche erfolgreich ausgeführt! Das Ergebnis der Suche ist in der Variable 'EPGSuchergebnis' zu finden.";
+    				echo $echoText;
+    		}
+    		else 
+    		{
+    				$echoText = "Im EPG wurde nichts passendes zum Suchbegriff '".$Suchstring."' gefunden!";
+    				echo $echoText;
+    		}
+    }
+    
     public function TestZap()
     {
     		$Sendername = $this->ReadPropertyString("SenderZapTo");
@@ -294,6 +313,7 @@ class Enigma2BY extends IPSModule
 												$this->SendKey("Exit", "short");
 										}
 										$this->SetValueInteger("FrageAntwortVAR", $AntwortINT);
+										IPS_SemaphoreLeave("Enigma2BY_SendMsg");
 										return $AntwortINT;
 		    				}
 		    				IPS_SemaphoreLeave("Enigma2BY_SendMsg");
@@ -1005,6 +1025,81 @@ class Enigma2BY extends IPSModule
 								return false;
 						}
 					
+				}
+				else
+				{
+						return false;
+				}
+    }
+    
+    public function EPGSuche($Suchstring)
+    {
+    		$IP = $this->ReadPropertyString("Enigma2IP");
+    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+    		if ($this->GetPowerState() != 0)
+    		{
+		    		$url = "http://".$IP."/web/epgsearch?search=".$Suchstring;
+						$xml = simplexml_load_file($url);
+						
+						$i = 0;
+						foreach ($xml->e2event as $xmlnode)
+						{
+							$EPGSucheAR[$i]["Sendername"] = (string)$xmlnode->e2eventservicename; // Sendername
+						 	$EPGSucheAR[$i]["ServiceReference"] = (string)$xmlnode->e2eventservicereference; // ServiceReference
+							$EPGSucheAR[$i]["EventID"] = (int)$xmlnode->e2eventid; // EventID
+							$EPGSucheAR[$i]["Sendungsname"] = (string)$xmlnode->e2eventtitle; // Sendungsname
+							$EPGSucheAR[$i]["SendungsbeschreibungKurz"] = (string)$xmlnode->e2eventdescription; // Sendungsbeschreibung kurz
+							$EPGSucheAR[$i]["SendungsbeschreibungLang"] = (string)$xmlnode->e2eventdescriptionextended; // Sendungsbeschreibung lang
+							$EPGSucheAR[$i]["Sendungsbeginn"] = (int)$xmlnode->e2eventstart; // Sendungsbeginn
+							$EPGSucheAR[$i]["SendungsdauerSek"] = (int)$xmlnode->e2eventduration; // Sendungsdauer Sek.
+							$EPGSucheAR[$i]["Sendungsende"] = $EPGSucheAR[$i]["Sendungsbeginn"] + $EPGSucheAR[$i]["SendungsdauerSek"]; // Sendungsende
+							$i++;
+						}
+						$SuchCount = count($xml->e2event);  // Anzahl der Timer in der Liste
+						$this->SetValueInteger("EPGSucheErgebnisAnzahlVAR", $SuchCount);
+						
+						// HTML Ausgabe generieren
+						$TitelAR = array("Sendername","Sendungsname","Beschreibung","Beginn","Ende","Dauer");
+						$HTMLEPGSuchergebnisse = '<html><table>';
+						$HTMLEPGSuchergebnisse .= '<tr><th>'.$TitelAR[0].'</th><th>'.$TitelAR[1].'</th><th colspan="2">'.$TitelAR[2].'</th><th>'.$TitelAR[3].'</th><th>'.$TitelAR[4].'</th><th>'.$TitelAR[5].'</th></tr>';
+						
+						for ($h=0; $h<count($EPGSucheAR); $h++)
+						{
+								// Timerbeginn-Anpassung
+								$t = date("w", $EPGSucheAR[$h]["Sendungsbeginn"]);
+								$wochentage = array('So.','Mo.','Di.','Mi.','Do.','Fr.','Sa.');
+								$EPGEintragSendungsbeginn = $wochentage[$t];
+								$EPGEintragSendungsbeginn .= " ".date("j.m.Y H:i", $EPGSucheAR[$h]["Sendungsbeginn"]);
+								// Timerende-Anpassung
+								$t = date('w', $EPGSucheAR[$h]["Sendungsende"]);
+								$wochentage = array('So.','Mo.','Di.','Mi.','Do.','Fr.','Sa.');
+								$EPGEintragSendungsende = $wochentage[$t];
+								$EPGEintragSendungsende .= " ".date("j.m.Y H:i", $EPGSucheAR[$h]["Sendungsende"]);
+								// Sendungsbeschreibung-Anpassung
+								if ((strlen($EPGSucheAR[$h]["SendungsbeschreibungKurz"]) > 2) AND (strlen($EPGSucheAR[$h]["SendungsbeschreibungLang"]) > 2))
+								{
+										$EPGEintragBeschreibung = $EPGSucheAR[$h]["SendungsbeschreibungKurz"].' || '.$EPGSucheAR[$h]["SendungsbeschreibungLang"];
+								}
+								elseif ((strlen($EPGSucheAR[$h]["SendungsbeschreibungKurz"]) < 2) AND (strlen($EPGSucheAR[$h]["SendungsbeschreibungLang"]) > 2))
+								{
+								      $EPGEintragBeschreibung = $EPGSucheAR[$h]["SendungsbeschreibungLang"];
+								}
+								elseif ((strlen($EPGSucheAR[$h]["SendungsbeschreibungKurz"]) > 2) AND (strlen($EPGSucheAR[$h]["SendungsbeschreibungLang"]) < 2))
+								{
+								      $EPGEintragBeschreibung = $EPGSucheAR[$h]["SendungsbeschreibungKurz"];
+								}
+								else
+								{
+								      $EPGEintragBeschreibung = "";
+								}
+								// Sendungsdauer-Anpassung
+								$EPGEintragSendungsdauerMin = $EPGSucheAR[$h]["SendungsdauerSek"] / 60;
+								$HTMLEPGSuchergebnisse .= '<tr><th>'.$EPGSucheAR[$h]["Sendername"].'</th><th>'.$EPGSucheAR[$h]["Sendungsname"].'</th><th colspan="2">'.$EPGEintragBeschreibung.'</th><th>'.$EPGEintragSendungsbeginn.'</th><th>'.$EPGEintragSendungsende.'</th><th>'.$EPGEintragSendungsdauerMin.' Min.</th></tr>';
+						}
+						
+						$HTMLEPGSuchergebnisse .= '</table></html>';
+						$this->SetValueString("EPGSucheErgebnisVAR", $HTMLEPGSuchergebnisse);
+						return $EPGSucheAR;
 				}
 				else
 				{

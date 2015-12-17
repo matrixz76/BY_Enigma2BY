@@ -57,10 +57,13 @@ Receiver muss eine eigene Modul-Instanz angelegt werden.
 **Aufnahmenliste auslesen (einstellbarer Intervall)**
 - Liest die Aufnahmenliste aus dem Receiver aus, gibt diese als Array zurück und speichert die Daten in eine Variable (HTMLBox)
 
+**EPG Suche**
+- Durchsucht das EPG anhand des/der angegebenen Suchbegriff/e, gibt das Ergebnis als Array zurück und stellt es in einer Variable
+  als HTMLBox dar. Damit kann man sich eine Sendungen-Suchmaske in seine Visualisierung einbauen.
+
 **Eingestellte Lautstärke vom Receiver auslesen und setzen**
 - Liest die aktuelle Receiver-Lautstärke aus (Volume 0-100 und Mute aktiv/inaktiv)
-- Steuert die Lautstärke des Receiver (bestimmter Wert, leiser, lauter, Toggle Mute)
-
+- Steuert die Lautstärke des Receiver (bestimmter Wert, leiser, lauter, Toggle Mute)<br>
     > !Achtung! Lautstärke kann nur geändert werden, wenn AC3-Ton im Receiver nicht als Default gewählt wurde!
 
 **Power-Zustand des Receiver auslesen und steuern**
@@ -71,7 +74,7 @@ Receiver muss eine eigene Modul-Instanz angelegt werden.
 - Liest alle Sender der Senderliste mit ServiceReferenznummer aus und gibt es in einem Array zurück
 
 **Sender umschalten**
-- Schaltet auf den Receiver auf den angegeben Sender um
+- Schaltet auf dem Receiver auf den angegeben Sender um
 
 **Signalstärke auslesen**
 - Liest die Signalstärke aus (SNR db, SNR, BER, ACG), schreibt sie ggf. in die Variablen und gibt alles in einem Array zurück.
@@ -218,6 +221,12 @@ Setzt die gewählte Tonspur für die aktuelle Sendung und gibt true/false zurüc
 nicht gesetzt werden konnte. Die verfügbaren Tonspuren mit ID kann man über "Enigma2BY_GetTonspuren" auslesen.
 
 ```php
+  Enigma2BY_EPGSuche(integer $InstanzID, string $Suchbegriff);
+```
+Durchsucht das EPG, anhand des/der gewählten Suchbegriff/e, gibt das Ergebnis als Array zurück und stellt die
+Rückgabe in einer Variable (als HTMLBox) dar.
+
+```php
   Enigma2BY_GetAC3DownmixInfo(integer $InstanzID);
 ```
 Liest die aktuelle Einstellung für "AC3 Downmix" aus, speichert das Ergebnis ggf. in eine Variable und gibt die
@@ -254,5 +263,7 @@ Version 1.1:
 Version 1.2:
   - NEU # GetAC3DownmixInfo (AC3 Downmix aktiv=true / inaktiv=false)
   - NEU # GetSleeptimerInfos (Informationen [Aktiviert,Minuten,Aktion,Text] auslesen und ggf. in Variablen schreiben)
-  - NEU # SetSleeptimer (Einstellungen des Sleeptimer setzen, sowie Sleeptimer aktivieren/deaktivieren)  
- 
+  - NEU # SetSleeptimer (Einstellungen des Sleeptimer setzen, sowie Sleeptimer aktivieren/deaktivieren)
+  - NEU # EPGSuche (EPG mit einem Suchbegriff [z.B. Name einer Sendung] durchsuchen)
+  - FIX # SendMsg-Frage (Semaphore wurde nicht immer verlassen)
+  

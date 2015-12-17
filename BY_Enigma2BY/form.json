@@ -2,7 +2,7 @@
   "elements":
   [
 
-    { "type": "Label", "label": "##### Enigma2BY v1.2 (17.12.2015 06.46Uhr) #####" },
+    { "type": "Label", "label": "##### Enigma2BY v1.2 (17.12.2015 21.20Uhr) #####" },
     { "type": "Label", "label": "IP-Adresse und WebIf-Port, unter der ein Receiver mit Enigma2 erreichbar ist:" },
     { "name": "Enigma2IP", "type": "ValidationTextBox", "caption": "Receiver IP-Adresse" },
     { "type": "NumberSpinner", "name": "Enigma2WebPort", "caption": "Receiver Web-Port" },
@@ -67,7 +67,12 @@
     { "type": "Label", "label": "--------------------------------------------------------------------------------------------------------------------------------------------------------" },
     { "type": "Label", "label": "Hier kann ein Sender eingetragen werden, auf welchen der Receiver dann umschaltet." },
     { "type": "Label", "label": "!!! Erst auf -Übernehmen- drücken und dann auf -Sender umschalten- !!!" },
-    { "name": "SenderZapTo", "type": "ValidationTextBox", "caption": "Sendername" }
+    { "name": "SenderZapTo", "type": "ValidationTextBox", "caption": "Sendername" },
+    { "type": "Label", "label": "--------------------------------------------------------------------------------------------------------------------------------------------------------" },
+    { "type": "Label", "label": "Hier kann ein Such-String eingetragen werden, nach welchem dann das EPG durchsucht wird." },
+    { "type": "Label", "label": "Das Ergebnis wird dann als HTML-Tabelle in der Variable 'EPGSuchergebnis' gespeichert." },
+    { "type": "Label", "label": "!!! Erst auf -Übernehmen- drücken und dann auf -EPG durchsuchen- !!!" },
+    { "name": "EPGSuchstring", "type": "ValidationTextBox", "caption": "Suchbegriff(e)" }
     
   ],
   "actions":
@@ -75,6 +80,7 @@
 
     { "type": "Button", "label": "Taste senden", "onClick": "Enigma2BY_TestKey($id);" },
     { "type": "Button", "label": "Sender umschalten", "onClick": "Enigma2BY_TestZap($id);" },
+    { "type": "Button", "label": "EPG durchsuchen", "onClick": "Enigma2BY_TestEPGSuche($id);" },
     { "type": "Button", "label": "Test-Nachricht senden", "onClick": "Enigma2BY_TestMsg($id);" },
     { "type": "Label", "label": "--------------------------------------------------------------------------------------------------------------------------------------------------------" },
 		{ "type": "Button", "label": "Lautstärke -5", "onClick": "Enigma2BY_TestVolDown5($id);" },
