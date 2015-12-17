@@ -81,7 +81,20 @@ Receiver muss eine eigene Modul-Instanz angelegt werden.
 - Liest die verfügbaren Tonspuren der Sendung aus, gibt die Infos als Array zurück und speichert die Infos in Variablen.
   *nur in Variablen, wenn "Erw. Informationen" aktiv*
 
+**AC3 Downmix Einstellungen auslesen**
+- Liest die Einstellungen zu AC3-Downmix aus, gibt die Infos als Array zurück und speichert die Infos in Variablen.
+  *nur in Variablen, wenn "Erw. Informationen" aktiv*
 
+**Sleeptimer auslesen**
+- Liest die Einstellungen des Sleeptimer aus, gibt die Infos als Array zurück und speichert die Infos in Variablen.
+  *nur in Variablen, wenn "Erw. Informationen" aktiv*
+
+**Sleeptimer**
+- Liest die Einstellungen des Sleeptimer (Aktiviert,Minuten,Aktion,Bestaetigt,Text) aus, gibt die Infos als Array zurück
+  und speichert die Infos in Variablen (auch beim Setzen/Aktivieren des Sleeptimer - zur Kontrolle).
+  *nur in Variablen, wenn "Erw. Informationen" aktiv*
+- Setzen/Aktivieren des Sleeptimer mit den gewählten Einstellungen (Minuten [0-999], Aktion [Standby/Shutdown], Aktiviert [true/false]).
+      
 
 ## 2. Systemanforderungen
 - IP-Symcon ab Version 4.x
@@ -204,6 +217,27 @@ Informationen in einem Array zurück.
 Setzt die gewählte Tonspur für die aktuelle Sendung und gibt true/false zurück, wenn die Tonspur gesetzt oder
 nicht gesetzt werden konnte. Die verfügbaren Tonspuren mit ID kann man über "Enigma2BY_GetTonspuren" auslesen.
 
+```php
+  Enigma2BY_GetAC3DownmixInfo(integer $InstanzID);
+```
+Liest die aktuelle Einstellung für "AC3 Downmix" aus, speichert das Ergebnis ggf. in eine Variable und gibt die
+Informationen in einem Array zurück.
+
+```php
+  Enigma2BY_GetSleeptimer(integer $InstanzID);
+```
+Liest die aktuelle Einstellungen des Sleeptimer aus, speichert das Ergebnis ggf. in Variablen und gibt die
+Informationen in einem Array zurück.
+
+```php
+  Enigma2BY_SetSleeptimer(integer $InstanzID, integer $Minuten, string $Aktion, bool $Aktiv);
+```
+Setzt die Einstellungen für den Sleeptimer bzw. aktiviert/deaktiviert ihn. Die übernommenen Einstellungen werden
+dann im Array zurück geliefert (zur Kontrolle) und ggf. in Variablen geschrieben.<br>
+$Minuten (0-999)<br>
+$Aktion (standby/shutdown)<br>
+$Aktiv (true/false)<br>
+
 
 ## 5. Changelog
 Version 1.0:
@@ -216,4 +250,9 @@ Version 1.1:
   - FIX # HDD Werte wurden in MB angezeigt, statt in GB
   - FIX # Bei XTrend/VU+ wurde die Kapazität der HDD teilweise in TB zurückgegeben, wird jetzt in GB umgerechnet
   - CHANGE # Die Result-Arrays haben jetzt bessere Bezeichnungen, damit man sieht welche Daten was beinhalten
+  
+Version 1.2:
+  - NEU # GetAC3DownmixInfo (AC3 Downmix aktiv=true / inaktiv=false)
+  - NEU # GetSleeptimerInfos (Informationen [Aktiviert,Minuten,Aktion,Text] auslesen und ggf. in Variablen schreiben)
+  - NEU # SetSleeptimer (Einstellungen des Sleeptimer setzen, sowie Sleeptimer aktivieren/deaktivieren)  
  
