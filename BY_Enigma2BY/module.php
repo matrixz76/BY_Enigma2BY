@@ -270,15 +270,15 @@ class Enigma2BY extends IPSModule
 		    						$this->SendKey("ArrowDown", "short");
 		    						IPS_Sleep($Timeout * 1000 + 1000);
 										$xml = @simplexml_load_file("http://".$IP.":".$WebPort."/web/messageanswer?getanswer=now");
-										if (trim($xml->e2statetext) == "Answer is NO!")
+										if ((trim($xml->e2statetext) == "Answer is NO!") OR (trim($xml->e2statetext) == "Antwort lautet NEIN!"))
 										{
 												$AntwortINT = 0;
 										}
-										elseif (trim($xml->e2statetext) == "Answer is YES!")
+										elseif ((trim($xml->e2statetext) == "Answer is YES!") OR (trim($xml->e2statetext) == "Antwort lautet JA!"))
 										{
 												$AntwortINT = 1;
 										}
-										elseif (trim($xml->e2statetext) == "No answer in time")
+										elseif ((trim($xml->e2statetext) == "No answer in time") OR (trim($xml->e2statetext) == "Keine rechtzeitige Antwort"))
 										{
 												$AntwortINT = 2;
 												$this->SendKey("Exit", "short");
