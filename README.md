@@ -54,6 +54,10 @@ Receiver muss eine eigene Modul-Instanz angelegt werden.
 **Timerliste auslesen (einstellbarer Intervall)**
 - Liest die Timerliste aus dem Receiver aus, gibt diese als Array zurück und speichert die Daten in eine Variable (HTMLBox)
 
+**Timer bearbeiten**
+- Hinzufügen eines Aufnahme-Timer
+- Entfernen eines Timer
+
 **Aufnahmenliste auslesen (einstellbarer Intervall)**
 - Liest die Aufnahmenliste aus dem Receiver aus, gibt diese als Array zurück und speichert die Daten in eine Variable (HTMLBox)
 
@@ -185,6 +189,20 @@ Liefert ein Array mit allen Timern + Details zurück und schreibt die Daten in e
 Variable (als HTML-Tabelle).
 
 ```php
+  Enigma2BY_AddTimerByEventID(integer $InstanzID, string $sRef, integer $EventID, string $AufnahmePfad);
+```
+Erstellt einen Aufnahme-Timer für die angegebene Sendung. sRef und EventID einer Sendung können über die
+EPGSuche-Funktion ermittelt werden. Der Aufnahmepfad bei einer eingebauten Festplatte ist "/hdd/movie/".
+Liefert true/false zurück, je nachdem, ob der Timer erstellt wurde oder nicht.
+
+```php
+  Enigma2BY_DelTimer(integer $InstanzID, string $sRef, integer $Sendungsbeginn, integer $Sendungsende);
+```
+Entfernt einen Timer aus der Timerliste. Die erforderlichen Daten können mit der "GetTimerliste"-Funktion
+ermittelt werden. Sendungsbeginn und -Ende müssen als Unix-Timestamp angegeben werden. Liefert true/false zurück,
+je nachdem, ob der Timer entfernt werden konnte oder nicht.
+
+```php
   Enigma2BY_GetAufnahmenliste(integer $InstanzID);
 ```
 Liefert ein Array mit allen Aufnahmen + Details zu allen aufgenommenen Sendungen
@@ -267,3 +285,8 @@ Version 1.2:
   - NEU # EPGSuche (EPG mit einem Suchbegriff [z.B. Name einer Sendung] durchsuchen)
   - FIX # SendMsg-Frage (Semaphore wurde nicht immer verlassen)
   
+Version 1.3:
+  - NEU # AddTimerByEventID (Aufnahme-Timer hinzufügen)
+  - NEU # DelTimer (Timer entfernen/löschen)
+  - CHANGE # Durch das Abfragen der Aufnahmeliste (durch Intervall-Timer) wurde die HDD immer aus dem Standby geholt - deshalb
+    muss die Aufnahmeliste ab jetzt manuell durch euch aktualisiert werden (z.B. immer nur Nachts oder wann ihr wollt).

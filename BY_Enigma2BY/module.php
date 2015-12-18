@@ -165,7 +165,7 @@ class Enigma2BY extends IPSModule
 				    		$this->GetVolume();
 				    		$this->GetPowerState();
 				    		$this->GetTimerliste();
-				    		$this->GetAufnahmenliste();
+				    		//$this->GetAufnahmenliste();  // sonst wird die HDD immer aus dem Standby geholt
 				    		$this->GetSenderliste();
 				    		if ($this->ReadPropertyBoolean("ErwInformationen") == true)
 								{
@@ -799,6 +799,50 @@ class Enigma2BY extends IPSModule
 						$this->SetValueBoolean("MuteVAR", $E2_VolReturn["Mute"]);
 						$this->GetVolume();
 						return $E2_VolReturn;						
+				}
+				else
+				{
+						return false;
+				}
+    }
+    
+    public function AddTimerByEventID($sRef, $EventID, $AufnahmePfad)
+    {
+    		$IP = $this->ReadPropertyString("Enigma2IP");
+    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+    		if ($this->GetPowerState() != 0)
+    		{
+		    		$url = "http://".$IP.":".$WebPort."/web/timeraddbyeventid?sRef=".$sRef."&eventid=".$EventID."&dirname=".$AufnahmePfad;
+						$xml = @simplexml_load_file($url);
+						if ($xml === false)
+						{
+								return false;
+						}
+						$result = $this->ResultAuswerten($xml->e2state);
+						$this->GetTimerliste();
+						return $result;
+				}
+				else
+				{
+						return false;
+				}
+    }
+    
+    public function DelTimer($sRef, $TimerStartzeit, $TimerEndzeit)
+    {
+    		$IP = $this->ReadPropertyString("Enigma2IP");
+    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+    		if ($this->GetPowerState() != 0)
+    		{
+		    		$url = "http://".$IP.":".$WebPort."/web/timerdelete?sRef=".$sRef."&begin=".$TimerStartzeit."&end=".$TimerEndzeit;
+						$xml = @simplexml_load_file($url);
+						if ($xml === false)
+						{
+								return false;
+						}
+						$result = $this->ResultAuswerten($xml->e2state);
+						$this->GetTimerliste();
+						return $result;
 				}
 				else
 				{
