@@ -1160,6 +1160,7 @@ class Enigma2BY extends IPSModule
 		    		if ($ServiceRef != NULL)
 						{
 								$IP = $this->ReadPropertyString("Enigma2IP");
+								$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
 					    	$url = "http://".$IP.":".$WebPort."/web/zap?sRef=".$ServiceRef;
 								$xml = @simplexml_load_file($url);
 								$result = $this->ResultAuswerten($xml->e2state);
