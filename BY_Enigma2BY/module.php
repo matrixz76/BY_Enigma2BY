@@ -1229,7 +1229,7 @@ class Enigma2BY extends IPSModule
 		    		$url = "http://".$IP.":".$WebPort."/web/about";
 						$xml = @simplexml_load_file($url);
     				$E2_Distroversion = (string)trim(@$xml->e2about->e2distroversion);
-    				if ($E2_Distroversion != "openatv")
+    				if ($E2_Distroversion == "openatv")
     				{
     						return false;
     				}
