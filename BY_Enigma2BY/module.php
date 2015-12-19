@@ -1,4 +1,9 @@
 <?
+/* 2do ******************************************************************************************************************************************
+> Überprüfen, ob eine XML überhaupt vorhanden ist, wenn nicht, dann die Variablen mit erw. Infos gar nicht erst anlegen und da nichts abfragen (OpenATV z.B. AC3Downmix + Sleeptimer)
+> Image erkennen und bei OpenATV Images dann die Frage nicht mit EXIT beim Timeout beenden, sondern Default dann mit OK und damit NEIN (hinweis in readme schreiben)
+  >> bzw. erst die antwort auslesen (da kommt dann keine antwort und danach erst mit OK auf NEIN drücken)
+************************************************************************************************************************************************/
 class Enigma2BY extends IPSModule
 {
 
@@ -116,10 +121,13 @@ class Enigma2BY extends IPSModule
 		        $this->RegisterVariableString("VideoBreiteHoeheVAR", "Video - Breite x Höhe");
 		        $this->RegisterVariableInteger("TonspurenAnzahlVAR", "Tonspuren-Anzahl");
 		        $this->RegisterVariableString("TonspurAktivVAR", "Tonspur-Aktiv");
-		        $this->RegisterVariableBoolean("AC3DownmixStatusVAR", "AC3-Downmix", "E2BY.inaktiv.aktiv");
-		        $this->RegisterVariableBoolean("SleeptimerAktiviertVAR", "Sleeptimer-Status", "E2BY.inaktiv.aktiv");
-		        $this->RegisterVariableInteger("SleeptimerMinutenVAR", "Sleeptimer-Minuten", "E2BY.Minuten");
-		        $this->RegisterVariableString("SleeptimerAktionVAR", "Sleeptimer-Aktion");
+		        if ($this->DistroCheck() == true)
+		        {
+				        $this->RegisterVariableBoolean("AC3DownmixStatusVAR", "AC3-Downmix", "E2BY.inaktiv.aktiv");
+				        $this->RegisterVariableBoolean("SleeptimerAktiviertVAR", "Sleeptimer-Status", "E2BY.inaktiv.aktiv");
+				        $this->RegisterVariableInteger("SleeptimerMinutenVAR", "Sleeptimer-Minuten", "E2BY.Minuten");
+				        $this->RegisterVariableString("SleeptimerAktionVAR", "Sleeptimer-Aktion");
+		      	}
       	}
       	else
       	{
@@ -137,10 +145,13 @@ class Enigma2BY extends IPSModule
 						$this->UnregisterVariable("VideoBreiteHoeheVAR");
 						$this->UnregisterVariable("TonspurenAnzahlVAR");
 						$this->UnregisterVariable("TonspurAktivVAR");
-						$this->UnregisterVariable("AC3DownmixStatusVAR");
-						$this->UnregisterVariable("SleeptimerAktiviertVAR");
-						$this->UnregisterVariable("SleeptimerMinutenVAR");
-						$this->UnregisterVariable("SleeptimerAktionVAR");
+						if ($this->DistroCheck() == true)
+		        {
+								$this->UnregisterVariable("AC3DownmixStatusVAR");
+								$this->UnregisterVariable("SleeptimerAktiviertVAR");
+								$this->UnregisterVariable("SleeptimerMinutenVAR");
+								$this->UnregisterVariable("SleeptimerAktionVAR");
+						}
       	}
       	
       	
@@ -171,8 +182,11 @@ class Enigma2BY extends IPSModule
 								{
 				    				$this->GetSignalInfos();
 				    				$this->GetTonspuren();
-				    				$this->GetAC3DownmixInfo();
-				    				$this->GetSleeptimerInfos();
+				    				if ($this->DistroCheck() == true)
+		        				{
+						    				$this->GetAC3DownmixInfo();
+						    				$this->GetSleeptimerInfos();
+				    				}
 				    		}
       			}
       	}
@@ -310,7 +324,14 @@ class Enigma2BY extends IPSModule
 										elseif ((trim($xml->e2statetext) == "No answer in time") OR (trim($xml->e2statetext) == "Keine rechtzeitige Antwort"))
 										{
 												$AntwortINT = 2;
-												$this->SendKey("Exit", "short");
+												if ($this->DistroCheck() == true)
+		        						{
+														$this->SendKey("Exit", "short");
+												}
+												else
+												{
+														$this->SendKey("OK", "short");
+												}
 										}
 										$this->SetValueInteger("FrageAntwortVAR", $AntwortINT);
 										IPS_SemaphoreLeave("Enigma2BY_SendMsg");
@@ -559,93 +580,114 @@ class Enigma2BY extends IPSModule
     
     public function GetAC3DownmixInfo()
     {
-    		$IP = $this->ReadPropertyString("Enigma2IP");
-    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-    		if ($this->GetPowerState() != 0)
-    		{
-		    		$url = "http://".$IP.":".$WebPort."/web/downmix";
-						$xml = @simplexml_load_file($url);
-						$E2_AC3DownmixStatus = $this->ResultAuswerten(trim($xml->e2state));
-						$E2_AC3DownmixText = (string)trim($xml->e2statetext);
-						$E2_AC3DownmixInfo["AC3DownmixStatus"] = $E2_AC3DownmixStatus;
-						$E2_AC3DownmixInfo["AC3DownmixText"] = $E2_AC3DownmixText;
-						if ($this->ReadPropertyBoolean("ErwInformationen") == true)
-						{
-								$this->SetValueBoolean("AC3DownmixStatusVAR", $E2_AC3DownmixStatus);
+    		if ($this->DistroCheck() == true)
+		    {
+		    		$IP = $this->ReadPropertyString("Enigma2IP");
+		    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+		    		if ($this->GetPowerState() != 0)
+		    		{
+				    		$url = "http://".$IP.":".$WebPort."/web/downmix";
+								$xml = @simplexml_load_file($url);
+								$E2_AC3DownmixStatus = $this->ResultAuswerten(trim($xml->e2state));
+								$E2_AC3DownmixText = (string)trim($xml->e2statetext);
+								$E2_AC3DownmixInfo["AC3DownmixStatus"] = $E2_AC3DownmixStatus;
+								$E2_AC3DownmixInfo["AC3DownmixText"] = $E2_AC3DownmixText;
+								if ($this->ReadPropertyBoolean("ErwInformationen") == true)
+								{
+										$this->SetValueBoolean("AC3DownmixStatusVAR", $E2_AC3DownmixStatus);
+								}
+								return $E2_AC3DownmixInfo;
 						}
-						return $E2_AC3DownmixInfo;
+						else
+						{
+								return false;
+						}
 				}
 				else
 				{
-						return false;
+						IPS_LogMessage("ENIGMA2BY", "Diese Funktion ist mit diesem Receiver/Image nicht verfügbar!");
 				}
     }
     
     public function GetSleeptimerInfos()
     {
-    		$IP = $this->ReadPropertyString("Enigma2IP");
-    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-    		if ($this->GetPowerState() == 1)
-    		{
-		    		$url = "http://".$IP.":".$WebPort."/web/sleeptimer";
-						$xml = @simplexml_load_file($url);
-						$E2_SleeptimerEnabled = $this->ResultAuswerten(trim($xml->e2enabled));
-						$E2_SleeptimerMinuten = (int)trim($xml->e2minutes);
-						$E2_SleeptimerAktion = (string)trim($xml->e2action);
-						$E2_SleeptimerText = (string)trim($xml->e2text);
-						$E2_SleeptimerInfo["SleeptimerAktiviert"] = $E2_SleeptimerEnabled;
-						$E2_SleeptimerInfo["SleeptimerMinuten"] = $E2_SleeptimerMinuten;
-						$E2_SleeptimerInfo["SleeptimerAktion"] = $E2_SleeptimerAktion;
-						$E2_SleeptimerInfo["SleeptimerText"] = $E2_SleeptimerText;
-						if ($this->ReadPropertyBoolean("ErwInformationen") == true)
-						{
-								$this->SetValueBoolean("SleeptimerAktiviertVAR", $E2_SleeptimerEnabled);
-								$this->SetValueInteger("SleeptimerMinutenVAR", $E2_SleeptimerMinuten);
-								$this->SetValueString("SleeptimerAktionVAR", $E2_SleeptimerAktion);
+    		if ($this->DistroCheck() == true)
+		    {
+		    		$IP = $this->ReadPropertyString("Enigma2IP");
+		    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+		    		if ($this->GetPowerState() == 1)
+		    		{
+				    		$url = "http://".$IP.":".$WebPort."/web/sleeptimer";
+								$xml = @simplexml_load_file($url);
+								$E2_SleeptimerEnabled = $this->ResultAuswerten(trim($xml->e2enabled));
+								$E2_SleeptimerMinuten = (int)trim($xml->e2minutes);
+								$E2_SleeptimerAktion = (string)trim($xml->e2action);
+								$E2_SleeptimerText = (string)trim($xml->e2text);
+								$E2_SleeptimerInfo["SleeptimerAktiviert"] = $E2_SleeptimerEnabled;
+								$E2_SleeptimerInfo["SleeptimerMinuten"] = $E2_SleeptimerMinuten;
+								$E2_SleeptimerInfo["SleeptimerAktion"] = $E2_SleeptimerAktion;
+								$E2_SleeptimerInfo["SleeptimerText"] = $E2_SleeptimerText;
+								if ($this->ReadPropertyBoolean("ErwInformationen") == true)
+								{
+										$this->SetValueBoolean("SleeptimerAktiviertVAR", $E2_SleeptimerEnabled);
+										$this->SetValueInteger("SleeptimerMinutenVAR", $E2_SleeptimerMinuten);
+										$this->SetValueString("SleeptimerAktionVAR", $E2_SleeptimerAktion);
+								}
+								return $E2_SleeptimerInfo;
 						}
-						return $E2_SleeptimerInfo;
+						else
+						{
+								return false;
+						}
 				}
 				else
 				{
-						return false;
+						IPS_LogMessage("ENIGMA2BY", "Diese Funktion ist mit diesem Receiver/Image nicht verfügbar!");
 				}
     }
     
     public function SetSleeptimer($Minuten, $Aktion, $Aktiv)
     {
-    		$IP = $this->ReadPropertyString("Enigma2IP");
-    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-    		if ($this->GetPowerState() == 1)
-    		{
-		    		if ($Aktiv === true)
+    		if ($this->DistroCheck() == true)
+		    {
+		    		$IP = $this->ReadPropertyString("Enigma2IP");
+		    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+		    		if ($this->GetPowerState() == 1)
 		    		{
-		    				$Aktiv = "True";
-		    		}
-		    		else
-		    		{
-		    				$Aktiv = "False";
-		    		}		    		
-		    		$url = "http://".$IP.":".$WebPort."/web/sleeptimer?cmd=set&time=".$Minuten."&action=".$Aktion."&enabled=".$Aktiv;
-						$xml = @simplexml_load_file($url);
-						$E2_SleeptimerEnabled = $this->ResultAuswerten(trim($xml->e2enabled));
-						$E2_SleeptimerMinuten = (int)trim($xml->e2minutes);
-						$E2_SleeptimerAktion = (string)trim($xml->e2action);
-						$E2_SleeptimerText = (string)trim($xml->e2text);
-						$E2_SleeptimerInfo["SleeptimerAktiviert"] = $E2_SleeptimerEnabled;
-						$E2_SleeptimerInfo["SleeptimerMinuten"] = $E2_SleeptimerMinuten;
-						$E2_SleeptimerInfo["SleeptimerAktion"] = $E2_SleeptimerAktion;
-						$E2_SleeptimerInfo["SleeptimerText"] = $E2_SleeptimerText;
-						if ($this->ReadPropertyBoolean("ErwInformationen") == true)
-						{
-								$this->SetValueBoolean("SleeptimerAktiviertVAR", $E2_SleeptimerEnabled);
-								$this->SetValueInteger("SleeptimerMinutenVAR", $E2_SleeptimerMinuten);
-								$this->SetValueString("SleeptimerAktionVAR", $E2_SleeptimerAktion);
+				    		if ($Aktiv === true)
+				    		{
+				    				$Aktiv = "True";
+				    		}
+				    		else
+				    		{
+				    				$Aktiv = "False";
+				    		}		    		
+				    		$url = "http://".$IP.":".$WebPort."/web/sleeptimer?cmd=set&time=".$Minuten."&action=".$Aktion."&enabled=".$Aktiv;
+								$xml = @simplexml_load_file($url);
+								$E2_SleeptimerEnabled = $this->ResultAuswerten(trim($xml->e2enabled));
+								$E2_SleeptimerMinuten = (int)trim($xml->e2minutes);
+								$E2_SleeptimerAktion = (string)trim($xml->e2action);
+								$E2_SleeptimerText = (string)trim($xml->e2text);
+								$E2_SleeptimerInfo["SleeptimerAktiviert"] = $E2_SleeptimerEnabled;
+								$E2_SleeptimerInfo["SleeptimerMinuten"] = $E2_SleeptimerMinuten;
+								$E2_SleeptimerInfo["SleeptimerAktion"] = $E2_SleeptimerAktion;
+								$E2_SleeptimerInfo["SleeptimerText"] = $E2_SleeptimerText;
+								if ($this->ReadPropertyBoolean("ErwInformationen") == true)
+								{
+										$this->SetValueBoolean("SleeptimerAktiviertVAR", $E2_SleeptimerEnabled);
+										$this->SetValueInteger("SleeptimerMinutenVAR", $E2_SleeptimerMinuten);
+										$this->SetValueString("SleeptimerAktionVAR", $E2_SleeptimerAktion);
+								}
+								return $E2_SleeptimerInfo;
 						}
-						return $E2_SleeptimerInfo;
+						else
+						{
+								return false;
+						}
 				}
 				else
 				{
-						return false;
+						IPS_LogMessage("ENIGMA2BY", "Diese Funktion ist mit diesem Receiver/Image nicht verfügbar!");
 				}
     }
     
@@ -1176,6 +1218,26 @@ class Enigma2BY extends IPSModule
 				{
 						return false;
 				}
+    }
+    
+    private function DistroCheck()
+    {
+    		$IP = $this->ReadPropertyString("Enigma2IP");
+    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+    		if ($this->GetPowerState() != 0)
+    		{
+		    		$url = "http://".$IP.":".$WebPort."/web/about";
+						$xml = @simplexml_load_file($url);
+    				$E2_Distroversion = (string)trim(@$xml->e2about->e2distroversion);
+    				if ($E2_Distroversion != "openatv")
+    				{
+    						return false;
+    				}
+    				else
+    				{
+    						return true;
+    				}
+    		}
     }
     
     private function ResultAuswerten($result)

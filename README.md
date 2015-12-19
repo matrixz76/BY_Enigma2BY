@@ -90,18 +90,19 @@ Receiver muss eine eigene Modul-Instanz angelegt werden.
 
 **AC3 Downmix Einstellungen auslesen**
 - Liest die Einstellungen zu AC3-Downmix aus, gibt die Infos als Array zurück und speichert die Infos in Variablen.
-  *nur in Variablen, wenn "Erw. Informationen" aktiv*
+  *nur in Variablen, wenn "Erw. Informationen" aktiv* // *Bei OpenATV Images nicht verfügbar*
 
 **Sleeptimer auslesen**
 - Liest die Einstellungen des Sleeptimer aus, gibt die Infos als Array zurück und speichert die Infos in Variablen.
-  *nur in Variablen, wenn "Erw. Informationen" aktiv*
+  *nur in Variablen, wenn "Erw. Informationen" aktiv* // *Bei OpenATV Images nicht verfügbar*
 
 **Sleeptimer**
 - Liest die Einstellungen des Sleeptimer (Aktiviert,Minuten,Aktion,Bestaetigt,Text) aus, gibt die Infos als Array zurück
   und speichert die Infos in Variablen (auch beim Setzen/Aktivieren des Sleeptimer - zur Kontrolle).
   *nur in Variablen, wenn "Erw. Informationen" aktiv*
 - Setzen/Aktivieren des Sleeptimer mit den gewählten Einstellungen (Minuten [0-999], Aktion [Standby/Shutdown], Aktiviert [true/false]).
-      
+  *Bei OpenATV Images nicht verfügbar*
+
 
 ## 2. Systemanforderungen
 - IP-Symcon ab Version 4.x
