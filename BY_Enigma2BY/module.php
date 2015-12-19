@@ -1,9 +1,4 @@
 <?
-/* 2do ******************************************************************************************************************************************
-> Überprüfen, ob eine XML überhaupt vorhanden ist, wenn nicht, dann die Variablen mit erw. Infos gar nicht erst anlegen und da nichts abfragen (OpenATV z.B. AC3Downmix + Sleeptimer)
-> Image erkennen und bei OpenATV Images dann die Frage nicht mit EXIT beim Timeout beenden, sondern Default dann mit OK und damit NEIN (hinweis in readme schreiben)
-  >> bzw. erst die antwort auslesen (da kommt dann keine antwort und danach erst mit OK auf NEIN drücken)
-************************************************************************************************************************************************/
 class Enigma2BY extends IPSModule
 {
 
