@@ -149,12 +149,12 @@ class Enigma2BY extends IPSModule
 						}
       	}
       	
+      	//Timer einstellen
+      	$this->SetTimerInterval("Refresh_All", $this->ReadPropertyInteger("IntervallRefresh"));
+      	
       	//Daten in Variablen aktualisieren
       	if (strlen($this->ReadPropertyString("Enigma2IP")) != "")
       	{
-						//Timer einstellen
-      			$this->SetTimerInterval("Refresh_All", $this->ReadPropertyInteger("IntervallRefresh"));
-      			//Daten aktualisieren
 						$this->UpdateAll();
 		    }
 		}
@@ -689,7 +689,7 @@ class Enigma2BY extends IPSModule
     {
     		$IP = $this->ReadPropertyString("Enigma2IP");
     		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-    		if ((Sys_Ping($IP, 2000) == false) AND ($this->ReadPropertyString("Enigma2IP") != ""))
+    		if ((@Sys_Ping($IP, 2000) == false) AND ($this->ReadPropertyString("Enigma2IP") != ""))
     		{
     				$PowerStateIST = 0;
     				$this->SetValueInteger("PowerStateVAR", 0); // AUS
