@@ -116,7 +116,7 @@ class Enigma2BY extends IPSModule
 		        $this->RegisterVariableString("VideoBreiteHoeheVAR", "Video - Breite x Höhe");
 		        $this->RegisterVariableInteger("TonspurenAnzahlVAR", "Tonspuren-Anzahl");
 		        $this->RegisterVariableString("TonspurAktivVAR", "Tonspur-Aktiv");
-		        if ($this->DistroCheck() == true)
+		        if ($this->DistroCheck() === true)
 		        {
 				        $this->RegisterVariableBoolean("AC3DownmixStatusVAR", "AC3-Downmix", "E2BY.inaktiv.aktiv");
 				        $this->RegisterVariableBoolean("SleeptimerAktiviertVAR", "Sleeptimer-Status", "E2BY.inaktiv.aktiv");
@@ -140,7 +140,7 @@ class Enigma2BY extends IPSModule
 						$this->UnregisterVariable("VideoBreiteHoeheVAR");
 						$this->UnregisterVariable("TonspurenAnzahlVAR");
 						$this->UnregisterVariable("TonspurAktivVAR");
-						if ($this->DistroCheck() == true)
+						if ($this->DistroCheck() === true)
 		        {
 								$this->UnregisterVariable("AC3DownmixStatusVAR");
 								$this->UnregisterVariable("SleeptimerAktiviertVAR");
@@ -154,7 +154,7 @@ class Enigma2BY extends IPSModule
       	$this->SetTimerInterval("Refresh_All", $this->ReadPropertyInteger("IntervallRefresh"));
       	
       	//Daten in Variablen aktualisieren
-      	if (strlen($this->ReadPropertyString("Enigma2IP")) > 7)
+      	if (strlen($this->ReadPropertyString("Enigma2IP")) != "")
       	{
 						$this->UpdateAll();
 		    }
@@ -162,22 +162,22 @@ class Enigma2BY extends IPSModule
     
     public function UpdateAll()
     {
-    		if (strlen($IP = $this->ReadPropertyString("Enigma2IP")) > 7)
+    		if (strlen($IP = $this->ReadPropertyString("Enigma2IP")) != "")
       	{
-      			if (@Sys_Ping($IP, 2000) == true)
+      			if (@Sys_Ping($IP, 2000) === true)
       			{
+      					$this->GetPowerState();
       					$this->GetSystemInfos();
 				    		$this->GetEPGInfos();
 				    		$this->GetVolume();
-				    		$this->GetPowerState();
 				    		$this->GetTimerliste();
 				    		//$this->GetAufnahmenliste();  // sonst wird die HDD immer aus dem Standby geholt
 				    		$this->GetSenderliste();
-				    		if ($this->ReadPropertyBoolean("ErwInformationen") == true)
+				    		if ($this->ReadPropertyBoolean("ErwInformationen") === true)
 								{
 				    				$this->GetSignalInfos();
 				    				$this->GetTonspuren();
-				    				if ($this->DistroCheck() == true)
+				    				if ($this->DistroCheck() === true)
 		        				{
 						    				$this->GetAC3DownmixInfo();
 						    				$this->GetSleeptimerInfos();
