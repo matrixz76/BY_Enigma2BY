@@ -16,6 +16,7 @@
 Dieses Modul stellt viele praktische Funktionen zur Verfügung, damit ein Receiver mit
 Enigma2 System gesteuert und Informationen ausgelesen werden können. Für jeden
 Receiver muss eine eigene Modul-Instanz angelegt werden.
+Da manche Images nicht alle Informationen/Funkionen bieten (z.B. OpenATV), wird vorher geprüft, ob die Funktion mit dem Image möglich ist.
 
 ###### Übersicht der Features (die Funktionen findet ihr in der Befehlsreferenz):
 **Nachrichten an Receiver senden:**

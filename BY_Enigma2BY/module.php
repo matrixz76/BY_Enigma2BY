@@ -13,7 +13,7 @@ class Enigma2BY extends IPSModule
         $this->RegisterPropertyInteger("Enigma2WebPort", 80);
         $this->RegisterPropertyBoolean("HDDverbaut", false);
         $this->RegisterPropertyBoolean("ErwInformationen", false);
-        $this->RegisterPropertyString("IntervallRefresh", "60");
+        $this->RegisterPropertyInteger("IntervallRefresh", "60");
         $this->RegisterPropertyString("RCUdefault", "advanced");
         $this->RegisterPropertyString("KeyDropDown", "");
         $this->RegisterPropertyString("SenderZapTo", "");
@@ -116,9 +116,12 @@ class Enigma2BY extends IPSModule
 		        $this->RegisterVariableString("VideoBreiteHoeheVAR", "Video - Breite x Höhe");
 		        $this->RegisterVariableInteger("TonspurenAnzahlVAR", "Tonspuren-Anzahl");
 		        $this->RegisterVariableString("TonspurAktivVAR", "Tonspur-Aktiv");
-		        if ($this->DistroCheck() === true)
+		        if ($this->FeaturePreCheck("downmix") === true)
 		        {
 				        $this->RegisterVariableBoolean("AC3DownmixStatusVAR", "AC3-Downmix", "E2BY.inaktiv.aktiv");
+				    }
+				    if ($this->FeaturePreCheck("sleeptimer") === true)
+		        {
 				        $this->RegisterVariableBoolean("SleeptimerAktiviertVAR", "Sleeptimer-Status", "E2BY.inaktiv.aktiv");
 				        $this->RegisterVariableInteger("SleeptimerMinutenVAR", "Sleeptimer-Minuten", "E2BY.Minuten");
 				        $this->RegisterVariableString("SleeptimerAktionVAR", "Sleeptimer-Aktion");
@@ -140,9 +143,12 @@ class Enigma2BY extends IPSModule
 						$this->UnregisterVariable("VideoBreiteHoeheVAR");
 						$this->UnregisterVariable("TonspurenAnzahlVAR");
 						$this->UnregisterVariable("TonspurAktivVAR");
-						if ($this->DistroCheck() === true)
+						if ($this->FeaturePreCheck("downmix") === true)
 		        {
 								$this->UnregisterVariable("AC3DownmixStatusVAR");
+						}
+						if ($this->FeaturePreCheck("sleeptimer") === true)
+		        {
 								$this->UnregisterVariable("SleeptimerAktiviertVAR");
 								$this->UnregisterVariable("SleeptimerMinutenVAR");
 								$this->UnregisterVariable("SleeptimerAktionVAR");
@@ -176,9 +182,12 @@ class Enigma2BY extends IPSModule
 								{
 				    				$this->GetSignalInfos();
 				    				$this->GetTonspuren();
-				    				if ($this->DistroCheck() === true)
-		        				{
+										if ($this->FeaturePreCheck("ac3downmix"))
+										{
 						    				$this->GetAC3DownmixInfo();
+				    				}
+				    				if ($this->FeaturePreCheck("sleeptimer"))
+										{
 						    				$this->GetSleeptimerInfos();
 				    				}
 				    		}
@@ -574,7 +583,7 @@ class Enigma2BY extends IPSModule
     
     public function GetAC3DownmixInfo()
     {
-    		if ($this->DistroCheck() == true)
+    		if ($this->FeaturePreCheck("downmix") === true)
 		    {
 		    		$IP = $this->ReadPropertyString("Enigma2IP");
 		    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
@@ -605,7 +614,7 @@ class Enigma2BY extends IPSModule
     
     public function GetSleeptimerInfos()
     {
-    		if ($this->DistroCheck() == true)
+    		if ($this->FeaturePreCheck("sleeptimer") === true)
 		    {
 		    		$IP = $this->ReadPropertyString("Enigma2IP");
 		    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
@@ -642,7 +651,7 @@ class Enigma2BY extends IPSModule
     
     public function SetSleeptimer($Minuten, $Aktion, $Aktiv)
     {
-    		if ($this->DistroCheck() == true)
+    		if ($this->FeaturePreCheck("sleeptimer") === true)
 		    {
 		    		$IP = $this->ReadPropertyString("Enigma2IP");
 		    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
@@ -1224,6 +1233,25 @@ class Enigma2BY extends IPSModule
 						$xml = @simplexml_load_file($url);
     				$E2_Distroversion = (string)trim(@$xml->e2about->e2distroversion);
     				if ($E2_Distroversion == "openatv")
+    				{
+    						return false;
+    				}
+    				else
+    				{
+    						return true;
+    				}
+    		}
+    }
+    
+    private function FeaturePreCheck($feature)
+    {
+    		$IP = $this->ReadPropertyString("Enigma2IP");
+    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+    		if ($this->GetPowerState() != 0)
+    		{
+		    		$url = "http://".$IP.":".$WebPort."/web/".$feature;
+						$check = @Sys_GetURLContent($url);
+    				if ($check === false)
     				{
     						return false;
     				}
