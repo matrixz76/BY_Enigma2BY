@@ -583,12 +583,12 @@ class Enigma2BY extends IPSModule
     
     public function GetAC3DownmixInfo()
     {
-    		if ($this->FeaturePreCheck("downmix") === true)
+    		if ($this->GetPowerState() != 0)
 		    {
-		    		$IP = $this->ReadPropertyString("Enigma2IP");
-		    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-		    		if ($this->GetPowerState() != 0)
-		    		{
+		    		if ($this->FeaturePreCheck("downmix") === true)
+				    {
+				    		$IP = $this->ReadPropertyString("Enigma2IP");
+				    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
 				    		$url = "http://".$IP.":".$WebPort."/web/downmix";
 								$xml = @simplexml_load_file($url);
 								$E2_AC3DownmixStatus = $this->ResultAuswerten(trim($xml->e2state));
@@ -603,23 +603,23 @@ class Enigma2BY extends IPSModule
 						}
 						else
 						{
-								return false;
+								IPS_LogMessage("ENIGMA2BY", "Diese Funktion ist mit diesem Receiver/Image nicht verfügbar!");
 						}
 				}
 				else
 				{
-						IPS_LogMessage("ENIGMA2BY", "Diese Funktion ist mit diesem Receiver/Image nicht verfügbar!");
+						return false;
 				}
     }
     
     public function GetSleeptimerInfos()
     {
-    		if ($this->FeaturePreCheck("sleeptimer") === true)
-		    {
-		    		$IP = $this->ReadPropertyString("Enigma2IP");
-		    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-		    		if ($this->GetPowerState() == 1)
-		    		{
+    		if ($this->GetPowerState() == 1)
+    		{
+		    		if ($this->FeaturePreCheck("sleeptimer") === true)
+				    {
+				    		$IP = $this->ReadPropertyString("Enigma2IP");
+				    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
 				    		$url = "http://".$IP.":".$WebPort."/web/sleeptimer";
 								$xml = @simplexml_load_file($url);
 								$E2_SleeptimerEnabled = $this->ResultAuswerten(trim($xml->e2enabled));
@@ -640,12 +640,12 @@ class Enigma2BY extends IPSModule
 						}
 						else
 						{
-								return false;
+								IPS_LogMessage("ENIGMA2BY", "Diese Funktion ist mit diesem Receiver/Image nicht verfügbar!");
 						}
 				}
 				else
 				{
-						IPS_LogMessage("ENIGMA2BY", "Diese Funktion ist mit diesem Receiver/Image nicht verfügbar!");
+						return false;
 				}
     }
     
