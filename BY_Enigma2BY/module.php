@@ -297,7 +297,7 @@ class Enigma2BY extends IPSModule
     		}
     }    
     
-    public function SendMsg($Text, $Type, $Timeout)
+    public function SendMsg(string $Text, integer $Type, integer $Timeout)
     {
     		if ($this->GetPowerState() == 1)
     		{
@@ -354,7 +354,7 @@ class Enigma2BY extends IPSModule
     		}
     }
     
-    public function SendKey($Key, $LongShort)
+    public function SendKey(string $Key, string $LongShort)
     {
     		if ($this->GetPowerState() == 1)
     		{
@@ -649,7 +649,7 @@ class Enigma2BY extends IPSModule
 				}
     }
     
-    public function SetSleeptimer($Minuten, $Aktion, $Aktiv)
+    public function SetSleeptimer(integer $Minuten, string $Aktion, bool $Aktiv)
     {
     		if ($this->FeaturePreCheck("sleeptimer") === true)
 		    {
@@ -721,7 +721,7 @@ class Enigma2BY extends IPSModule
 				return $PowerStateIST;
     }
     
-    public function SetTonspur($TonspurID)
+    public function SetTonspur(integer $TonspurID)
     {
     		$IP = $this->ReadPropertyString("Enigma2IP");
     		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
@@ -804,7 +804,7 @@ class Enigma2BY extends IPSModule
 				}
     }
     
-    public function SetVolume($Parameter)
+    public function SetVolume(string $Parameter)
     {
     		$IP = $this->ReadPropertyString("Enigma2IP");
     		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
@@ -851,7 +851,7 @@ class Enigma2BY extends IPSModule
 				}
     }
     
-    public function AddTimerByEventID($sRef, $EventID, $AufnahmePfad)
+    public function AddTimerByEventID(string $sRef, integer $EventID, string $AufnahmePfad)
     {
     		$IP = $this->ReadPropertyString("Enigma2IP");
     		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
@@ -873,7 +873,7 @@ class Enigma2BY extends IPSModule
 				}
     }
     
-    public function DelTimer($sRef, $TimerStartzeit, $TimerEndzeit)
+    public function DelTimer(string $sRef, integer $TimerStartzeit, integer $TimerEndzeit)
     {
     		$IP = $this->ReadPropertyString("Enigma2IP");
     		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
@@ -895,7 +895,7 @@ class Enigma2BY extends IPSModule
 				}
     }
     
-    public function SetPowerState($PowerStateNr)
+    public function SetPowerState(integer $PowerStateNr)
     {
     		$IP = $this->ReadPropertyString("Enigma2IP");
     		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
@@ -1121,7 +1121,7 @@ class Enigma2BY extends IPSModule
 				}
     }
     
-    public function EPGSuche($Suchstring)
+    public function EPGSuche(string $Suchstring)
     {
     		$IP = $this->ReadPropertyString("Enigma2IP");
     		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
@@ -1196,7 +1196,7 @@ class Enigma2BY extends IPSModule
 				}
     }
     
-    public function ZapTo($Sendername)
+    public function ZapTo(string $Sendername)
     {
     		if ($this->GetPowerState() == 1)
     		{
