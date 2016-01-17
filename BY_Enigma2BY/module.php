@@ -649,7 +649,7 @@ class Enigma2BY extends IPSModule
 				}
     }
     
-    public function SetSleeptimer(integer $Minuten, string $Aktion, bool $Aktiv)
+    public function SetSleeptimer(integer $Minuten, string $Aktion, boolean $Aktiv)
     {
     		if ($this->FeaturePreCheck("sleeptimer") === true)
 		    {
