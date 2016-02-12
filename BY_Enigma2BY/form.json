@@ -2,7 +2,7 @@
   "elements":
   [
 
-    { "type": "Label", "label": "##### Enigma2BY v1.4 (13.02.2016 00.30Uhr) #####" },
+    { "type": "Label", "label": "##### Enigma2BY v1.4 (13.02.2016 00.45Uhr) #####" },
     { "type": "Label", "label": "IP-Adresse und WebIf-Port, unter der ein Receiver mit Enigma2 erreichbar ist:" },
     { "name": "Enigma2IP", "type": "ValidationTextBox", "caption": "Receiver IP-Adresse" },
     { "type": "NumberSpinner", "name": "Enigma2WebPort", "caption": "Receiver Web-Port" },
@@ -10,6 +10,9 @@
     { "type": "Label", "label": "--------------------------------------------------------------------------------------------------------------------------------------------------------" },
     { "type": "Label", "label": "Erweiterte Informationen auslesen (Netzwerk, Signalstärken, Tonspuren, Bildinformationen, ...):" },
     { "name": "ErwInformationen", "type": "CheckBox", "caption": "Erw. Informationen" },
+	{ "type": "Label", "label": "--------------------------------------------------------------------------------------------------------------------------------------------------------" },
+    { "type": "Label", "label": "Aufnahmen-Liste auslesen (extra aktivierbar, weil die Festplatte immer aus dem Standby geholt wird):" },
+    { "name": "AufnahmenListeAuslesen", "type": "CheckBox", "caption": "Aufnahmen-Liste" },
     { "type": "Label", "label": "--------------------------------------------------------------------------------------------------------------------------------------------------------" },
     { "type": "Label", "label": "Intervall für die Aktualisierung aller Daten:" },
     { "type": "IntervalBox", "name": "IntervallRefresh", "caption": "Sekunden" },

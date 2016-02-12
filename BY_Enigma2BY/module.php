@@ -13,6 +13,7 @@ class Enigma2BY extends IPSModule
         $this->RegisterPropertyInteger("Enigma2WebPort", 80);
         $this->RegisterPropertyBoolean("HDDverbaut", false);
         $this->RegisterPropertyBoolean("ErwInformationen", false);
+		$this->RegisterPropertyBoolean("AufnahmenListeAuslesen", false);
         $this->RegisterPropertyInteger("IntervallRefresh", "60");
         $this->RegisterPropertyString("RCUdefault", "advanced");
         $this->RegisterPropertyString("KeyDropDown", "");
@@ -84,8 +85,6 @@ class Enigma2BY extends IPSModule
         $this->RegisterVariableInteger("SenderAnzahlVAR", "Sender-Anzahl");  
         $this->RegisterVariableInteger("TimerAnzahlVAR", "Timer-Anzahl");
 		$this->RegisterVariableString("TimerlisteVAR", "Timerliste", "~HTMLBox");
-		$this->RegisterVariableInteger("AufnahmenAnzahlVAR", "Aufnahmen-Anzahl");
-		$this->RegisterVariableString("AufnahmenlisteVAR", "Aufnahmenliste", "~HTMLBox");
         $this->RegisterVariableString("EnigmaVersionVAR", "Enigma-Version");
         $this->RegisterVariableString("ImageVersionVAR", "Image-Version");
         $this->RegisterVariableString("WebIfVersionVAR", "WebIf-Version");
@@ -93,6 +92,17 @@ class Enigma2BY extends IPSModule
         $this->RegisterVariableInteger("EPGSucheErgebnisAnzahlVAR", "EPGSuchergebnis-Anzahl");
 		$this->RegisterVariableString("EPGSucheErgebnisVAR", "EPGSuchergebnis", "~HTMLBox");
         
+		if ($this->ReadPropertyBoolean("AufnahmenListeAuslesen") == true)
+		{
+			$this->RegisterVariableInteger("AufnahmenAnzahlVAR", "Aufnahmen-Anzahl");
+			$this->RegisterVariableString("AufnahmenlisteVAR", "Aufnahmenliste", "~HTMLBox");
+		}
+		else
+		{
+			$this->UnregisterVariable("AufnahmenAnzahlVAR");
+			$this->UnregisterVariable("AufnahmenlisteVAR");
+		}
+		
         if ($this->ReadPropertyBoolean("HDDverbaut") == true)
 		{
 			$this->RegisterVariableString("HDDModelVAR", "HDD Modell");
@@ -186,8 +196,11 @@ class Enigma2BY extends IPSModule
 				$this->GetEPGInfos();
 				$this->GetVolume();
 				$this->GetTimerliste();
-				//$this->GetAufnahmenliste();  // sonst wird die HDD immer aus dem Standby geholt
 				$this->GetSenderliste();
+				if ($this->ReadPropertyBoolean("AufnahmenListeAuslesen") == true)
+				{
+					$this->GetAufnahmenliste();  // dabei wird die HDD aus dem Standby geholt
+				}
 				if ($this->ReadPropertyBoolean("ErwInformationen") === true)
 				{
 					$this->GetSignalInfos();

@@ -297,3 +297,4 @@ Version 1.4:
   - ACHTUNG # Ich musste bei einigen Variablen die Idents ändern, deshalb bitte entweder alle Variablen vom Modul löschen und neu erstellen lassen, oder die alten Variablen einzeln löschen
   - NEU # SetPowerState (Werte "4" (Wakeup from Standby) und "5" (Standby) hinzugefügt)
   - NEU # GetEPGInfos erweitert (Zusätzliche ArrayReturns + Variablen für Sendungs-Start, Sendungs-Ende, Fortschritt, SRef, PRef, ...)
+  - NEU # Checkbox um die Aufnahmen-Liste aus vom Receiver auszulesen (extra aktivierbar, weil die Festplatte dabei immer aus dem Standby geholt wird)
