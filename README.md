@@ -292,3 +292,7 @@ Version 1.3:
   - NEU # DelTimer (Timer entfernen/löschen)
   - CHANGE # Durch das Abfragen der Aufnahmeliste (durch Intervall-Timer) wurde die HDD immer aus dem Standby geholt - deshalb
     muss die Aufnahmeliste ab jetzt manuell durch euch aktualisiert werden (z.B. immer nur Nachts oder wann ihr wollt).
+	
+Version 1.4:
+  - NEU # SetPowerState (Werte "4" (Wakeup from Standby) und "5" (Standby) hinzugefügt)
+  - NEU # GetEPGInfos erweitert (Zusätzliche ArrayReturns + Variablen für Sendungs-Start, Sendungs-Ende, Fortschritt, ...)

@@ -37,6 +37,7 @@ class Enigma2BY extends IPSModule
         
         //Variablenprofile erstellen
         $this->RegisterProfileInteger("E2BY.Minuten", "Clock", "", " Min.",  "0", "300", 1);
+		$this->RegisterProfileString("E2BY.Uhr", "Clock", "", " Uhr",  "0", "0", 0);
         if ($this->ReadPropertyBoolean("HDDverbaut") == true)
 		{
         	$this->RegisterProfileInteger("E2BY.GB", "Information", "", " GB",  "0", "10240000", 1);
@@ -66,12 +67,17 @@ class Enigma2BY extends IPSModule
         $this->RegisterVariableString("AktSendungsnameVAR", "Akt. Sendungstitel");
         $this->RegisterVariableString("AktSendungsBeschrKurzVAR", "Akt. Sendungsbeschreibung kurz");
         $this->RegisterVariableString("AktSendungsBeschrLangVAR", "Akt. Sendungsbeschreibung lang");
-        $this->RegisterVariableInteger("AktSendunsdauerVar", "Akt. Sendungsdauer Min.", "E2BY.Minuten");
-        $this->RegisterVariableInteger("AktSendunsdauerRestVar", "Akt. Sendungsdauer Rest Min.", "E2BY.Minuten");
-        $this->RegisterVariableString("NextSendungsnameVar", "Next Sendungstitel");
+        $this->RegisterVariableInteger("AktSendungsdauerVAR", "Akt. Sendungsdauer Min.", "E2BY.Minuten");
+        $this->RegisterVariableInteger("AktSendungsdauerRestVAR", "Akt. Sendungsdauer Rest Min.", "E2BY.Minuten");
+		$this->RegisterVariableString("AktSendungsStartVAR", "Akt. Sendung Startzeit", "E2BY.Uhr");
+		$this->RegisterVariableString("AktSendungsEndeVAR", "Akt. Sendung Endzeit", "E2BY.Uhr");
+		$this->RegisterVariableInteger("AktSendungsfortschrittProzVAR", "Akt. Sendung Fortschritt", "~Intensity.100");
+		$this->RegisterVariableInteger("AktSendungsvergangenedauerVAR", "Akt. Sendung vergangene Min.", "E2BY.Minuten");  
+        $this->RegisterVariableString("NextSendungsnameVAR", "Next Sendungstitel");
         $this->RegisterVariableString("NextSendungsBeschrKurzVAR", "Next Sendungsbeschreibung kurz");
         $this->RegisterVariableString("NextSendungsBeschrLangVAR", "Next Sendungsbeschreibung lang");
         $this->RegisterVariableString("NextSendungsStartVAR", "Next Sendung Startzeit");
+		$this->RegisterVariableString("NextSendungsEndeVAR", "Next Sendung Endzeit", "E2BY.Uhr");
         $this->RegisterVariableInteger("NextSendungsdauerVAR", "Next Sendungsdauer Min.", "E2BY.Minuten");
         $this->RegisterVariableInteger("VolumeVAR", "Volume", "E2BY.Volume");
         $this->RegisterVariableBoolean("MuteVAR", "Mute");
@@ -102,6 +108,8 @@ class Enigma2BY extends IPSModule
       	
       	if ($this->ReadPropertyBoolean("ErwInformationen") == true)
 		{
+			$this->RegisterVariableString("AktSenderSRefVAR", "Akt. Sender SRef");
+			$this->RegisterVariableString("AktSenderPRefVAR", "Akt. Sender PRef");
 			$this->RegisterVariableFloat("SignalSnrDbVAR", "Signal - SNR db", "E2BY.SNRdb");
 			$this->RegisterVariableInteger("SignalSnrVAR", "Signal - SNR");
 			$this->RegisterVariableInteger("SignalBerVAR", "Signal - BER");
@@ -129,6 +137,8 @@ class Enigma2BY extends IPSModule
       	}
       	else
       	{
+			$this->UnregisterVariable("AktSenderSRefVAR");
+			$this->UnregisterVariable("AktSenderPRefVAR");
 			$this->UnregisterVariable("SignalSnrDbVAR");
 			$this->UnregisterVariable("SignalSnrVAR");
 			$this->UnregisterVariable("SignalBerVAR");
@@ -398,48 +408,83 @@ class Enigma2BY extends IPSModule
 			$url = "http://".$IP.":".$WebPort."/web/getcurrent";
 			$xml = @simplexml_load_file($url);
 			$E2_CurSendername = (string)trim($xml->e2service->e2servicename);
+			$E2_SenderSRef = (string)trim($xml->e2service->e2servicereference);
+			$E2_SenderPRef = str_replace(':', '_', $E2_SenderSRef); 
+			$E2_SenderPRef = substr($E2_SenderPRef, 0, -1);
 			$E2_CurSendungsname = (string)trim($xml->e2eventlist->e2event[0]->e2eventname);
 			$E2_CurSendungsBeschrKurz = (string)trim($xml->e2eventlist->e2event[0]->e2eventdescription);
 			$E2_CurSendungsBeschrLang = (string)trim($xml->e2eventlist->e2event[0]->e2eventdescriptionextended);
+			$E2_CurSendungsStart_TS = (int)trim($xml->e2eventlist->e2event[0]->e2eventstart);
 			$E2_CurSendungsdauerSek = (int)trim($xml->e2eventlist->e2event[0]->e2eventduration);
 			$E2_CurSendungsrestdauerSek = (int)trim($xml->e2eventlist->e2event[0]->e2eventremaining);
 			$E2_CurSendungEventID = (int)trim($xml->e2eventlist->e2event[0]->e2eventid);
 			$E2_NextSendungsname = (string)trim($xml->e2eventlist->e2event[1]->e2eventname);
 			$E2_NextSendungsBeschrKurz = (string)trim($xml->e2eventlist->e2event[1]->e2eventdescription);
 			$E2_NextSendungsBeschrLang = (string)trim($xml->e2eventlist->e2event[1]->e2eventdescriptionextended);
-			$E2_NextSendungStart = (int)trim($xml->e2eventlist->e2event[1]->e2eventstart);
+			$E2_NextSendungsStart_TS = (int)trim($xml->e2eventlist->e2event[1]->e2eventstart);
 			$E2_NextSendungsdauerSek = (int)trim($xml->e2eventlist->e2event[1]->e2eventduration);
 			$E2_NextSendungEventID = (int)trim($xml->e2eventlist->e2event[1]->e2eventid);
+			
 			//Return-Array befüllen
 			$E2_EPGInfo["AktSendername"] = $E2_CurSendername;
 			$E2_EPGInfo["AktSendungsname"] = $E2_CurSendungsname;
 			$E2_EPGInfo["AktSendungsBeschrKurz"] = $E2_CurSendungsBeschrKurz;
 			$E2_EPGInfo["AktSendungsBeschrLang"] = $E2_CurSendungsBeschrLang;
-			$E2_EPGInfo["AktSendunsdauer"] = $E2_CurSendungsdauerSek;
-			$E2_EPGInfo["AktSendunsdauerRest"] = $E2_CurSendungsrestdauerSek;
+			$E2_CurSendungsStart = date("H:i", $E2_CurSendungsStart_TS);
+			$E2_CurSendungsEnde_TS = $E2_CurSendungsStart_TS + ($E2_CurSendungsdauerSek);
+			$E2_CurSendungsEnde = date("H:i", $E2_CurSendungsEnde_TS);
+			$E2_EPGInfo["AktSendungsStart"] = $E2_CurSendungsStart;
+			$E2_EPGInfo["AktSendungsEnde"] = $E2_CurSendungsEnde;
+			$E2_CurSendungsdauerMin = (int)($E2_CurSendungsdauerSek / 60);
+			$E2_CurSendungsrestdauerMin = (int)($E2_CurSendungsrestdauerSek / 60);
+			$E2_CurSendungsvergangenedauerSek = $E2_CurSendungsdauerSek - $E2_CurSendungsrestdauerSek;
+			$E2_CurSendungsvergangenedauerMin = (int)(($E2_CurSendungsdauerSek - $E2_CurSendungsrestdauerSek) / 60);
+			$E2_CurSendungsfortschritt_Proz = (int)($E2_CurSendungsrestdauerSek * 100 / $E2_CurSendungsdauerSek);
+			$E2_EPGInfo["AktSendungsdauerSek"] = $E2_CurSendungsdauerSek;
+			$E2_EPGInfo["AktSendungsdauerMin"] = $E2_CurSendungsdauerMin;
+			$E2_EPGInfo["AktSendungsdauerRestSek"] = $E2_CurSendungsrestdauerSek;
+			$E2_EPGInfo["AktSendungsdauerRestMin"] = $E2_CurSendungsrestdauerMin;
+			$E2_EPGInfo["AktSendungsvergangenedauerSek"] = $E2_CurSendungsvergangenedauerSek;
+			$E2_EPGInfo["AktSendungsvergangenedauerMin"] = $E2_CurSendungsvergangenedauerMin;
+			$E2_EPGInfo["AktSendungsfortschrittProz"] = $E2_CurSendungsfortschritt_Proz;
 			$E2_EPGInfo["AktSendungsEventID"] = $E2_CurSendungEventID;
 			$E2_EPGInfo["NextSendungsname"] = $E2_NextSendungsname;
 			$E2_EPGInfo["NextSendungsBeschrKurz"] = $E2_NextSendungsBeschrKurz;
 			$E2_EPGInfo["NextSendungsBeschrLang"] = $E2_NextSendungsBeschrLang;
-			$E2_EPGInfo["NextSendungsStart"] = $E2_NextSendungStart;
-			$E2_EPGInfo["NextSendungsdauer"] = $E2_NextSendungsdauerSek;
+			$E2_NextSendungsStart_TS = date("H:i", $E2_NextSendungsStart_TS);
+			$E2_NextSendungsEnde_TS = $E2_NextSendungsStart_TS + ($E2_NextSendungsdauerSek);
+			$E2_NextSendungsEnde = date("H:i", $E2_NextSendungsEnde_TS);
+			$E2_EPGInfo["NextSendungsStart"] = $E2_NextSendungsStart;
+			$E2_EPGInfo["NextSendungsEnde"] = $E2_NextSendungsEnde;
+			$E2_NextSendungsdauerMin = (int)($E2_NextSendungsdauerSek / 60);
+			$E2_EPGInfo["NextSendungsdauerSek"] = $E2_NextSendungsdauerSek;
+			$E2_EPGInfo["NextSendungsdauerMin"] = $E2_NextSendungsdauerMin;
 			$E2_EPGInfo["NextSendungsEventID"] = $E2_NextSendungEventID;
+			$E2_EPGInfo["SenderSRef"] = $E2_SenderSRef;
+			$E2_EPGInfo["SenderPRef"] = $E2_SenderPRef;
+			
 			//Variablen befüllen
 			$this->SetValueString("AktSendernameVAR", $E2_CurSendername);
 			$this->SetValueString("AktSendungsnameVAR", $E2_CurSendungsname);
 			$this->SetValueString("AktSendungsBeschrKurzVAR", $E2_CurSendungsBeschrKurz);
 			$this->SetValueString("AktSendungsBeschrLangVAR", $E2_CurSendungsBeschrLang);
-			$E2_CurSendungsdauerMin = $E2_CurSendungsdauerSek / 60;
-			$this->SetValueInteger("AktSendunsdauerVar", $E2_CurSendungsdauerMin);
-			$E2_CurSendungsrestdauerMin = $E2_CurSendungsrestdauerSek / 60;
-			$this->SetValueInteger("AktSendunsdauerRestVar", $E2_CurSendungsrestdauerMin);
-			$this->SetValueString("NextSendungsnameVar", $E2_NextSendungsname);
+			$this->SetValueString("AktSendungsStartVAR", $E2_CurSendungsStart);
+			$this->SetValueString("AktSendungsEndeVAR", $E2_CurSendungsEnde);
+			$this->SetValueInteger("AktSendungsfortschrittProzVAR", $E2_CurSendungsfortschritt_Proz);
+			$this->SetValueInteger("AktSendungsvergangenedauerVAR", $E2_CurSendungsvergangenedauerMin);
+			$this->SetValueInteger("AktSendungsdauerVAR", $E2_CurSendungsdauerMin);
+			$this->SetValueInteger("AktSendungsdauerRestVAR", $E2_CurSendungsrestdauerMin);
+			$this->SetValueString("NextSendungsnameVAR", $E2_NextSendungsname);
 			$this->SetValueString("NextSendungsBeschrKurzVAR", $E2_NextSendungsBeschrKurz);
 			$this->SetValueString("NextSendungsBeschrLangVAR", $E2_NextSendungsBeschrLang);
-			$E2_NextSendungStart = date("H:i", intval($E2_NextSendungStart))." Uhr";
-			$this->SetValueString("NextSendungsStartVAR", $E2_NextSendungStart);
-			$E2_NextSendungsdauerMin = $E2_NextSendungsdauerSek / 60;
+			$this->SetValueString("NextSendungsStartVAR", $E2_NextSendungsStart);
+			$this->SetValueString("NextSendungsEndeVAR", $E2_NextSendungsEnde);
 			$this->SetValueInteger("NextSendungsdauerVAR", $E2_NextSendungsdauerMin);
+			if ($this->ReadPropertyBoolean("ErwInformationen") == true)
+			{
+				$this->SetValueString("AktSenderSRefVAR", $E2_SenderSRef);
+				$this->SetValueString("AktSenderPRefVAR", $E2_SenderPRef);
+			}
 			return $E2_EPGInfo;
 		}
 		else
@@ -448,106 +493,116 @@ class Enigma2BY extends IPSModule
 			$this->SetValueString("AktSendungsnameVAR", "");
 			$this->SetValueString("AktSendungsBeschrKurzVAR", "");
 			$this->SetValueString("AktSendungsBeschrLangVAR", "");
-			$this->SetValueInteger("AktSendunsdauerVar", 0);
-			$this->SetValueInteger("AktSendunsdauerRestVar", 0);
-			$this->SetValueString("NextSendungsnameVar", "");
+			$this->SetValueString("AktSendungsStartVAR", "");
+			$this->SetValueString("AktSendungsEndeVAR", "");
+			$this->SetValueInteger("AktSendungsfortschrittProzVAR", "");
+			$this->SetValueInteger("AktSendungsvergangenedauerVAR", "");
+			$this->SetValueInteger("AktSendungsdauerVAR", 0);
+			$this->SetValueInteger("AktSendungsdauerRestVAR", 0);
+			$this->SetValueString("NextSendungsnameVAR", "");
 			$this->SetValueString("NextSendungsBeschrKurzVAR", "");
 			$this->SetValueString("NextSendungsBeschrLangVAR", "");
 			$this->SetValueString("NextSendungsStartVAR", "");
+			$this->SetValueString("NextSendungsEndeVAR", "");
 			$this->SetValueInteger("NextSendungsdauerVAR", 0);
+			if ($this->ReadPropertyBoolean("ErwInformationen") == true)
+			{
+				$this->SetValueString("AktSenderSRefVAR", "");
+				$this->SetValueString("AktSenderPRefVAR", "");
+			}
 			return false;
 		}
 	}
     
     public function GetSystemInfos()
     {
-    		$IP = $this->ReadPropertyString("Enigma2IP");
-    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-    		if ($this->GetPowerState() != 0)
-    		{
-		    		$url = "http://".$IP.":".$WebPort."/web/about";
-						$xml = @simplexml_load_file($url);
-						$E2_Enigmaversion = (string)trim($xml->e2about->e2enigmaversion);
-						$E2_Imageversion = (string)trim($xml->e2about->e2imageversion);
-						$E2_WebIfversion = (string)trim($xml->e2about->e2webifversion);
-						$E2_BoxModel = (string)trim($xml->e2about->e2model);
-						$this->SetValueString("EnigmaVersionVAR", $E2_Enigmaversion);
-						$this->SetValueString("ImageVersionVAR", $E2_Imageversion);
-						$this->SetValueString("WebIfVersionVAR", $E2_WebIfversion);
-						$this->SetValueString("BoxModelVAR", $E2_BoxModel);
-						$E2_SysInfo["EnigmaVersion"] = $E2_Enigmaversion;
-						$E2_SysInfo["ImageVersion"] = $E2_Imageversion;
-						$E2_SysInfo["WebIfVersion"] = $E2_WebIfversion;
-						$E2_SysInfo["ReceiverModell"] = $E2_BoxModel;
-						if ($this->ReadPropertyBoolean("HDDverbaut") == true)
-						{
-								//HDD Kapazität in welcher Größe angegeben?
-								$HDDkapa = trim($xml->e2about->e2hddinfo->capacity);
-								preg_match('|TB|', $HDDkapa, $matchTB);
-								if ($matchTB)
-								{
-									$HDDkapa = $HDDkapa * 1024;
-								}
-								preg_match('|GB|', $HDDkapa, $matchGB);
-								if ($matchGB)
-								{
-									$HDDkapa = $HDDkapa;
-								}
-								preg_match('|MB|', $HDDkapa, $matchMB);
-								if ($matchMB)
-								{
-									$HDDkapa = $HDDkapa / 1024;
-								}
-								//HDD freie Kapazität in welcher Größe angegeben?
-								$HDDkapafree = trim($xml->e2about->e2hddinfo->free);
-								preg_match('|TB|', $HDDkapafree, $matchfreeTB);
-								if ($matchfreeTB)
-								{
-									$HDDkapafree = $HDDkapafree * 1024;
-								}
-								preg_match('|GB|', $HDDkapafree, $matchfreeGB);
-								if ($matchfreeGB)
-								{
-									$HDDkapafree = $HDDkapafree;
-								}
-								preg_match('|MB|', $HDDkapafree, $matchfreeMB);
-								if ($matchfreeMB)
-								{
-									$HDDkapafree = $HDDkapafree / 1024;
-								}
-								//Variablen füllen und result zusammenstellen
-								$E2_SysInfo["HDDModell"] = (string)trim($xml->e2about->e2hddinfo->model);
-								$E2_SysInfo["HDDKapazitaetGB"] = $HDDkapa;
-								$E2_SysInfo["HDDKapazitaetFreiGB"] = $HDDkapafree;
-								$this->SetValueString("HDDModelVAR", $E2_SysInfo["HDDModell"]);
-								$this->SetValueInteger("HDDCapaVAR", $E2_SysInfo["HDDKapazitaetGB"]);
-								$this->SetValueInteger("HDDCapaFreeVAR", $E2_SysInfo["HDDKapazitaetFreiGB"]);
-						}
-						if ($this->ReadPropertyBoolean("ErwInformationen") == true)
-						{
-								$E2_SysInfo["LanIP"] = (string)trim($xml->e2about->e2lanip);
-								$E2_SysInfo["LanMAC"] = (string)trim($xml->e2about->e2lanmac);
-								$E2_SysInfo["LanDHCP"] = $this->ResultAuswerten(trim($xml->e2about->e2landhcp));
-								$E2_SysInfo["LanGW"] = (string)trim($xml->e2about->e2langw);
-								$E2_SysInfo["LanNETZMASKE"] = (string)trim($xml->e2about->e2lanmask);
-								$E2_SysInfo["VideoBreite"] = (int)trim($xml->e2about->e2videowidth);
-								$E2_SysInfo["VideoHoehe"] = (int)trim($xml->e2about->e2videoheight);
-								$E2_SysInfo["VideoBreiteHoehe"] = (string)trim($xml->e2about->e2servicevideosize);
-								$this->SetValueString("LanIpVAR", $E2_SysInfo["LanIP"]);
-								$this->SetValueString("LanMacVAR", $E2_SysInfo["LanMAC"]);
-								$this->SetValueBoolean("LanDhcpVAR", $E2_SysInfo["LanDHCP"]);
-								$this->SetValueString("LanGwVAR", $E2_SysInfo["LanGW"]);
-								$this->SetValueString("LanNetzmaskeVAR", $E2_SysInfo["LanNETZMASKE"]);
-								$this->SetValueInteger("VideoBreiteVAR", $E2_SysInfo["VideoBreite"]);
-								$this->SetValueInteger("VideoHoeheVAR", $E2_SysInfo["VideoHoehe"]);
-								$this->SetValueString("VideoBreiteHoeheVAR", $E2_SysInfo["VideoBreiteHoehe"]);
-						}
-						return $E2_SysInfo;
-				}
-				else
+		$IP = $this->ReadPropertyString("Enigma2IP");
+		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+		if ($this->GetPowerState() != 0)
+		{
+			$url = "http://".$IP.":".$WebPort."/web/about";
+			$xml = @simplexml_load_file($url);
+			$E2_Enigmaversion = (string)trim($xml->e2about->e2enigmaversion);
+			$E2_Imageversion = (string)trim($xml->e2about->e2imageversion);
+			$E2_WebIfversion = (string)trim($xml->e2about->e2webifversion);
+			$E2_BoxModel = (string)trim($xml->e2about->e2model);
+			$this->SetValueString("EnigmaVersionVAR", $E2_Enigmaversion);
+			$this->SetValueString("ImageVersionVAR", $E2_Imageversion);
+			$this->SetValueString("WebIfVersionVAR", $E2_WebIfversion);
+			$this->SetValueString("BoxModelVAR", $E2_BoxModel);
+			$E2_SysInfo["EnigmaVersion"] = $E2_Enigmaversion;
+			$E2_SysInfo["ImageVersion"] = $E2_Imageversion;
+			$E2_SysInfo["WebIfVersion"] = $E2_WebIfversion;
+			$E2_SysInfo["ReceiverModell"] = $E2_BoxModel;
+			if ($this->ReadPropertyBoolean("HDDverbaut") == true)
+			{
+				//HDD Kapazität in welcher Größe angegeben?
+				$HDDkapa = trim($xml->e2about->e2hddinfo->capacity);
+				preg_match('|TB|', $HDDkapa, $matchTB);
+				if ($matchTB)
 				{
-						return false;
+					$HDDkapa = $HDDkapa * 1024;
 				}
+				preg_match('|GB|', $HDDkapa, $matchGB);
+				if ($matchGB)
+				{
+					$HDDkapa = $HDDkapa;
+				}
+				preg_match('|MB|', $HDDkapa, $matchMB);
+				if ($matchMB)
+				{
+					$HDDkapa = $HDDkapa / 1024;
+				}
+				//HDD freie Kapazität in welcher Größe angegeben?
+				$HDDkapafree = trim($xml->e2about->e2hddinfo->free);
+				preg_match('|TB|', $HDDkapafree, $matchfreeTB);
+				if ($matchfreeTB)
+				{
+					$HDDkapafree = $HDDkapafree * 1024;
+				}
+				preg_match('|GB|', $HDDkapafree, $matchfreeGB);
+				if ($matchfreeGB)
+				{
+					$HDDkapafree = $HDDkapafree;
+				}
+				preg_match('|MB|', $HDDkapafree, $matchfreeMB);
+				if ($matchfreeMB)
+				{
+					$HDDkapafree = $HDDkapafree / 1024;
+				}
+				//Variablen füllen und result zusammenstellen
+				$E2_SysInfo["HDDModell"] = (string)trim($xml->e2about->e2hddinfo->model);
+				$E2_SysInfo["HDDKapazitaetGB"] = $HDDkapa;
+				$E2_SysInfo["HDDKapazitaetFreiGB"] = $HDDkapafree;
+				$this->SetValueString("HDDModelVAR", $E2_SysInfo["HDDModell"]);
+				$this->SetValueInteger("HDDCapaVAR", $E2_SysInfo["HDDKapazitaetGB"]);
+				$this->SetValueInteger("HDDCapaFreeVAR", $E2_SysInfo["HDDKapazitaetFreiGB"]);
+			}
+			if ($this->ReadPropertyBoolean("ErwInformationen") == true)
+			{
+				$E2_SysInfo["LanIP"] = (string)trim($xml->e2about->e2lanip);
+				$E2_SysInfo["LanMAC"] = (string)trim($xml->e2about->e2lanmac);
+				$E2_SysInfo["LanDHCP"] = $this->ResultAuswerten(trim($xml->e2about->e2landhcp));
+				$E2_SysInfo["LanGW"] = (string)trim($xml->e2about->e2langw);
+				$E2_SysInfo["LanNETZMASKE"] = (string)trim($xml->e2about->e2lanmask);
+				$E2_SysInfo["VideoBreite"] = (int)trim($xml->e2about->e2videowidth);
+				$E2_SysInfo["VideoHoehe"] = (int)trim($xml->e2about->e2videoheight);
+				$E2_SysInfo["VideoBreiteHoehe"] = (string)trim($xml->e2about->e2servicevideosize);
+				$this->SetValueString("LanIpVAR", $E2_SysInfo["LanIP"]);
+				$this->SetValueString("LanMacVAR", $E2_SysInfo["LanMAC"]);
+				$this->SetValueBoolean("LanDhcpVAR", $E2_SysInfo["LanDHCP"]);
+				$this->SetValueString("LanGwVAR", $E2_SysInfo["LanGW"]);
+				$this->SetValueString("LanNetzmaskeVAR", $E2_SysInfo["LanNETZMASKE"]);
+				$this->SetValueInteger("VideoBreiteVAR", $E2_SysInfo["VideoBreite"]);
+				$this->SetValueInteger("VideoHoeheVAR", $E2_SysInfo["VideoHoehe"]);
+				$this->SetValueString("VideoBreiteHoeheVAR", $E2_SysInfo["VideoBreiteHoehe"]);
+			}
+			return $E2_SysInfo;
+		}
+		else
+		{
+			return false;
+		}
     }
     
     public function GetSignalInfos()
@@ -651,47 +706,47 @@ class Enigma2BY extends IPSModule
     
     public function SetSleeptimer(integer $Minuten, string $Aktion, boolean $Aktiv)
     {
-    		if ($this->FeaturePreCheck("sleeptimer") === true)
-		    {
-		    		$IP = $this->ReadPropertyString("Enigma2IP");
-		    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-		    		if ($this->GetPowerState() == 1)
-		    		{
-				    		if ($Aktiv === true)
-				    		{
-				    				$Aktiv = "True";
-				    		}
-				    		else
-				    		{
-				    				$Aktiv = "False";
-				    		}		    		
-				    		$url = "http://".$IP.":".$WebPort."/web/sleeptimer?cmd=set&time=".$Minuten."&action=".$Aktion."&enabled=".$Aktiv;
-								$xml = @simplexml_load_file($url);
-								$E2_SleeptimerEnabled = $this->ResultAuswerten(trim($xml->e2enabled));
-								$E2_SleeptimerMinuten = (int)trim($xml->e2minutes);
-								$E2_SleeptimerAktion = (string)trim($xml->e2action);
-								$E2_SleeptimerText = (string)trim($xml->e2text);
-								$E2_SleeptimerInfo["SleeptimerAktiviert"] = $E2_SleeptimerEnabled;
-								$E2_SleeptimerInfo["SleeptimerMinuten"] = $E2_SleeptimerMinuten;
-								$E2_SleeptimerInfo["SleeptimerAktion"] = $E2_SleeptimerAktion;
-								$E2_SleeptimerInfo["SleeptimerText"] = $E2_SleeptimerText;
-								if ($this->ReadPropertyBoolean("ErwInformationen") == true)
-								{
-										$this->SetValueBoolean("SleeptimerAktiviertVAR", $E2_SleeptimerEnabled);
-										$this->SetValueInteger("SleeptimerMinutenVAR", $E2_SleeptimerMinuten);
-										$this->SetValueString("SleeptimerAktionVAR", $E2_SleeptimerAktion);
-								}
-								return $E2_SleeptimerInfo;
-						}
-						else
-						{
-								return false;
-						}
+		if ($this->FeaturePreCheck("sleeptimer") === true)
+		{
+			$IP = $this->ReadPropertyString("Enigma2IP");
+			$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+			if ($this->GetPowerState() == 1)
+			{
+				if ($Aktiv === true)
+				{
+					$Aktiv = "True";
 				}
 				else
 				{
-						IPS_LogMessage("ENIGMA2BY", "Diese Funktion ist mit diesem Receiver/Image nicht verfügbar!");
+					$Aktiv = "False";
+				}		    		
+				$url = "http://".$IP.":".$WebPort."/web/sleeptimer?cmd=set&time=".$Minuten."&action=".$Aktion."&enabled=".$Aktiv;
+				$xml = @simplexml_load_file($url);
+				$E2_SleeptimerEnabled = $this->ResultAuswerten(trim($xml->e2enabled));
+				$E2_SleeptimerMinuten = (int)trim($xml->e2minutes);
+				$E2_SleeptimerAktion = (string)trim($xml->e2action);
+				$E2_SleeptimerText = (string)trim($xml->e2text);
+				$E2_SleeptimerInfo["SleeptimerAktiviert"] = $E2_SleeptimerEnabled;
+				$E2_SleeptimerInfo["SleeptimerMinuten"] = $E2_SleeptimerMinuten;
+				$E2_SleeptimerInfo["SleeptimerAktion"] = $E2_SleeptimerAktion;
+				$E2_SleeptimerInfo["SleeptimerText"] = $E2_SleeptimerText;
+				if ($this->ReadPropertyBoolean("ErwInformationen") == true)
+				{
+						$this->SetValueBoolean("SleeptimerAktiviertVAR", $E2_SleeptimerEnabled);
+						$this->SetValueInteger("SleeptimerMinutenVAR", $E2_SleeptimerMinuten);
+						$this->SetValueString("SleeptimerAktionVAR", $E2_SleeptimerAktion);
 				}
+				return $E2_SleeptimerInfo;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			IPS_LogMessage("ENIGMA2BY", "Diese Funktion ist mit diesem Receiver/Image nicht verfügbar!");
+		}
     }
     
     public function GetPowerState()
@@ -806,49 +861,50 @@ class Enigma2BY extends IPSModule
     
     public function SetVolume(string $Parameter)
     {
-    		$IP = $this->ReadPropertyString("Enigma2IP");
-    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-    		if ($this->GetPowerState() == 1)
-    		{
-		    		if (is_int($Parameter))
-		    		{
-		    				if (($Parameter < 0) OR ($Parameter > 100))
-		    				{
-		    						return "Ungültiger Wert für die Lautstärke! Erlaubte Werte sind 0 bis 100.";
-		    				}
-		    				else
-		    				{
-		    						$Befehl = "set".$Parameter;
-		    				}
-		    		}
-		    		elseif (($Parameter == "+") OR ($Parameter == "up"))
-		    		{
-		    				$Befehl = "up";
-						}
-						elseif (($Parameter == "-") OR ($Parameter == "down"))
-		    		{
-		    				$Befehl = "down";
-						}
-						elseif (($Parameter == "MUTE") OR ($Parameter == "mute") OR ($Parameter == "Mute"))
-		    		{
-		    				$Befehl = "mute";
-						}
-						else {
-								return "Unbekannter Befehl für die Funktion -SetVolume-";
-						}
-						$url = "http://".$IP.":".$WebPort."/web/vol?set=".$Befehl;
-						$xml = @simplexml_load_file($url);
-						$result = $this->ResultAuswerten($xml->e2ismuted);
-						$E2_VolReturn["Volume"] = (int)trim($xml->e2current);
-						$E2_VolReturn["Mute"] = $this->ResultAuswerten($xml->e2ismuted);
-						$this->SetValueBoolean("MuteVAR", $E2_VolReturn["Mute"]);
-						$this->GetVolume();
-						return $E2_VolReturn;						
+		$IP = $this->ReadPropertyString("Enigma2IP");
+		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+		if ($this->GetPowerState() == 1)
+		{
+			if (is_int($Parameter))
+			{
+				if (($Parameter < 0) OR ($Parameter > 100))
+				{
+					return "Ungültiger Wert für die Lautstärke! Erlaubte Werte sind 0 bis 100.";
 				}
 				else
 				{
-						return false;
+					$Befehl = "set".$Parameter;
 				}
+			}
+			elseif (($Parameter == "+") OR ($Parameter == "up"))
+			{
+				$Befehl = "up";
+			}
+			elseif (($Parameter == "-") OR ($Parameter == "down"))
+			{
+				$Befehl = "down";
+			}
+			elseif (($Parameter == "MUTE") OR ($Parameter == "mute") OR ($Parameter == "Mute"))
+			{
+				$Befehl = "mute";
+			}
+			else
+			{
+				return "Unbekannter Befehl für die Funktion -SetVolume-";
+			}
+			$url = "http://".$IP.":".$WebPort."/web/vol?set=".$Befehl;
+			$xml = @simplexml_load_file($url);
+			$result = $this->ResultAuswerten($xml->e2ismuted);
+			$E2_VolReturn["Volume"] = (int)trim($xml->e2current);
+			$E2_VolReturn["Mute"] = $this->ResultAuswerten($xml->e2ismuted);
+			$this->SetValueBoolean("MuteVAR", $E2_VolReturn["Mute"]);
+			$this->GetVolume();
+			return $E2_VolReturn;						
+		}
+		else
+		{
+			return false;
+		}
     }
     
     public function AddTimerByEventID(string $sRef, integer $EventID, string $AufnahmePfad)
@@ -954,147 +1010,148 @@ class Enigma2BY extends IPSModule
 				
 	public function GetTimerliste()
     {
-    		$IP = $this->ReadPropertyString("Enigma2IP");
-    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-    		if ($this->GetPowerState() != 0)
-    		{
-		    		$url = "http://".$IP.":".$WebPort."/web/timerlist";
-						$xml = @simplexml_load_file($url);
-						$i = 0;
-						foreach ($xml->e2timer as $xmlnode)
-						{
-						 	$TimerAR[$i]["ServiceReference"] = (string)$xmlnode->e2servicereference;
-							$TimerAR[$i]["Sendername"] = (string)$xmlnode->e2servicename;
-							$TimerAR[$i]["EventID"] = (int)$xmlnode->e2eit;
-							$TimerAR[$i]["Sendungsname"] = (string)$xmlnode->e2name;
-							$TimerAR[$i]["SendungsbeschreibungKurz"] = (string)$xmlnode->e2description;
-							$TimerAR[$i]["SendungsbeschreibungLang"] = (string)$xmlnode->e2descriptionextended;
-							$TimerAR[$i]["Sendungsbeginn"] = (int)$xmlnode->e2timebegin;
-							$TimerAR[$i]["Sendungsende"] = (int)$xmlnode->e2timeend;
-							$TimerAR[$i]["SendungsdauerSek"] = (int)$xmlnode->e2duration;
-							$TimerAR[$i]["TimerArt"] = (int)$xmlnode->e2justplay; // TimerArt (0=Aufnahme,1=Umschalten,...)
-							$TimerAR[$i]["Aufnahmeverzeichnis"] = (string)$xmlnode->e2location;
-							$i++;
-						}
-						$TimerCount = count($xml->e2timer);
-						$this->SetValueInteger("TimerAnzahlVAR", $TimerCount);
-						
-						if ($TimerCount > 0)
-						{
-								// HTML Ausgabe generieren
-								$TitelAR = array("Sendername","Sendungstitel","Beschreibung","Beginn","Ende","Dauer","Art");
-								$HTMLTimerliste = '<html><table>';
-								$HTMLTimerliste .= '<tr><th>'.$TitelAR[3].'</th><th>'.$TitelAR[4].'</th><th>'.$TitelAR[0].'</th><th>'.$TitelAR[1].'</th><th colspan="2">'.$TitelAR[2].'</th><th>'.$TitelAR[5].'</th><th>'.$TitelAR[6].'</th></tr>';
-								for ($h=0; $h<count($TimerAR); $h++)
-								{
-										// Timerbeginn-Anpassung
-										$t = date("w", $TimerAR[$h]["Sendungsbeginn"]);
-										$wochentage = array('So.','Mo.','Di.','Mi.','Do.','Fr.','Sa.');
-										$TimerEintragSendungsbeginn = $wochentage[$t];
-										$TimerEintragSendungsbeginn .= " ".date("j.m.Y H:i", $TimerAR[$h]["Sendungsbeginn"]);
-										// Timerende-Anpassung
-										$t = date('w', $TimerAR[$h]["Sendungsende"]);
-										$wochentage = array('So.','Mo.','Di.','Mi.','Do.','Fr.','Sa.');
-										$TimerEintragSendungsende = $wochentage[$t];
-										$TimerEintragSendungsende .= " ".date("j.m.Y H:i", $TimerAR[$h]["Sendungsende"]);
-										// Sendungsbeschreibung-Anpassung
-										if ((strlen($TimerAR[$h]["SendungsbeschreibungKurz"]) != 0) AND (strlen($TimerAR[$h]["SendungsbeschreibungLang"]) != 0))
-										{
-												$TimerEintragBeschreibung = $TimerAR[$h]["SendungsbeschreibungKurz"].' || '.$TimerAR[$h]["SendungsbeschreibungLang"];
-										}
-										elseif ((strlen($TimerAR[$h]["SendungsbeschreibungKurz"]) == 0) AND (strlen($TimerAR[$h]["SendungsbeschreibungLang"]) != 0))
-										{
-										      $TimerEintragBeschreibung = $TimerAR[$h]["SendungsbeschreibungLang"];
-										}
-										elseif ((strlen($TimerAR[$h]["SendungsbeschreibungKurz"]) != 0) AND (strlen($TimerAR[$h]["SendungsbeschreibungLang"]) == 0))
-										{
-										      $TimerEintragBeschreibung = $TimerAR[$h]["SendungsbeschreibungKurz"];
-										}
-										else
-										{
-										      $TimerEintragBeschreibung = "";
-										}
-										// Sendungsdauer-Anpassung
-										$TimerEintragSendungsdauerMin = $TimerAR[$h]["SendungsdauerSek"] / 60;
-										// TimerArt-Anpassung
-										switch ($TimerAR[$h]["TimerArt"])
-										{
-											case 0:
-											      $TimerEintragArt = "Aufnahme";
-											break;
-											case 1:
-											      $TimerEintragArt = "Umschalten";
-											break;
-										}
-										$HTMLTimerliste .= '<tr><th>'.$TimerEintragSendungsbeginn.' Uhr</th><th>'.$TimerEintragSendungsende.' Uhr</th><th>'.$TimerAR[$h]["Sendername"].'</th><th>'.$TimerAR[$h]["Sendungsname"].'</th><th colspan="2">'.$TimerEintragBeschreibung.'</th><th>'.$TimerEintragSendungsdauerMin.' Min.</th><th>'.$TimerEintragArt.'</th></tr>';
-								}
-								
-								$HTMLTimerliste .= '</table></html>';
-								$this->SetValueString("TimerlisteVAR", $HTMLTimerliste);
-								return $TimerAR;
-						}
-						else
-						{
-								$HTMLTimerliste = '<html><b>Keine Timer vorhanden!</b></html>';
-								$this->SetValueString("TimerlisteVAR", $HTMLTimerliste);
-								return false;
-						}
-				}
-				else
+		$IP = $this->ReadPropertyString("Enigma2IP");
+		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+		if ($this->GetPowerState() != 0)
+		{
+			$url = "http://".$IP.":".$WebPort."/web/timerlist";
+			$xml = @simplexml_load_file($url);
+			$i = 0;
+			foreach ($xml->e2timer as $xmlnode)
+			{
+				$TimerAR[$i]["ServiceReference"] = (string)$xmlnode->e2servicereference;
+				$TimerAR[$i]["Sendername"] = (string)$xmlnode->e2servicename;
+				$TimerAR[$i]["EventID"] = (int)$xmlnode->e2eit;
+				$TimerAR[$i]["Sendungsname"] = (string)$xmlnode->e2name;
+				$TimerAR[$i]["SendungsbeschreibungKurz"] = (string)$xmlnode->e2description;
+				$TimerAR[$i]["SendungsbeschreibungLang"] = (string)$xmlnode->e2descriptionextended;
+				$TimerAR[$i]["Sendungsbeginn"] = (int)$xmlnode->e2timebegin;
+				$TimerAR[$i]["Sendungsende"] = (int)$xmlnode->e2timeend;
+				$TimerAR[$i]["SendungsdauerSek"] = (int)$xmlnode->e2duration;
+				$TimerAR[$i]["TimerArt"] = (int)$xmlnode->e2justplay; // TimerArt (0=Aufnahme,1=Umschalten,...)
+				$TimerAR[$i]["Aufnahmeverzeichnis"] = (string)$xmlnode->e2location;
+				$i++;
+			}
+			$TimerCount = count($xml->e2timer);
+			$this->SetValueInteger("TimerAnzahlVAR", $TimerCount);
+			
+			if ($TimerCount > 0)
+			{
+				// HTML Ausgabe generieren
+				$TitelAR = array("Sendername","Sendungstitel","Beschreibung","Beginn","Ende","Dauer","Art");
+				$HTMLTimerliste = '<html><table>';
+				$HTMLTimerliste .= '<tr><th>'.$TitelAR[3].'</th><th>'.$TitelAR[4].'</th><th>'.$TitelAR[0].'</th><th>'.$TitelAR[1].'</th><th colspan="2">'.$TitelAR[2].'</th><th>'.$TitelAR[5].'</th><th>'.$TitelAR[6].'</th></tr>';
+				for ($h=0; $h<count($TimerAR); $h++)
 				{
-						return false;
+					// Timerbeginn-Anpassung
+					$t = date("w", $TimerAR[$h]["Sendungsbeginn"]);
+					$wochentage = array('So.','Mo.','Di.','Mi.','Do.','Fr.','Sa.');
+					$TimerEintragSendungsbeginn = $wochentage[$t];
+					$TimerEintragSendungsbeginn .= " ".date("j.m.Y H:i", $TimerAR[$h]["Sendungsbeginn"]);
+					// Timerende-Anpassung
+					$t = date('w', $TimerAR[$h]["Sendungsende"]);
+					$wochentage = array('So.','Mo.','Di.','Mi.','Do.','Fr.','Sa.');
+					$TimerEintragSendungsende = $wochentage[$t];
+					$TimerEintragSendungsende .= " ".date("j.m.Y H:i", $TimerAR[$h]["Sendungsende"]);
+					// Sendungsbeschreibung-Anpassung
+					if ((strlen($TimerAR[$h]["SendungsbeschreibungKurz"]) != 0) AND (strlen($TimerAR[$h]["SendungsbeschreibungLang"]) != 0))
+					{
+						$TimerEintragBeschreibung = $TimerAR[$h]["SendungsbeschreibungKurz"].' || '.$TimerAR[$h]["SendungsbeschreibungLang"];
+					}
+					elseif ((strlen($TimerAR[$h]["SendungsbeschreibungKurz"]) == 0) AND (strlen($TimerAR[$h]["SendungsbeschreibungLang"]) != 0))
+					{
+						$TimerEintragBeschreibung = $TimerAR[$h]["SendungsbeschreibungLang"];
+					}
+					elseif ((strlen($TimerAR[$h]["SendungsbeschreibungKurz"]) != 0) AND (strlen($TimerAR[$h]["SendungsbeschreibungLang"]) == 0))
+					{
+						$TimerEintragBeschreibung = $TimerAR[$h]["SendungsbeschreibungKurz"];
+					}
+					else
+					{
+						$TimerEintragBeschreibung = "";
+					}
+					
+					// Sendungsdauer-Anpassung
+					$TimerEintragSendungsdauerMin = $TimerAR[$h]["SendungsdauerSek"] / 60;
+					
+					// TimerArt-Anpassung
+					switch ($TimerAR[$h]["TimerArt"])
+					{
+						case 0:
+							  $TimerEintragArt = "Aufnahme";
+						break;
+						case 1:
+							  $TimerEintragArt = "Umschalten";
+						break;
+					}
+					$HTMLTimerliste .= '<tr><th>'.$TimerEintragSendungsbeginn.' Uhr</th><th>'.$TimerEintragSendungsende.' Uhr</th><th>'.$TimerAR[$h]["Sendername"].'</th><th>'.$TimerAR[$h]["Sendungsname"].'</th><th colspan="2">'.$TimerEintragBeschreibung.'</th><th>'.$TimerEintragSendungsdauerMin.' Min.</th><th>'.$TimerEintragArt.'</th></tr>';
 				}
+				$HTMLTimerliste .= '</table></html>';
+				$this->SetValueString("TimerlisteVAR", $HTMLTimerliste);
+				return $TimerAR;
+			}
+			else
+			{
+				$HTMLTimerliste = '<html><b>Keine Timer vorhanden!</b></html>';
+				$this->SetValueString("TimerlisteVAR", $HTMLTimerliste);
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
     }
     
     public function GetAufnahmenliste()
     {
-    		$IP = $this->ReadPropertyString("Enigma2IP");
-    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-    		if ($this->GetPowerState() != 0)
-    		{
-		    		$url = "http://".$IP.":".$WebPort."/web/movielist";
-						$xml = @simplexml_load_file($url);
-						$i = 0;
-						foreach ($xml->e2movie as $xmlnode)
-						{
-							$AufnahmenAR[$i]["Sendername"] = (string)$xmlnode->e2servicename; // Sendername
-							$AufnahmenAR[$i]["Sendungstitel"] = (string)$xmlnode->e2title; // Titel
-							$AufnahmenAR[$i]["SendungsbeschreibungLang"] = (string)$xmlnode->e2descriptionextended; // Sendungsbeschreibung lang
-							$AufnahmenAR[$i]["SendungsdauerMin"] = (int)$xmlnode->e2length; // Sendungsdauer Min.
-							$AufnahmenAR[$i]["SendungsDateigroesse"] = (int)$xmlnode->e2filesize; // Dateigröße der Sendung in Byte
-							$i++;
-						}
-						$AufnahmenCount = count($xml->e2movie);  // Anzahl der Aufnahmen
-						$this->SetValueInteger("AufnahmenAnzahlVAR", $AufnahmenCount);						
-						
-						if ($AufnahmenCount > 0)
-						{
-								// HTML Ausgabe generieren
-								$TitelAR = array("Sendername","Sendungstitel","Beschreibung","Dauer","Dateigröße");
-								$HTMLAufnahmenliste = '<html><table>';
-								$HTMLAufnahmenliste .= '<tr><th>'.$TitelAR[0].'</th><th>'.$TitelAR[1].'</th><th>'.$TitelAR[2].'</th><th>'.$TitelAR[3].'</th><th>'.$TitelAR[4].'</th></tr>';
-								
-								for ($h=0; $h<count($AufnahmenAR); $h++)
-								{
-										// Dateigröße-Anpassung
-										$AufnahmeEintragDateigroesseGB = round((float)$AufnahmenAR[$h]["SendungsDateigroesse"] / 1024 / 1024 / 1024, 2);
-										$HTMLAufnahmenliste .= '<tr><th>'.$AufnahmenAR[$h]["Sendername"].'</th><th>'.$AufnahmenAR[$h]["Sendungstitel"].'</th><th>'.$AufnahmenAR[$h]["SendungsbeschreibungLang"].'</th><th>'.$AufnahmenAR[$h]["SendungsdauerMin"].' Min.</th><th>'.$AufnahmeEintragDateigroesseGB.' GB</th></tr>';
-								}
-								$HTMLAufnahmenliste .= '</table></html>';
-								$this->SetValueString("AufnahmenlisteVAR", $HTMLAufnahmenliste);
-								return $AufnahmenAR;
-						}
-						else
-						{
-								$HTMLAufnahmenliste = '<html><b>Keine Aufnahmen vorhanden!</b></html>';
-								$this->SetValueString("AufnahmenlisteVAR", $HTMLAufnahmenliste);
-								return false;
-						}						
-				}
-				else
+		$IP = $this->ReadPropertyString("Enigma2IP");
+		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+		if ($this->GetPowerState() != 0)
+		{
+			$url = "http://".$IP.":".$WebPort."/web/movielist";
+			$xml = @simplexml_load_file($url);
+			$i = 0;
+			foreach ($xml->e2movie as $xmlnode)
+			{
+				$AufnahmenAR[$i]["Sendername"] = (string)$xmlnode->e2servicename; // Sendername
+				$AufnahmenAR[$i]["Sendungstitel"] = (string)$xmlnode->e2title; // Titel
+				$AufnahmenAR[$i]["SendungsbeschreibungLang"] = (string)$xmlnode->e2descriptionextended; // Sendungsbeschreibung lang
+				$AufnahmenAR[$i]["SendungsdauerMin"] = (int)$xmlnode->e2length; // Sendungsdauer Min.
+				$AufnahmenAR[$i]["SendungsDateigroesse"] = (int)$xmlnode->e2filesize; // Dateigröße der Sendung in Byte
+				$i++;
+			}
+			$AufnahmenCount = count($xml->e2movie);  // Anzahl der Aufnahmen
+			$this->SetValueInteger("AufnahmenAnzahlVAR", $AufnahmenCount);						
+			
+			if ($AufnahmenCount > 0)
+			{
+				// HTML Ausgabe generieren
+				$TitelAR = array("Sendername","Sendungstitel","Beschreibung","Dauer","Dateigröße");
+				$HTMLAufnahmenliste = '<html><table>';
+				$HTMLAufnahmenliste .= '<tr><th>'.$TitelAR[0].'</th><th>'.$TitelAR[1].'</th><th>'.$TitelAR[2].'</th><th>'.$TitelAR[3].'</th><th>'.$TitelAR[4].'</th></tr>';
+				
+				for ($h=0; $h<count($AufnahmenAR); $h++)
 				{
-						return false;
+					// Dateigröße-Anpassung
+					$AufnahmeEintragDateigroesseGB = round((float)$AufnahmenAR[$h]["SendungsDateigroesse"] / 1024 / 1024 / 1024, 2);
+					$HTMLAufnahmenliste .= '<tr><th>'.$AufnahmenAR[$h]["Sendername"].'</th><th>'.$AufnahmenAR[$h]["Sendungstitel"].'</th><th>'.$AufnahmenAR[$h]["SendungsbeschreibungLang"].'</th><th>'.$AufnahmenAR[$h]["SendungsdauerMin"].' Min.</th><th>'.$AufnahmeEintragDateigroesseGB.' GB</th></tr>';
 				}
+				$HTMLAufnahmenliste .= '</table></html>';
+				$this->SetValueString("AufnahmenlisteVAR", $HTMLAufnahmenliste);
+				return $AufnahmenAR;
+			}
+			else
+			{
+				$HTMLAufnahmenliste = '<html><b>Keine Aufnahmen vorhanden!</b></html>';
+				$this->SetValueString("AufnahmenlisteVAR", $HTMLAufnahmenliste);
+				return false;
+			}						
+		}
+		else
+		{
+			return false;
+		}
     }
     
     public function GetSenderliste()
@@ -1132,77 +1189,76 @@ class Enigma2BY extends IPSModule
     
     public function EPGSuche(string $Suchstring)
     {
-    		$IP = $this->ReadPropertyString("Enigma2IP");
-    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-    		if ($this->GetPowerState() != 0)
-    		{
-		    		$url = "http://".$IP."/web/epgsearch?search=".$Suchstring;
-						$xml = simplexml_load_file($url);
-						
-						$i = 0;
-						foreach ($xml->e2event as $xmlnode)
-						{
-							$EPGSucheAR[$i]["Sendername"] = (string)$xmlnode->e2eventservicename; // Sendername
-						 	$EPGSucheAR[$i]["ServiceReference"] = (string)$xmlnode->e2eventservicereference; // ServiceReference
-							$EPGSucheAR[$i]["EventID"] = (int)$xmlnode->e2eventid; // EventID
-							$EPGSucheAR[$i]["Sendungsname"] = (string)$xmlnode->e2eventtitle; // Sendungsname
-							$EPGSucheAR[$i]["SendungsbeschreibungKurz"] = (string)$xmlnode->e2eventdescription; // Sendungsbeschreibung kurz
-							$EPGSucheAR[$i]["SendungsbeschreibungLang"] = (string)$xmlnode->e2eventdescriptionextended; // Sendungsbeschreibung lang
-							$EPGSucheAR[$i]["Sendungsbeginn"] = (int)$xmlnode->e2eventstart; // Sendungsbeginn
-							$EPGSucheAR[$i]["SendungsdauerSek"] = (int)$xmlnode->e2eventduration; // Sendungsdauer Sek.
-							$EPGSucheAR[$i]["Sendungsende"] = $EPGSucheAR[$i]["Sendungsbeginn"] + $EPGSucheAR[$i]["SendungsdauerSek"]; // Sendungsende
-							$i++;
-						}
-						$SuchCount = count($xml->e2event);  // Anzahl der Timer in der Liste
-						$this->SetValueInteger("EPGSucheErgebnisAnzahlVAR", $SuchCount);
-						
-						// HTML Ausgabe generieren
-						$TitelAR = array("Sendername","Sendungsname","Beschreibung","Beginn","Ende","Dauer");
-						$HTMLEPGSuchergebnisse = '<html><table>';
-						$HTMLEPGSuchergebnisse .= '<tr><th>'.$TitelAR[0].'</th><th>'.$TitelAR[1].'</th><th colspan="2">'.$TitelAR[2].'</th><th>'.$TitelAR[3].'</th><th>'.$TitelAR[4].'</th><th>'.$TitelAR[5].'</th></tr>';
-						
-						for ($h=0; $h<count($EPGSucheAR); $h++)
-						{
-								// Timerbeginn-Anpassung
-								$t = date("w", $EPGSucheAR[$h]["Sendungsbeginn"]);
-								$wochentage = array('So.','Mo.','Di.','Mi.','Do.','Fr.','Sa.');
-								$EPGEintragSendungsbeginn = $wochentage[$t];
-								$EPGEintragSendungsbeginn .= " ".date("j.m.Y H:i", $EPGSucheAR[$h]["Sendungsbeginn"]);
-								// Timerende-Anpassung
-								$t = date('w', $EPGSucheAR[$h]["Sendungsende"]);
-								$wochentage = array('So.','Mo.','Di.','Mi.','Do.','Fr.','Sa.');
-								$EPGEintragSendungsende = $wochentage[$t];
-								$EPGEintragSendungsende .= " ".date("j.m.Y H:i", $EPGSucheAR[$h]["Sendungsende"]);
-								// Sendungsbeschreibung-Anpassung
-								if ((strlen($EPGSucheAR[$h]["SendungsbeschreibungKurz"]) > 2) AND (strlen($EPGSucheAR[$h]["SendungsbeschreibungLang"]) > 2))
-								{
-										$EPGEintragBeschreibung = $EPGSucheAR[$h]["SendungsbeschreibungKurz"].' || '.$EPGSucheAR[$h]["SendungsbeschreibungLang"];
-								}
-								elseif ((strlen($EPGSucheAR[$h]["SendungsbeschreibungKurz"]) < 2) AND (strlen($EPGSucheAR[$h]["SendungsbeschreibungLang"]) > 2))
-								{
-								      $EPGEintragBeschreibung = $EPGSucheAR[$h]["SendungsbeschreibungLang"];
-								}
-								elseif ((strlen($EPGSucheAR[$h]["SendungsbeschreibungKurz"]) > 2) AND (strlen($EPGSucheAR[$h]["SendungsbeschreibungLang"]) < 2))
-								{
-								      $EPGEintragBeschreibung = $EPGSucheAR[$h]["SendungsbeschreibungKurz"];
-								}
-								else
-								{
-								      $EPGEintragBeschreibung = "";
-								}
-								// Sendungsdauer-Anpassung
-								$EPGEintragSendungsdauerMin = $EPGSucheAR[$h]["SendungsdauerSek"] / 60;
-								$HTMLEPGSuchergebnisse .= '<tr><th>'.$EPGSucheAR[$h]["Sendername"].'</th><th>'.$EPGSucheAR[$h]["Sendungsname"].'</th><th colspan="2">'.$EPGEintragBeschreibung.'</th><th>'.$EPGEintragSendungsbeginn.'</th><th>'.$EPGEintragSendungsende.'</th><th>'.$EPGEintragSendungsdauerMin.' Min.</th></tr>';
-						}
-						
-						$HTMLEPGSuchergebnisse .= '</table></html>';
-						$this->SetValueString("EPGSucheErgebnisVAR", $HTMLEPGSuchergebnisse);
-						return $EPGSucheAR;
+		$IP = $this->ReadPropertyString("Enigma2IP");
+		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+		if ($this->GetPowerState() != 0)
+		{
+			$url = "http://".$IP."/web/epgsearch?search=".$Suchstring;
+			$xml = simplexml_load_file($url);
+			
+			$i = 0;
+			foreach ($xml->e2event as $xmlnode)
+			{
+				$EPGSucheAR[$i]["Sendername"] = (string)$xmlnode->e2eventservicename; // Sendername
+				$EPGSucheAR[$i]["ServiceReference"] = (string)$xmlnode->e2eventservicereference; // ServiceReference
+				$EPGSucheAR[$i]["EventID"] = (int)$xmlnode->e2eventid; // EventID
+				$EPGSucheAR[$i]["Sendungsname"] = (string)$xmlnode->e2eventtitle; // Sendungsname
+				$EPGSucheAR[$i]["SendungsbeschreibungKurz"] = (string)$xmlnode->e2eventdescription; // Sendungsbeschreibung kurz
+				$EPGSucheAR[$i]["SendungsbeschreibungLang"] = (string)$xmlnode->e2eventdescriptionextended; // Sendungsbeschreibung lang
+				$EPGSucheAR[$i]["Sendungsbeginn"] = (int)$xmlnode->e2eventstart; // Sendungsbeginn
+				$EPGSucheAR[$i]["SendungsdauerSek"] = (int)$xmlnode->e2eventduration; // Sendungsdauer Sek.
+				$EPGSucheAR[$i]["Sendungsende"] = $EPGSucheAR[$i]["Sendungsbeginn"] + $EPGSucheAR[$i]["SendungsdauerSek"]; // Sendungsende
+				$i++;
+			}
+			$SuchCount = count($xml->e2event);  // Anzahl der Timer in der Liste
+			$this->SetValueInteger("EPGSucheErgebnisAnzahlVAR", $SuchCount);
+			
+			// HTML Ausgabe generieren
+			$TitelAR = array("Sendername","Sendungsname","Beschreibung","Beginn","Ende","Dauer");
+			$HTMLEPGSuchergebnisse = '<html><table>';
+			$HTMLEPGSuchergebnisse .= '<tr><th>'.$TitelAR[0].'</th><th>'.$TitelAR[1].'</th><th colspan="2">'.$TitelAR[2].'</th><th>'.$TitelAR[3].'</th><th>'.$TitelAR[4].'</th><th>'.$TitelAR[5].'</th></tr>';
+			
+			for ($h=0; $h<count($EPGSucheAR); $h++)
+			{
+				// Timerbeginn-Anpassung
+				$t = date("w", $EPGSucheAR[$h]["Sendungsbeginn"]);
+				$wochentage = array('So.','Mo.','Di.','Mi.','Do.','Fr.','Sa.');
+				$EPGEintragSendungsbeginn = $wochentage[$t];
+				$EPGEintragSendungsbeginn .= " ".date("j.m.Y H:i", $EPGSucheAR[$h]["Sendungsbeginn"]);
+				// Timerende-Anpassung
+				$t = date('w', $EPGSucheAR[$h]["Sendungsende"]);
+				$wochentage = array('So.','Mo.','Di.','Mi.','Do.','Fr.','Sa.');
+				$EPGEintragSendungsende = $wochentage[$t];
+				$EPGEintragSendungsende .= " ".date("j.m.Y H:i", $EPGSucheAR[$h]["Sendungsende"]);
+				// Sendungsbeschreibung-Anpassung
+				if ((strlen($EPGSucheAR[$h]["SendungsbeschreibungKurz"]) > 2) AND (strlen($EPGSucheAR[$h]["SendungsbeschreibungLang"]) > 2))
+				{
+					$EPGEintragBeschreibung = $EPGSucheAR[$h]["SendungsbeschreibungKurz"].' || '.$EPGSucheAR[$h]["SendungsbeschreibungLang"];
+				}
+				elseif ((strlen($EPGSucheAR[$h]["SendungsbeschreibungKurz"]) < 2) AND (strlen($EPGSucheAR[$h]["SendungsbeschreibungLang"]) > 2))
+				{
+					$EPGEintragBeschreibung = $EPGSucheAR[$h]["SendungsbeschreibungLang"];
+				}
+				elseif ((strlen($EPGSucheAR[$h]["SendungsbeschreibungKurz"]) > 2) AND (strlen($EPGSucheAR[$h]["SendungsbeschreibungLang"]) < 2))
+				{
+					$EPGEintragBeschreibung = $EPGSucheAR[$h]["SendungsbeschreibungKurz"];
 				}
 				else
 				{
-						return false;
+					$EPGEintragBeschreibung = "";
 				}
+				// Sendungsdauer-Anpassung
+				$EPGEintragSendungsdauerMin = $EPGSucheAR[$h]["SendungsdauerSek"] / 60;
+				$HTMLEPGSuchergebnisse .= '<tr><th>'.$EPGSucheAR[$h]["Sendername"].'</th><th>'.$EPGSucheAR[$h]["Sendungsname"].'</th><th colspan="2">'.$EPGEintragBeschreibung.'</th><th>'.$EPGEintragSendungsbeginn.'</th><th>'.$EPGEintragSendungsende.'</th><th>'.$EPGEintragSendungsdauerMin.' Min.</th></tr>';
+			}
+			$HTMLEPGSuchergebnisse .= '</table></html>';
+			$this->SetValueString("EPGSucheErgebnisVAR", $HTMLEPGSuchergebnisse);
+			return $EPGSucheAR;
+		}
+		else
+		{
+			return false;
+		}
     }
     
     public function ZapTo(string $Sendername)
