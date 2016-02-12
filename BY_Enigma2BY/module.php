@@ -409,8 +409,8 @@ class Enigma2BY extends IPSModule
 			$xml = @simplexml_load_file($url);
 			$E2_CurSendername = (string)trim($xml->e2service->e2servicename);
 			$E2_SenderSRef = (string)trim($xml->e2service->e2servicereference);
+			$E2_SenderSRef = substr($E2_SenderSRef, 0, -1);
 			$E2_SenderPRef = str_replace(':', '_', $E2_SenderSRef); 
-			$E2_SenderPRef = substr($E2_SenderPRef, 0, -1);
 			$E2_CurSendungsname = (string)trim($xml->e2eventlist->e2event[0]->e2eventname);
 			$E2_CurSendungsBeschrKurz = (string)trim($xml->e2eventlist->e2event[0]->e2eventdescription);
 			$E2_CurSendungsBeschrLang = (string)trim($xml->e2eventlist->e2event[0]->e2eventdescriptionextended);

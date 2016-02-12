@@ -294,5 +294,6 @@ Version 1.3:
     muss die Aufnahmeliste ab jetzt manuell durch euch aktualisiert werden (z.B. immer nur Nachts oder wann ihr wollt).
 	
 Version 1.4:
+  - ACHTUNG # Ich musste bei einigen Variablen die Idents ändern, deshalb bitte entweder alle Variablen vom Modul löschen und neu erstellen lassen, oder die alten Variablen einzeln löschen
   - NEU # SetPowerState (Werte "4" (Wakeup from Standby) und "5" (Standby) hinzugefügt)
-  - NEU # GetEPGInfos erweitert (Zusätzliche ArrayReturns + Variablen für Sendungs-Start, Sendungs-Ende, Fortschritt, ...)
+  - NEU # GetEPGInfos erweitert (Zusätzliche ArrayReturns + Variablen für Sendungs-Start, Sendungs-Ende, Fortschritt, SRef, PRef, ...)
