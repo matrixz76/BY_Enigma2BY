@@ -77,7 +77,7 @@ class Enigma2BY extends IPSModule
         $this->RegisterVariableString("NextSendungsnameVAR", "Next Sendungstitel");
         $this->RegisterVariableString("NextSendungsBeschrKurzVAR", "Next Sendungsbeschreibung kurz");
         $this->RegisterVariableString("NextSendungsBeschrLangVAR", "Next Sendungsbeschreibung lang");
-        $this->RegisterVariableString("NextSendungsStartVAR", "Next Sendung Startzeit");
+        $this->RegisterVariableString("NextSendungsStartVAR", "Next Sendung Startzeit", "E2BY.Uhr");
 		$this->RegisterVariableString("NextSendungsEndeVAR", "Next Sendung Endzeit", "E2BY.Uhr");
         $this->RegisterVariableInteger("NextSendungsdauerVAR", "Next Sendungsdauer Min.", "E2BY.Minuten");
         $this->RegisterVariableInteger("VolumeVAR", "Volume", "E2BY.Volume");
