@@ -23,8 +23,8 @@ class Enigma2BY extends IPSModule
 
     public function Destroy()
     {
-    		//Timer entfernen
-    		$this->UnregisterTimer("Refresh_All");
+    	//Timer entfernen
+    	$this->UnregisterTimer("Refresh_All");
     		
         //Never delete this line!!
         parent::Destroy();
@@ -38,8 +38,8 @@ class Enigma2BY extends IPSModule
         //Variablenprofile erstellen
         $this->RegisterProfileInteger("E2BY.Minuten", "Clock", "", " Min.",  "0", "300", 1);
         if ($this->ReadPropertyBoolean("HDDverbaut") == true)
-				{
-        		$this->RegisterProfileInteger("E2BY.GB", "Information", "", " GB",  "0", "10240000", 1);
+		{
+        	$this->RegisterProfileInteger("E2BY.GB", "Information", "", " GB",  "0", "10240000", 1);
       	}
         $this->RegisterProfileString("E2BY.Info", "Information", "", "",  "0", "2", 0);
         $this->RegisterProfileIntegerEx("E2BY.JaNeinKA", "Information", "", "", Array(
@@ -77,82 +77,82 @@ class Enigma2BY extends IPSModule
         $this->RegisterVariableBoolean("MuteVAR", "Mute");
         $this->RegisterVariableInteger("SenderAnzahlVAR", "Sender-Anzahl");  
         $this->RegisterVariableInteger("TimerAnzahlVAR", "Timer-Anzahl");
-		    $this->RegisterVariableString("TimerlisteVAR", "Timerliste", "~HTMLBox");
-		    $this->RegisterVariableInteger("AufnahmenAnzahlVAR", "Aufnahmen-Anzahl");
-		    $this->RegisterVariableString("AufnahmenlisteVAR", "Aufnahmenliste", "~HTMLBox");
+		$this->RegisterVariableString("TimerlisteVAR", "Timerliste", "~HTMLBox");
+		$this->RegisterVariableInteger("AufnahmenAnzahlVAR", "Aufnahmen-Anzahl");
+		$this->RegisterVariableString("AufnahmenlisteVAR", "Aufnahmenliste", "~HTMLBox");
         $this->RegisterVariableString("EnigmaVersionVAR", "Enigma-Version");
         $this->RegisterVariableString("ImageVersionVAR", "Image-Version");
         $this->RegisterVariableString("WebIfVersionVAR", "WebIf-Version");
         $this->RegisterVariableString("BoxModelVAR", "Receiver Modell");
         $this->RegisterVariableInteger("EPGSucheErgebnisAnzahlVAR", "EPGSuchergebnis-Anzahl");
-		    $this->RegisterVariableString("EPGSucheErgebnisVAR", "EPGSuchergebnis", "~HTMLBox");
+		$this->RegisterVariableString("EPGSucheErgebnisVAR", "EPGSuchergebnis", "~HTMLBox");
         
         if ($this->ReadPropertyBoolean("HDDverbaut") == true)
-				{
-		        $this->RegisterVariableString("HDDModelVAR", "HDD Modell");
-		        $this->RegisterVariableInteger("HDDCapaVAR", "HDD Kapazität (gesamt)", "E2BY.GB");
-		        $this->RegisterVariableInteger("HDDCapaFreeVAR", "HDD Kapazität (frei)", "E2BY.GB");
+		{
+			$this->RegisterVariableString("HDDModelVAR", "HDD Modell");
+			$this->RegisterVariableInteger("HDDCapaVAR", "HDD Kapazität (gesamt)", "E2BY.GB");
+			$this->RegisterVariableInteger("HDDCapaFreeVAR", "HDD Kapazität (frei)", "E2BY.GB");
       	}
       	else
       	{
-		      	$this->UnregisterVariable("HDDModelVAR");
-						$this->UnregisterVariable("HDDCapaVAR");
-						$this->UnregisterVariable("HDDCapaFreeVAR");	
+			$this->UnregisterVariable("HDDModelVAR");
+			$this->UnregisterVariable("HDDCapaVAR");
+			$this->UnregisterVariable("HDDCapaFreeVAR");	
       	}
       	
       	if ($this->ReadPropertyBoolean("ErwInformationen") == true)
-				{
-		        $this->RegisterVariableFloat("SignalSnrDbVAR", "Signal - SNR db", "E2BY.SNRdb");
-		        $this->RegisterVariableInteger("SignalSnrVAR", "Signal - SNR");
-		        $this->RegisterVariableInteger("SignalBerVAR", "Signal - BER");
-		        $this->RegisterVariableInteger("SignalAcgVAR", "Signal - ACG");
-		        $this->RegisterVariableString("LanIpVAR", "LAN - IP");
-		        $this->RegisterVariableString("LanMacVAR", "LAN - MAC");
-		        $this->RegisterVariableBoolean("LanDhcpVAR", "LAN - DHCP", "E2BY.inaktiv.aktiv");
-		        $this->RegisterVariableString("LanGwVAR", "LAN - Gateway");
-		        $this->RegisterVariableString("LanNetzmaskeVAR", "LAN - Netzmaske");
-		        $this->RegisterVariableInteger("VideoBreiteVAR", "Video - Breite");
-		        $this->RegisterVariableInteger("VideoHoeheVAR", "Video - Höhe");
-		        $this->RegisterVariableString("VideoBreiteHoeheVAR", "Video - Breite x Höhe");
-		        $this->RegisterVariableInteger("TonspurenAnzahlVAR", "Tonspuren-Anzahl");
-		        $this->RegisterVariableString("TonspurAktivVAR", "Tonspur-Aktiv");
-		        if ($this->FeaturePreCheck("downmix") === true)
-		        {
-				        $this->RegisterVariableBoolean("AC3DownmixStatusVAR", "AC3-Downmix", "E2BY.inaktiv.aktiv");
-				    }
-				    if ($this->FeaturePreCheck("sleeptimer") === true)
-		        {
-				        $this->RegisterVariableBoolean("SleeptimerAktiviertVAR", "Sleeptimer-Status", "E2BY.inaktiv.aktiv");
-				        $this->RegisterVariableInteger("SleeptimerMinutenVAR", "Sleeptimer-Minuten", "E2BY.Minuten");
-				        $this->RegisterVariableString("SleeptimerAktionVAR", "Sleeptimer-Aktion");
-		      	}
+		{
+			$this->RegisterVariableFloat("SignalSnrDbVAR", "Signal - SNR db", "E2BY.SNRdb");
+			$this->RegisterVariableInteger("SignalSnrVAR", "Signal - SNR");
+			$this->RegisterVariableInteger("SignalBerVAR", "Signal - BER");
+			$this->RegisterVariableInteger("SignalAcgVAR", "Signal - ACG");
+			$this->RegisterVariableString("LanIpVAR", "LAN - IP");
+			$this->RegisterVariableString("LanMacVAR", "LAN - MAC");
+			$this->RegisterVariableBoolean("LanDhcpVAR", "LAN - DHCP", "E2BY.inaktiv.aktiv");
+			$this->RegisterVariableString("LanGwVAR", "LAN - Gateway");
+			$this->RegisterVariableString("LanNetzmaskeVAR", "LAN - Netzmaske");
+			$this->RegisterVariableInteger("VideoBreiteVAR", "Video - Breite");
+			$this->RegisterVariableInteger("VideoHoeheVAR", "Video - Höhe");
+			$this->RegisterVariableString("VideoBreiteHoeheVAR", "Video - Breite x Höhe");
+			$this->RegisterVariableInteger("TonspurenAnzahlVAR", "Tonspuren-Anzahl");
+			$this->RegisterVariableString("TonspurAktivVAR", "Tonspur-Aktiv");
+			if ($this->FeaturePreCheck("downmix") === true)
+			{
+				$this->RegisterVariableBoolean("AC3DownmixStatusVAR", "AC3-Downmix", "E2BY.inaktiv.aktiv");
+			}
+			if ($this->FeaturePreCheck("sleeptimer") === true)
+			{
+				$this->RegisterVariableBoolean("SleeptimerAktiviertVAR", "Sleeptimer-Status", "E2BY.inaktiv.aktiv");
+				$this->RegisterVariableInteger("SleeptimerMinutenVAR", "Sleeptimer-Minuten", "E2BY.Minuten");
+				$this->RegisterVariableString("SleeptimerAktionVAR", "Sleeptimer-Aktion");
+			}
       	}
       	else
       	{
-		      	$this->UnregisterVariable("SignalSnrDbVAR");
-						$this->UnregisterVariable("SignalSnrVAR");
-						$this->UnregisterVariable("SignalBerVAR");
-						$this->UnregisterVariable("SignalAcgVAR");
-						$this->UnregisterVariable("LanIpVAR");
-						$this->UnregisterVariable("LanMacVAR");
-						$this->UnregisterVariable("LanDhcpVAR");
-						$this->UnregisterVariable("LanGwVAR");
-						$this->UnregisterVariable("LanNetzmaskeVAR");
-						$this->UnregisterVariable("VideoBreiteVAR");
-						$this->UnregisterVariable("VideoHoeheVAR");
-						$this->UnregisterVariable("VideoBreiteHoeheVAR");
-						$this->UnregisterVariable("TonspurenAnzahlVAR");
-						$this->UnregisterVariable("TonspurAktivVAR");
-						if ($this->FeaturePreCheck("downmix") === true)
-		        {
-								$this->UnregisterVariable("AC3DownmixStatusVAR");
-						}
-						if ($this->FeaturePreCheck("sleeptimer") === true)
-		        {
-								$this->UnregisterVariable("SleeptimerAktiviertVAR");
-								$this->UnregisterVariable("SleeptimerMinutenVAR");
-								$this->UnregisterVariable("SleeptimerAktionVAR");
-						}
+			$this->UnregisterVariable("SignalSnrDbVAR");
+			$this->UnregisterVariable("SignalSnrVAR");
+			$this->UnregisterVariable("SignalBerVAR");
+			$this->UnregisterVariable("SignalAcgVAR");
+			$this->UnregisterVariable("LanIpVAR");
+			$this->UnregisterVariable("LanMacVAR");
+			$this->UnregisterVariable("LanDhcpVAR");
+			$this->UnregisterVariable("LanGwVAR");
+			$this->UnregisterVariable("LanNetzmaskeVAR");
+			$this->UnregisterVariable("VideoBreiteVAR");
+			$this->UnregisterVariable("VideoHoeheVAR");
+			$this->UnregisterVariable("VideoBreiteHoeheVAR");
+			$this->UnregisterVariable("TonspurenAnzahlVAR");
+			$this->UnregisterVariable("TonspurAktivVAR");
+			if ($this->FeaturePreCheck("downmix") === true)
+			{
+				$this->UnregisterVariable("AC3DownmixStatusVAR");
+			}
+			if ($this->FeaturePreCheck("sleeptimer") === true)
+			{
+				$this->UnregisterVariable("SleeptimerAktiviertVAR");
+				$this->UnregisterVariable("SleeptimerMinutenVAR");
+				$this->UnregisterVariable("SleeptimerAktionVAR");
+			}
       	}
       	
       	//Timer einstellen
@@ -161,303 +161,303 @@ class Enigma2BY extends IPSModule
       	//Daten in Variablen aktualisieren
       	if (strlen($this->ReadPropertyString("Enigma2IP")) != "")
       	{
-						$this->UpdateAll();
-		    }
-		}
+			$this->UpdateAll();
+	    }
+	}
     
     public function UpdateAll()
     {
-    		if (strlen($IP = $this->ReadPropertyString("Enigma2IP")) != "")
+    	if (strlen($IP = $this->ReadPropertyString("Enigma2IP")) != "")
       	{
-      			if (@Sys_Ping($IP, 2000) === true)
-      			{
-      					$this->GetPowerState();
-      					$this->GetSystemInfos();
-				    		$this->GetEPGInfos();
-				    		$this->GetVolume();
-				    		$this->GetTimerliste();
-				    		//$this->GetAufnahmenliste();  // sonst wird die HDD immer aus dem Standby geholt
-				    		$this->GetSenderliste();
-				    		if ($this->ReadPropertyBoolean("ErwInformationen") === true)
-								{
-				    				$this->GetSignalInfos();
-				    				$this->GetTonspuren();
-										if ($this->FeaturePreCheck("ac3downmix"))
-										{
-						    				$this->GetAC3DownmixInfo();
-				    				}
-				    				if ($this->FeaturePreCheck("sleeptimer"))
-										{
-						    				$this->GetSleeptimerInfos();
-				    				}
-				    		}
-      			}
+			if (@Sys_Ping($IP, 2000) === true)
+			{
+				$this->GetPowerState();
+				$this->GetSystemInfos();
+				$this->GetEPGInfos();
+				$this->GetVolume();
+				$this->GetTimerliste();
+				//$this->GetAufnahmenliste();  // sonst wird die HDD immer aus dem Standby geholt
+				$this->GetSenderliste();
+				if ($this->ReadPropertyBoolean("ErwInformationen") === true)
+				{
+					$this->GetSignalInfos();
+					$this->GetTonspuren();
+					if ($this->FeaturePreCheck("ac3downmix"))
+					{
+						$this->GetAC3DownmixInfo();
+					}
+					if ($this->FeaturePreCheck("sleeptimer"))
+					{
+						$this->GetSleeptimerInfos();
+					}
+				}
+			}
       	}
     }
 
     public function TestMsg()
     {
-    		$Text_Test = "Das ist ein Test!";
-    		$Type_Test = 1;
-    		$Timeout_Test = 5;
-    		$result = $this->SendMsg($Text_Test, $Type_Test, $Timeout_Test);
-    		if ($result)
-    		{
-    				echo "Test-Nachricht wurde erfolgreich gesendet.";
-    		}
-    		else 
-    		{
-    				echo "Test-Nachricht konnte nicht gesendet werden!";
-    		}
+		$Text_Test = "Das ist ein Test!";
+		$Type_Test = 1;
+		$Timeout_Test = 5;
+		$result = $this->SendMsg($Text_Test, $Type_Test, $Timeout_Test);
+		if ($result)
+		{
+			echo "Test-Nachricht wurde erfolgreich gesendet.";
+		}
+		else 
+		{
+			echo "Test-Nachricht konnte nicht gesendet werden!";
+		}
     }
     
     public function TestKey()
     {
-    		$Key_Test = $this->ReadPropertyString("KeyDropDown");
-    		$LongShort_Test = "short";
-    		$result = $this->SendKey($Key_Test, $LongShort_Test);
-    		if ($result)
-    		{
-    				echo "Taste wurde erfolgreich gesendet.";
-    		}
-    		else 
-    		{
-    				echo "Taste konnte nicht gesendet werden!";
-    		}
+		$Key_Test = $this->ReadPropertyString("KeyDropDown");
+		$LongShort_Test = "short";
+		$result = $this->SendKey($Key_Test, $LongShort_Test);
+		if ($result)
+		{
+			echo "Taste wurde erfolgreich gesendet.";
+		}
+		else 
+		{
+			echo "Taste konnte nicht gesendet werden!";
+		}
     }
     
     public function TestMute()
     {
-    		$result = $this->SetVolume("MUTE");
-    		if ($result["Mute"] === true)
-    		{
-    				echo "Der Receiver hat jetzt den Mute-Status AKTIV.";
-    		}
-    		else
-    		{
-    				echo "Der Receiver hat jetzt den Mute-Status INAKTIV.";
-    		}
+		$result = $this->SetVolume("MUTE");
+		if ($result["Mute"] === true)
+		{
+			echo "Der Receiver hat jetzt den Mute-Status AKTIV.";
+		}
+		else
+		{
+			echo "Der Receiver hat jetzt den Mute-Status INAKTIV.";
+		}
     }
     
     public function TestVolDown5()
     {
-    		$VolIST = $this->GetVolume();
-    		$VolSOLL = $VolIST["Volume"] - 5;
-    		if ($VolSOLL < 0)
-    		{
-    				$VolSOLL = 0;
-    		}
-    		$result = $this->SetVolume($VolSOLL);
-    		$echoText = "Die Lautstärke des Receiver wurde auf ".$result["Volume"]."% gestellt.";
- 				echo $echoText;
+		$VolIST = $this->GetVolume();
+		$VolSOLL = $VolIST["Volume"] - 5;
+		if ($VolSOLL < 0)
+		{
+			$VolSOLL = 0;
+		}
+		$result = $this->SetVolume($VolSOLL);
+		$echoText = "Die Lautstärke des Receiver wurde auf ".$result["Volume"]."% gestellt.";
+		echo $echoText;
     }
     
     public function TestVolUp5()
     {
-    		$VolIST = $this->GetVolume();
-    		$VolSOLL = $VolIST["Volume"] + 5;
-    		if ($VolSOLL > 100)
-    		{
-    				$VolSOLL = 100;
-    		}
-    		$result = $this->SetVolume($VolSOLL);
-    		$echoText = "Die Lautstärke des Receiver wurde auf ".$result["Volume"]."% gestellt.";
- 				echo $echoText;
+		$VolIST = $this->GetVolume();
+		$VolSOLL = $VolIST["Volume"] + 5;
+		if ($VolSOLL > 100)
+		{
+			$VolSOLL = 100;
+		}
+		$result = $this->SetVolume($VolSOLL);
+		$echoText = "Die Lautstärke des Receiver wurde auf ".$result["Volume"]."% gestellt.";
+		echo $echoText;
     }
     
     public function TestEPGSuche()
     {
-    		$Suchstring = $this->ReadPropertyString("EPGSuchstring");
-    		$result = $this->EPGSuche($Suchstring);
-    		if ($result)
-    		{
-    				$echoText = "EPG-Suche erfolgreich ausgeführt! Das Ergebnis der Suche ist in der Variable 'EPGSuchergebnis' zu finden.";
-    				echo $echoText;
-    		}
-    		else 
-    		{
-    				$echoText = "Im EPG wurde nichts passendes zum Suchbegriff '".$Suchstring."' gefunden!";
-    				echo $echoText;
-    		}
+		$Suchstring = $this->ReadPropertyString("EPGSuchstring");
+		$result = $this->EPGSuche($Suchstring);
+		if ($result)
+		{
+			$echoText = "EPG-Suche erfolgreich ausgeführt! Das Ergebnis der Suche ist in der Variable 'EPGSuchergebnis' zu finden.";
+			echo $echoText;
+		}
+		else 
+		{
+			$echoText = "Im EPG wurde nichts passendes zum Suchbegriff '".$Suchstring."' gefunden!";
+			echo $echoText;
+		}
     }
     
     public function TestZap()
     {
-    		$Sendername = $this->ReadPropertyString("SenderZapTo");
-    		$result = $this->ZapTo($Sendername);
-    		if ($result)
-    		{
-    				$echoText = "Der Receiver wurde erfolgreich auf den Sender '".$Sendername."' geschaltet.";
-    				echo $echoText;
-    		}
-    		else 
-    		{
-    				$echoText = "Der Receiver konnte nicht auf den Sender '".$Sendername."' geschaltet werden! (Tippfehler? Ausgeschaltet?)";
-    				echo $echoText;
-    		}
+		$Sendername = $this->ReadPropertyString("SenderZapTo");
+		$result = $this->ZapTo($Sendername);
+		if ($result)
+		{
+			$echoText = "Der Receiver wurde erfolgreich auf den Sender '".$Sendername."' geschaltet.";
+			echo $echoText;
+		}
+		else 
+		{
+			$echoText = "Der Receiver konnte nicht auf den Sender '".$Sendername."' geschaltet werden! (Tippfehler? Ausgeschaltet?)";
+			echo $echoText;
+		}
     }    
     
     public function SendMsg(string $Text, integer $Type, integer $Timeout)
     {
-    		if ($this->GetPowerState() == 1)
-    		{
-    				if (IPS_SemaphoreEnter("Enigma2BY_SendMsg", 20000))
-						{
-		    				$IP = $this->ReadPropertyString("Enigma2IP");
-		    				$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-		    				$Text = urlencode(trim($Text));
-		    				$Text = str_replace('%A7', '%0A', $Text);
-		 						$url = "http://".$IP.":".$WebPort."/web/message?text=".$Text."&type=".$Type."&timeout=".$Timeout;
-		    				$xml = @simplexml_load_file($url);
-								$result = $this->ResultAuswerten($xml->e2state);
-		    				
-		    				if ($Type == 0)
-		    				{
-		    						$this->SendKey("ArrowDown", "short");
-		    						IPS_Sleep($Timeout * 1000 + 1000);
-										$xml = @simplexml_load_file("http://".$IP.":".$WebPort."/web/messageanswer?getanswer=now");
-										if ((trim($xml->e2statetext) == "Answer is NO!") OR (trim($xml->e2statetext) == "Antwort lautet NEIN!"))
-										{
-												$AntwortINT = 0;
-										}
-										elseif ((trim($xml->e2statetext) == "Answer is YES!") OR (trim($xml->e2statetext) == "Antwort lautet JA!"))
-										{
-												$AntwortINT = 1;
-										}
-										elseif ((trim($xml->e2statetext) == "No answer in time") OR (trim($xml->e2statetext) == "Keine rechtzeitige Antwort"))
-										{
-												$AntwortINT = 2;
-												if ($this->DistroCheck() == true)
-		        						{
-														$this->SendKey("Exit", "short");
-												}
-												else
-												{
-														$this->SendKey("OK", "short");
-												}
-										}
-										$this->SetValueInteger("FrageAntwortVAR", $AntwortINT);
-										IPS_SemaphoreLeave("Enigma2BY_SendMsg");
-										return $AntwortINT;
-		    				}
-		    				IPS_SemaphoreLeave("Enigma2BY_SendMsg");
-		    				return $result;
-						}
-						else
-						{
-								return false;
-						}
-    		}
-    		else
-    		{
-    				return false;
-    		}
+		if ($this->GetPowerState() == 1)
+		{
+			if (IPS_SemaphoreEnter("Enigma2BY_SendMsg", 20000))
+			{
+			$IP = $this->ReadPropertyString("Enigma2IP");
+			$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+			$Text = urlencode(trim($Text));
+			$Text = str_replace('%A7', '%0A', $Text);
+			$url = "http://".$IP.":".$WebPort."/web/message?text=".$Text."&type=".$Type."&timeout=".$Timeout;
+			$xml = @simplexml_load_file($url);
+			$result = $this->ResultAuswerten($xml->e2state);
+
+			if ($Type == 0)
+			{
+				$this->SendKey("ArrowDown", "short");
+				IPS_Sleep($Timeout * 1000 + 1000);
+				$xml = @simplexml_load_file("http://".$IP.":".$WebPort."/web/messageanswer?getanswer=now");
+				if ((trim($xml->e2statetext) == "Answer is NO!") OR (trim($xml->e2statetext) == "Antwort lautet NEIN!"))
+				{
+					$AntwortINT = 0;
+				}
+				elseif ((trim($xml->e2statetext) == "Answer is YES!") OR (trim($xml->e2statetext) == "Antwort lautet JA!"))
+				{
+					$AntwortINT = 1;
+				}
+				elseif ((trim($xml->e2statetext) == "No answer in time") OR (trim($xml->e2statetext) == "Keine rechtzeitige Antwort"))
+				{
+					$AntwortINT = 2;
+					if ($this->DistroCheck() == true)
+					{
+						$this->SendKey("Exit", "short");
+					}
+					else
+					{
+						$this->SendKey("OK", "short");
+					}
+				}
+				$this->SetValueInteger("FrageAntwortVAR", $AntwortINT);
+				IPS_SemaphoreLeave("Enigma2BY_SendMsg");
+				return $AntwortINT;
+				}
+			IPS_SemaphoreLeave("Enigma2BY_SendMsg");
+			return $result;
+			}
+			else
+			{
+			return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
     }
     
     public function SendKey(string $Key, string $LongShort)
     {
-    		if ($this->GetPowerState() == 1)
-    		{
-		    		$IP = $this->ReadPropertyString("Enigma2IP");
-		    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-		    		$CommandArray = array("Power" => "116", "1" => "2", "2" => "3", "4" => "5", "5" => "6", "6" => "7", "7" => "8", "8" => "9", "9" => "10", "0" => "11", "VolumeUp" => "115", "VolumeDown" => "114", "MUTE" => "113", "Previous" => "412", "Next" => "407", "BouquetUp" => "402", "BouquetDown" => "403", "ArrowUp" => "103", "ArrowDown" => "108", "ArrowLeft" => "105", "ArrowRight" => "106", "Menu" => "139", "OK" => "352", "Info" => "358", "Audio" => "392", "Video" => "393", "RED" => "398", "GREEN" => "399", "YELLOW" => "400", "BLUE" => "401", "TV" => "377", "Radio" => "385", "Text" => "388", "Help" => "138", "Exit" => "174");
-		    		$Command = $CommandArray[$Key];
-		    		if ($Command != NULL)
-						{
-				    		if (($LongShort == "long") OR ($LongShort == "Long"))
-				    		{
-				    				$LongShort = "long";
-				    		}
-				    		elseif (($LongShort == "short") OR ($LongShort == "Short"))
-				    		{
-				    				$LongShort = "short";
-				    		}
-				    		$RCU = $this->ReadPropertyString("RCUdefault");
-				    		$url = "http://".$IP.":".$WebPort."/web/remotecontrol?command=".$Command."&type=".$LongShort."&rcu=".$RCU;
-				    		$xml = @simplexml_load_file($url);
-								$result = $this->ResultAuswerten($xml->e2result);
-								return $result;
-						}
-						else
-						{
-								return false;
-						}
-				}
-				else
+		if ($this->GetPowerState() == 1)
+		{
+			$IP = $this->ReadPropertyString("Enigma2IP");
+			$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+			$CommandArray = array("Power" => "116", "1" => "2", "2" => "3", "4" => "5", "5" => "6", "6" => "7", "7" => "8", "8" => "9", "9" => "10", "0" => "11", "VolumeUp" => "115", "VolumeDown" => "114", "MUTE" => "113", "Previous" => "412", "Next" => "407", "BouquetUp" => "402", "BouquetDown" => "403", "ArrowUp" => "103", "ArrowDown" => "108", "ArrowLeft" => "105", "ArrowRight" => "106", "Menu" => "139", "OK" => "352", "Info" => "358", "Audio" => "392", "Video" => "393", "RED" => "398", "GREEN" => "399", "YELLOW" => "400", "BLUE" => "401", "TV" => "377", "Radio" => "385", "Text" => "388", "Help" => "138", "Exit" => "174");
+			$Command = $CommandArray[$Key];
+			if ($Command != NULL)
+			{
+				if (($LongShort == "long") OR ($LongShort == "Long"))
 				{
-						return false;
+					$LongShort = "long";
 				}
+				elseif (($LongShort == "short") OR ($LongShort == "Short"))
+				{
+					$LongShort = "short";
+				}
+				$RCU = $this->ReadPropertyString("RCUdefault");
+				$url = "http://".$IP.":".$WebPort."/web/remotecontrol?command=".$Command."&type=".$LongShort."&rcu=".$RCU;
+				$xml = @simplexml_load_file($url);
+				$result = $this->ResultAuswerten($xml->e2result);
+				return $result;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+		return false;
+		}
     }
     
     public function GetEPGInfos()
     {
-    		if ($this->GetPowerState() == 1)
-    		{
-		    		$IP = $this->ReadPropertyString("Enigma2IP");
-		    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-		    		$url = "http://".$IP.":".$WebPort."/web/getcurrent";
-						$xml = @simplexml_load_file($url);
-						$E2_CurSendername = (string)trim($xml->e2service->e2servicename);
-						$E2_CurSendungsname = (string)trim($xml->e2eventlist->e2event[0]->e2eventname);
-						$E2_CurSendungsBeschrKurz = (string)trim($xml->e2eventlist->e2event[0]->e2eventdescription);
-						$E2_CurSendungsBeschrLang = (string)trim($xml->e2eventlist->e2event[0]->e2eventdescriptionextended);
-						$E2_CurSendungsdauerSek = (int)trim($xml->e2eventlist->e2event[0]->e2eventduration);
-						$E2_CurSendungsrestdauerSek = (int)trim($xml->e2eventlist->e2event[0]->e2eventremaining);
-						$E2_CurSendungEventID = (int)trim($xml->e2eventlist->e2event[0]->e2eventid);
-						$E2_NextSendungsname = (string)trim($xml->e2eventlist->e2event[1]->e2eventname);
-						$E2_NextSendungsBeschrKurz = (string)trim($xml->e2eventlist->e2event[1]->e2eventdescription);
-						$E2_NextSendungsBeschrLang = (string)trim($xml->e2eventlist->e2event[1]->e2eventdescriptionextended);
-						$E2_NextSendungStart = (int)trim($xml->e2eventlist->e2event[1]->e2eventstart);
-						$E2_NextSendungsdauerSek = (int)trim($xml->e2eventlist->e2event[1]->e2eventduration);
-						$E2_NextSendungEventID = (int)trim($xml->e2eventlist->e2event[1]->e2eventid);
-						//Return-Array befüllen
-						$E2_EPGInfo["AktSendername"] = $E2_CurSendername;
-						$E2_EPGInfo["AktSendungsname"] = $E2_CurSendungsname;
-						$E2_EPGInfo["AktSendungsBeschrKurz"] = $E2_CurSendungsBeschrKurz;
-						$E2_EPGInfo["AktSendungsBeschrLang"] = $E2_CurSendungsBeschrLang;
-						$E2_EPGInfo["AktSendunsdauer"] = $E2_CurSendungsdauerSek;
-						$E2_EPGInfo["AktSendunsdauerRest"] = $E2_CurSendungsrestdauerSek;
-						$E2_EPGInfo["AktSendungsEventID"] = $E2_CurSendungEventID;
-						$E2_EPGInfo["NextSendungsname"] = $E2_NextSendungsname;
-						$E2_EPGInfo["NextSendungsBeschrKurz"] = $E2_NextSendungsBeschrKurz;
-						$E2_EPGInfo["NextSendungsBeschrLang"] = $E2_NextSendungsBeschrLang;
-						$E2_EPGInfo["NextSendungsStart"] = $E2_NextSendungStart;
-						$E2_EPGInfo["NextSendungsdauer"] = $E2_NextSendungsdauerSek;
-						$E2_EPGInfo["NextSendungsEventID"] = $E2_NextSendungEventID;
-						//Variablen befüllen
-						$this->SetValueString("AktSendernameVAR", $E2_CurSendername);
-						$this->SetValueString("AktSendungsnameVAR", $E2_CurSendungsname);
-						$this->SetValueString("AktSendungsBeschrKurzVAR", $E2_CurSendungsBeschrKurz);
-						$this->SetValueString("AktSendungsBeschrLangVAR", $E2_CurSendungsBeschrLang);
-						$E2_CurSendungsdauerMin = $E2_CurSendungsdauerSek / 60;
-						$this->SetValueInteger("AktSendunsdauerVar", $E2_CurSendungsdauerMin);
-						$E2_CurSendungsrestdauerMin = $E2_CurSendungsrestdauerSek / 60;
-						$this->SetValueInteger("AktSendunsdauerRestVar", $E2_CurSendungsrestdauerMin);
-						$this->SetValueString("NextSendungsnameVar", $E2_NextSendungsname);
-						$this->SetValueString("NextSendungsBeschrKurzVAR", $E2_NextSendungsBeschrKurz);
-						$this->SetValueString("NextSendungsBeschrLangVAR", $E2_NextSendungsBeschrLang);
-						$E2_NextSendungStart = date("H:i", intval($E2_NextSendungStart))." Uhr";
-						$this->SetValueString("NextSendungsStartVAR", $E2_NextSendungStart);
-						$E2_NextSendungsdauerMin = $E2_NextSendungsdauerSek / 60;
-						$this->SetValueInteger("NextSendungsdauerVAR", $E2_NextSendungsdauerMin);
-						return $E2_EPGInfo;
-				}
-				else
-				{
-							$this->SetValueString("AktSendernameVAR", "");
-							$this->SetValueString("AktSendungsnameVAR", "");
-							$this->SetValueString("AktSendungsBeschrKurzVAR", "");
-							$this->SetValueString("AktSendungsBeschrLangVAR", "");
-							$this->SetValueInteger("AktSendunsdauerVar", 0);
-							$this->SetValueInteger("AktSendunsdauerRestVar", 0);
-							$this->SetValueString("NextSendungsnameVar", "");
-							$this->SetValueString("NextSendungsBeschrKurzVAR", "");
-							$this->SetValueString("NextSendungsBeschrLangVAR", "");
-							$this->SetValueString("NextSendungsStartVAR", "");
-							$this->SetValueInteger("NextSendungsdauerVAR", 0);
-							return false;
-				}
-    }
+		if ($this->GetPowerState() == 1)
+		{
+			$IP = $this->ReadPropertyString("Enigma2IP");
+			$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+			$url = "http://".$IP.":".$WebPort."/web/getcurrent";
+			$xml = @simplexml_load_file($url);
+			$E2_CurSendername = (string)trim($xml->e2service->e2servicename);
+			$E2_CurSendungsname = (string)trim($xml->e2eventlist->e2event[0]->e2eventname);
+			$E2_CurSendungsBeschrKurz = (string)trim($xml->e2eventlist->e2event[0]->e2eventdescription);
+			$E2_CurSendungsBeschrLang = (string)trim($xml->e2eventlist->e2event[0]->e2eventdescriptionextended);
+			$E2_CurSendungsdauerSek = (int)trim($xml->e2eventlist->e2event[0]->e2eventduration);
+			$E2_CurSendungsrestdauerSek = (int)trim($xml->e2eventlist->e2event[0]->e2eventremaining);
+			$E2_CurSendungEventID = (int)trim($xml->e2eventlist->e2event[0]->e2eventid);
+			$E2_NextSendungsname = (string)trim($xml->e2eventlist->e2event[1]->e2eventname);
+			$E2_NextSendungsBeschrKurz = (string)trim($xml->e2eventlist->e2event[1]->e2eventdescription);
+			$E2_NextSendungsBeschrLang = (string)trim($xml->e2eventlist->e2event[1]->e2eventdescriptionextended);
+			$E2_NextSendungStart = (int)trim($xml->e2eventlist->e2event[1]->e2eventstart);
+			$E2_NextSendungsdauerSek = (int)trim($xml->e2eventlist->e2event[1]->e2eventduration);
+			$E2_NextSendungEventID = (int)trim($xml->e2eventlist->e2event[1]->e2eventid);
+			//Return-Array befüllen
+			$E2_EPGInfo["AktSendername"] = $E2_CurSendername;
+			$E2_EPGInfo["AktSendungsname"] = $E2_CurSendungsname;
+			$E2_EPGInfo["AktSendungsBeschrKurz"] = $E2_CurSendungsBeschrKurz;
+			$E2_EPGInfo["AktSendungsBeschrLang"] = $E2_CurSendungsBeschrLang;
+			$E2_EPGInfo["AktSendunsdauer"] = $E2_CurSendungsdauerSek;
+			$E2_EPGInfo["AktSendunsdauerRest"] = $E2_CurSendungsrestdauerSek;
+			$E2_EPGInfo["AktSendungsEventID"] = $E2_CurSendungEventID;
+			$E2_EPGInfo["NextSendungsname"] = $E2_NextSendungsname;
+			$E2_EPGInfo["NextSendungsBeschrKurz"] = $E2_NextSendungsBeschrKurz;
+			$E2_EPGInfo["NextSendungsBeschrLang"] = $E2_NextSendungsBeschrLang;
+			$E2_EPGInfo["NextSendungsStart"] = $E2_NextSendungStart;
+			$E2_EPGInfo["NextSendungsdauer"] = $E2_NextSendungsdauerSek;
+			$E2_EPGInfo["NextSendungsEventID"] = $E2_NextSendungEventID;
+			//Variablen befüllen
+			$this->SetValueString("AktSendernameVAR", $E2_CurSendername);
+			$this->SetValueString("AktSendungsnameVAR", $E2_CurSendungsname);
+			$this->SetValueString("AktSendungsBeschrKurzVAR", $E2_CurSendungsBeschrKurz);
+			$this->SetValueString("AktSendungsBeschrLangVAR", $E2_CurSendungsBeschrLang);
+			$E2_CurSendungsdauerMin = $E2_CurSendungsdauerSek / 60;
+			$this->SetValueInteger("AktSendunsdauerVar", $E2_CurSendungsdauerMin);
+			$E2_CurSendungsrestdauerMin = $E2_CurSendungsrestdauerSek / 60;
+			$this->SetValueInteger("AktSendunsdauerRestVar", $E2_CurSendungsrestdauerMin);
+			$this->SetValueString("NextSendungsnameVar", $E2_NextSendungsname);
+			$this->SetValueString("NextSendungsBeschrKurzVAR", $E2_NextSendungsBeschrKurz);
+			$this->SetValueString("NextSendungsBeschrLangVAR", $E2_NextSendungsBeschrLang);
+			$E2_NextSendungStart = date("H:i", intval($E2_NextSendungStart))." Uhr";
+			$this->SetValueString("NextSendungsStartVAR", $E2_NextSendungStart);
+			$E2_NextSendungsdauerMin = $E2_NextSendungsdauerSek / 60;
+			$this->SetValueInteger("NextSendungsdauerVAR", $E2_NextSendungsdauerMin);
+			return $E2_EPGInfo;
+		}
+		else
+		{
+			$this->SetValueString("AktSendernameVAR", "");
+			$this->SetValueString("AktSendungsnameVAR", "");
+			$this->SetValueString("AktSendungsBeschrKurzVAR", "");
+			$this->SetValueString("AktSendungsBeschrLangVAR", "");
+			$this->SetValueInteger("AktSendunsdauerVar", 0);
+			$this->SetValueInteger("AktSendunsdauerRestVar", 0);
+			$this->SetValueString("NextSendungsnameVar", "");
+			$this->SetValueString("NextSendungsBeschrKurzVAR", "");
+			$this->SetValueString("NextSendungsBeschrLangVAR", "");
+			$this->SetValueString("NextSendungsStartVAR", "");
+			$this->SetValueInteger("NextSendungsdauerVAR", 0);
+			return false;
+		}
+	}
     
     public function GetSystemInfos()
     {
@@ -552,101 +552,101 @@ class Enigma2BY extends IPSModule
     
     public function GetSignalInfos()
     {
-    		$IP = $this->ReadPropertyString("Enigma2IP");
-    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-    		if ($this->GetPowerState() != 0)
-    		{
-		    		$url = "http://".$IP.":".$WebPort."/web/signal?";
-						$xml = @simplexml_load_file($url);
-						$E2_SignalSNRdb = (string)trim($xml->e2snrdb);
-						$E2_SignalSNR = (string)trim($xml->e2snr);
-						$E2_SignalBER = (string)trim($xml->e2ber);
-						$E2_SignalACG = (string)trim($xml->e2acg);
-						$E2_SignalInfo["SignalSNRdb"] = $E2_SignalSNRdb;
-						$E2_SignalInfo["SignalSNR"] = $E2_SignalSNR;
-						$E2_SignalInfo["SignalBER"] = $E2_SignalBER;
-						$E2_SignalInfo["SignalACG"] = $E2_SignalACG;
-						if ($this->ReadPropertyBoolean("ErwInformationen") == true)
-						{
-								$this->SetValueFloat("SignalSnrDbVAR", $E2_SignalSNRdb);
-								$this->SetValueInteger("SignalSnrVAR", $E2_SignalSNR);
-								$this->SetValueInteger("SignalBerVAR", $E2_SignalBER);
-								$this->SetValueInteger("SignalAcgVAR", $E2_SignalACG);
-						}
-						return $E2_SignalInfo;
-				}
-				else
-				{
-						return false;
-				}
+		$IP = $this->ReadPropertyString("Enigma2IP");
+		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+		if ($this->GetPowerState() != 0)
+		{
+			$url = "http://".$IP.":".$WebPort."/web/signal?";
+			$xml = @simplexml_load_file($url);
+			$E2_SignalSNRdb = (string)trim($xml->e2snrdb);
+			$E2_SignalSNR = (string)trim($xml->e2snr);
+			$E2_SignalBER = (string)trim($xml->e2ber);
+			$E2_SignalACG = (string)trim($xml->e2acg);
+			$E2_SignalInfo["SignalSNRdb"] = $E2_SignalSNRdb;
+			$E2_SignalInfo["SignalSNR"] = $E2_SignalSNR;
+			$E2_SignalInfo["SignalBER"] = $E2_SignalBER;
+			$E2_SignalInfo["SignalACG"] = $E2_SignalACG;
+			if ($this->ReadPropertyBoolean("ErwInformationen") == true)
+			{
+				$this->SetValueFloat("SignalSnrDbVAR", $E2_SignalSNRdb);
+				$this->SetValueInteger("SignalSnrVAR", $E2_SignalSNR);
+				$this->SetValueInteger("SignalBerVAR", $E2_SignalBER);
+				$this->SetValueInteger("SignalAcgVAR", $E2_SignalACG);
+			}
+			return $E2_SignalInfo;
+		}
+		else
+		{
+			return false;
+		}
     }
     
     public function GetAC3DownmixInfo()
     {
-    		if ($this->GetPowerState() != 0)
-		    {
-		    		if ($this->FeaturePreCheck("downmix") === true)
-				    {
-				    		$IP = $this->ReadPropertyString("Enigma2IP");
-				    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-				    		$url = "http://".$IP.":".$WebPort."/web/downmix";
-								$xml = @simplexml_load_file($url);
-								$E2_AC3DownmixStatus = $this->ResultAuswerten(trim($xml->e2state));
-								$E2_AC3DownmixText = (string)trim($xml->e2statetext);
-								$E2_AC3DownmixInfo["AC3DownmixStatus"] = $E2_AC3DownmixStatus;
-								$E2_AC3DownmixInfo["AC3DownmixText"] = $E2_AC3DownmixText;
-								if ($this->ReadPropertyBoolean("ErwInformationen") == true)
-								{
-										$this->SetValueBoolean("AC3DownmixStatusVAR", $E2_AC3DownmixStatus);
-								}
-								return $E2_AC3DownmixInfo;
-						}
-						else
-						{
-								IPS_LogMessage("ENIGMA2BY", "Diese Funktion ist mit diesem Receiver/Image nicht verfügbar!");
-						}
-				}
-				else
+		if ($this->GetPowerState() != 0)
+		{
+			if ($this->FeaturePreCheck("downmix") === true)
+			{
+				$IP = $this->ReadPropertyString("Enigma2IP");
+				$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+				$url = "http://".$IP.":".$WebPort."/web/downmix";
+				$xml = @simplexml_load_file($url);
+				$E2_AC3DownmixStatus = $this->ResultAuswerten(trim($xml->e2state));
+				$E2_AC3DownmixText = (string)trim($xml->e2statetext);
+				$E2_AC3DownmixInfo["AC3DownmixStatus"] = $E2_AC3DownmixStatus;
+				$E2_AC3DownmixInfo["AC3DownmixText"] = $E2_AC3DownmixText;
+				if ($this->ReadPropertyBoolean("ErwInformationen") == true)
 				{
-						return false;
+					$this->SetValueBoolean("AC3DownmixStatusVAR", $E2_AC3DownmixStatus);
 				}
+				return $E2_AC3DownmixInfo;
+			}
+			else
+			{
+				IPS_LogMessage("ENIGMA2BY", "Diese Funktion ist mit diesem Receiver/Image nicht verfügbar!");
+			}
+		}
+		else
+		{
+			return false;
+		}
     }
     
     public function GetSleeptimerInfos()
     {
-    		if ($this->GetPowerState() == 1)
-    		{
-		    		if ($this->FeaturePreCheck("sleeptimer") === true)
-				    {
-				    		$IP = $this->ReadPropertyString("Enigma2IP");
-				    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-				    		$url = "http://".$IP.":".$WebPort."/web/sleeptimer";
-								$xml = @simplexml_load_file($url);
-								$E2_SleeptimerEnabled = $this->ResultAuswerten(trim($xml->e2enabled));
-								$E2_SleeptimerMinuten = (int)trim($xml->e2minutes);
-								$E2_SleeptimerAktion = (string)trim($xml->e2action);
-								$E2_SleeptimerText = (string)trim($xml->e2text);
-								$E2_SleeptimerInfo["SleeptimerAktiviert"] = $E2_SleeptimerEnabled;
-								$E2_SleeptimerInfo["SleeptimerMinuten"] = $E2_SleeptimerMinuten;
-								$E2_SleeptimerInfo["SleeptimerAktion"] = $E2_SleeptimerAktion;
-								$E2_SleeptimerInfo["SleeptimerText"] = $E2_SleeptimerText;
-								if ($this->ReadPropertyBoolean("ErwInformationen") == true)
-								{
-										$this->SetValueBoolean("SleeptimerAktiviertVAR", $E2_SleeptimerEnabled);
-										$this->SetValueInteger("SleeptimerMinutenVAR", $E2_SleeptimerMinuten);
-										$this->SetValueString("SleeptimerAktionVAR", $E2_SleeptimerAktion);
-								}
-								return $E2_SleeptimerInfo;
-						}
-						else
-						{
-								IPS_LogMessage("ENIGMA2BY", "Diese Funktion ist mit diesem Receiver/Image nicht verfügbar!");
-						}
-				}
-				else
+		if ($this->GetPowerState() == 1)
+		{
+			if ($this->FeaturePreCheck("sleeptimer") === true)
+			{
+				$IP = $this->ReadPropertyString("Enigma2IP");
+				$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+				$url = "http://".$IP.":".$WebPort."/web/sleeptimer";
+				$xml = @simplexml_load_file($url);
+				$E2_SleeptimerEnabled = $this->ResultAuswerten(trim($xml->e2enabled));
+				$E2_SleeptimerMinuten = (int)trim($xml->e2minutes);
+				$E2_SleeptimerAktion = (string)trim($xml->e2action);
+				$E2_SleeptimerText = (string)trim($xml->e2text);
+				$E2_SleeptimerInfo["SleeptimerAktiviert"] = $E2_SleeptimerEnabled;
+				$E2_SleeptimerInfo["SleeptimerMinuten"] = $E2_SleeptimerMinuten;
+				$E2_SleeptimerInfo["SleeptimerAktion"] = $E2_SleeptimerAktion;
+				$E2_SleeptimerInfo["SleeptimerText"] = $E2_SleeptimerText;
+				if ($this->ReadPropertyBoolean("ErwInformationen") == true)
 				{
-						return false;
+					$this->SetValueBoolean("SleeptimerAktiviertVAR", $E2_SleeptimerEnabled);
+					$this->SetValueInteger("SleeptimerMinutenVAR", $E2_SleeptimerMinuten);
+					$this->SetValueString("SleeptimerAktionVAR", $E2_SleeptimerAktion);
 				}
+				return $E2_SleeptimerInfo;
+			}
+			else
+			{
+				IPS_LogMessage("ENIGMA2BY", "Diese Funktion ist mit diesem Receiver/Image nicht verfügbar!");
+			}
+		}
+		else
+		{
+		return false;
+		}
     }
     
     public function SetSleeptimer(integer $Minuten, string $Aktion, boolean $Aktiv)
@@ -696,112 +696,112 @@ class Enigma2BY extends IPSModule
     
     public function GetPowerState()
     {
-    		$IP = $this->ReadPropertyString("Enigma2IP");
-    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-    		if ((@Sys_Ping($IP, 2000) == false) AND ($this->ReadPropertyString("Enigma2IP") != ""))
-    		{
-    				$PowerStateIST = 0;
-    				$this->SetValueInteger("PowerStateVAR", 0); // AUS
-    		}
-    		else
-    		{
-		    		$url = "http://".$IP.":".$WebPort."/web/powerstate";
-						$xml = @simplexml_load_file($url);
-						if (($this->ResultAuswerten(@$xml->e2instandby) == "false") OR (trim(@$xml->e2instandby) == "false"))
-						{
-								$PowerStateIST = 1;
-								$this->SetValueInteger("PowerStateVAR", 1); // AN
-						}
-						else
-						{
-								$PowerStateIST = 2;
-								$this->SetValueInteger("PowerStateVAR", 2); // STANDBY
-						}
-				}
-				return $PowerStateIST;
+		$IP = $this->ReadPropertyString("Enigma2IP");
+		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+		if ((@Sys_Ping($IP, 2000) == false) AND ($this->ReadPropertyString("Enigma2IP") != ""))
+		{
+			$PowerStateIST = 0;
+			$this->SetValueInteger("PowerStateVAR", 0); // AUS
+		}
+		else
+		{
+			$url = "http://".$IP.":".$WebPort."/web/powerstate";
+			$xml = @simplexml_load_file($url);
+			if (($this->ResultAuswerten(@$xml->e2instandby) == "false") OR (trim(@$xml->e2instandby) == "false"))
+			{
+				$PowerStateIST = 1;
+				$this->SetValueInteger("PowerStateVAR", 1); // AN
+			}
+			else
+			{
+				$PowerStateIST = 2;
+				$this->SetValueInteger("PowerStateVAR", 2); // STANDBY
+			}
+		}
+		return $PowerStateIST;
     }
     
     public function SetTonspur(integer $TonspurID)
     {
-    		$IP = $this->ReadPropertyString("Enigma2IP");
-    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-    		if ($this->GetPowerState() == 1)
-    		{
-		    		$url = "http://".$IP.":".$WebPort."/web/selectaudiotrack?id=".$TonspurID;;
-						$xml = @simplexml_load_file($url);
-						$result = (string)trim($xml[0]);
-						if ($result == "Success")
-						{
-								return true;
-						}
-						else {
-								return false;
-						}
-						$this->GetTonspuren();
-				}
-				else
-				{
-						return false;
-				}
+		$IP = $this->ReadPropertyString("Enigma2IP");
+		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+		if ($this->GetPowerState() == 1)
+		{
+			$url = "http://".$IP.":".$WebPort."/web/selectaudiotrack?id=".$TonspurID;;
+			$xml = @simplexml_load_file($url);
+			$result = (string)trim($xml[0]);
+			if ($result == "Success")
+			{
+				return true;
+			}
+			else {
+				return false;
+			}
+			$this->GetTonspuren();
+		}
+		else
+		{
+			return false;
+		}
     }
     
     public function GetTonspuren()
     {
-    		$IP = $this->ReadPropertyString("Enigma2IP");
-    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-    		if ($this->GetPowerState() == 1)
-    		{
-		    		$url = "http://".$IP.":".$WebPort."/web/getaudiotracks";
-						$xml = @simplexml_load_file($url);
-						$TonspurenCount = count($xml->e2audiotrack);  // Anzahl der verfügbaren Tonspuren
-						$this->SetValueInteger("TonspurenAnzahlVAR", $TonspurenCount);
-						if ($TonspurenCount > 0)
-						{
-								$i = 0;
-								foreach ($xml->e2audiotrack as $xmlnode)
-								{
-										$TonspurenAR[$i]["TonspurBeschreibung"] = (string)$xmlnode->e2audiotrackdescription;
-										$TonspurenAR[$i]["TonspurID"] = (string)$xmlnode->e2audiotrackid;
-										$TonspurenAR[$i]["TonspurPID"] = (string)$xmlnode->e2audiotrackpid;
-										$TonspurenAR[$i]["TonspurAktiv"] = $this->ResultAuswerten(trim($xmlnode->e2audiotrackactive));
-										if ($TonspurenAR[$i]["TonspurAktiv"] === true)
-										{
-												$this->SetValueString("TonspurAktivVAR", $TonspurenAR[$i]["TonspurBeschreibung"]);
-										}
-										$i++;
-								}
-						}
-						else
-						{
-								return false;
-						}
-				}
-				else
+		$IP = $this->ReadPropertyString("Enigma2IP");
+		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+		if ($this->GetPowerState() == 1)
+		{
+			$url = "http://".$IP.":".$WebPort."/web/getaudiotracks";
+			$xml = @simplexml_load_file($url);
+			$TonspurenCount = count($xml->e2audiotrack);  // Anzahl der verfügbaren Tonspuren
+			$this->SetValueInteger("TonspurenAnzahlVAR", $TonspurenCount);
+			if ($TonspurenCount > 0)
+			{
+				$i = 0;
+				foreach ($xml->e2audiotrack as $xmlnode)
 				{
-						return false;
+					$TonspurenAR[$i]["TonspurBeschreibung"] = (string)$xmlnode->e2audiotrackdescription;
+					$TonspurenAR[$i]["TonspurID"] = (string)$xmlnode->e2audiotrackid;
+					$TonspurenAR[$i]["TonspurPID"] = (string)$xmlnode->e2audiotrackpid;
+					$TonspurenAR[$i]["TonspurAktiv"] = $this->ResultAuswerten(trim($xmlnode->e2audiotrackactive));
+					if ($TonspurenAR[$i]["TonspurAktiv"] === true)
+					{
+						$this->SetValueString("TonspurAktivVAR", $TonspurenAR[$i]["TonspurBeschreibung"]);
+					}
+					$i++;
 				}
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
     }
     
     public function GetVolume()
     {
-    		$IP = $this->ReadPropertyString("Enigma2IP");
-    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-    		if ($this->GetPowerState() == 1)
-    		{
-		    		$url = "http://".$IP.":".$WebPort."/web/vol";
-						$xml = @simplexml_load_file($url);
-						$E2_VolumeWert = (int)$xml->e2current;
-						$this->SetValueInteger("VolumeVAR", $E2_VolumeWert);
-						$E2_VolReturn["Volume"] = (int)trim($xml->e2current);
-						$E2_VolReturn["Mute"] = (string)trim($xml->e2ismuted);
-						$result = $this->ResultAuswerten($xml->e2ismuted);
-						$this->SetValueBoolean("MuteVAR", $result);
-						return $E2_VolReturn;
-				}
-				else
-				{
-						return false;
-				}
+		$IP = $this->ReadPropertyString("Enigma2IP");
+		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+		if ($this->GetPowerState() == 1)
+		{
+			$url = "http://".$IP.":".$WebPort."/web/vol";
+			$xml = @simplexml_load_file($url);
+			$E2_VolumeWert = (int)$xml->e2current;
+			$this->SetValueInteger("VolumeVAR", $E2_VolumeWert);
+			$E2_VolReturn["Volume"] = (int)trim($xml->e2current);
+			$E2_VolReturn["Mute"] = (string)trim($xml->e2ismuted);
+			$result = $this->ResultAuswerten($xml->e2ismuted);
+			$this->SetValueBoolean("MuteVAR", $result);
+			return $E2_VolReturn;
+		}
+		else
+		{
+			return false;
+		}
     }
     
     public function SetVolume(string $Parameter)
@@ -853,96 +853,106 @@ class Enigma2BY extends IPSModule
     
     public function AddTimerByEventID(string $sRef, integer $EventID, string $AufnahmePfad)
     {
-    		$IP = $this->ReadPropertyString("Enigma2IP");
-    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-    		if ($this->GetPowerState() != 0)
-    		{
-		    		$url = "http://".$IP.":".$WebPort."/web/timeraddbyeventid?sRef=".$sRef."&eventid=".$EventID."&dirname=".$AufnahmePfad;
-						$xml = @simplexml_load_file($url);
-						if ($xml === false)
-						{
-								return false;
-						}
-						$result = $this->ResultAuswerten($xml->e2state);
-						$this->GetTimerliste();
-						return $result;
-				}
-				else
-				{
-						return false;
-				}
+		$IP = $this->ReadPropertyString("Enigma2IP");
+		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+		if ($this->GetPowerState() != 0)
+		{
+			$url = "http://".$IP.":".$WebPort."/web/timeraddbyeventid?sRef=".$sRef."&eventid=".$EventID."&dirname=".$AufnahmePfad;
+			$xml = @simplexml_load_file($url);
+			if ($xml === false)
+			{
+				return false;
+			}
+			$result = $this->ResultAuswerten($xml->e2state);
+			$this->GetTimerliste();
+			return $result;
+		}
+		else
+		{
+			return false;
+		}
     }
     
     public function DelTimer(string $sRef, integer $TimerStartzeit, integer $TimerEndzeit)
     {
-    		$IP = $this->ReadPropertyString("Enigma2IP");
-    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-    		if ($this->GetPowerState() != 0)
-    		{
-		    		$url = "http://".$IP.":".$WebPort."/web/timerdelete?sRef=".$sRef."&begin=".$TimerStartzeit."&end=".$TimerEndzeit;
-						$xml = @simplexml_load_file($url);
-						if ($xml === false)
-						{
-								return false;
-						}
-						$result = $this->ResultAuswerten($xml->e2state);
-						$this->GetTimerliste();
-						return $result;
-				}
-				else
-				{
-						return false;
-				}
+		$IP = $this->ReadPropertyString("Enigma2IP");
+		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+		if ($this->GetPowerState() != 0)
+		{
+			$url = "http://".$IP.":".$WebPort."/web/timerdelete?sRef=".$sRef."&begin=".$TimerStartzeit."&end=".$TimerEndzeit;
+			$xml = @simplexml_load_file($url);
+			if ($xml === false)
+			{
+				return false;
+			}
+			$result = $this->ResultAuswerten($xml->e2state);
+			$this->GetTimerliste();
+			return $result;
+		}
+		else
+		{
+			return false;
+		}
     }
     
-    public function SetPowerState(integer $PowerStateNr)
-    {
-    		$IP = $this->ReadPropertyString("Enigma2IP");
-    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-    		if ($this->GetPowerState() != 0)
-    		{
-		    		$url = "http://".$IP.":".$WebPort."/web/powerstate?newstate=".$PowerStateNr; // 0=ToggleStandby,1=Deepstandby,2=Reboot,3=RestartGUI
-						$xml = @simplexml_load_file($url);
-						$E2_PowerstateStandby = (int)trim($xml->e2instandby);
-						
-						switch ($PowerStateNr)
-						{
-								case 0:
-									if ($E2_PowerstateStandby == true)
-									{
-											$this->SetValueInteger("PowerStateVAR", 2); // STANDBY
-											return true;
-									}
-									else
-									{
-											$this->SetValueInteger("PowerStateVAR", 1); // AN
-											return true;
-									}
-								break;
-								
-								case 1:
-										$this->SetValueInteger("PowerStateVAR", 0); // AUS
-										return true;
-								break;
-								
-								case 2:
-										$this->SetValueInteger("PowerStateVAR", 0); // AUS
-										return true;
-								break;
-								
-								case 3:
-										$this->SetValueInteger("PowerStateVAR", 1); // AN
-										return true;
-								break;
-						}
-				}
-				else
-				{
-						return false;
-				}
-		}
+    public function SetPowerState(integer $PowerStateNr) 
+	{ 
+		$IP = $this->ReadPropertyString("Enigma2IP"); 
+		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort"); 
+		if ($this->GetPowerState() != 0) 
+		{ 
+			$url = "http://".$IP.":".$WebPort."/web/powerstate?newstate=".$PowerStateNr; // 0=ToggleStandby,1=Deepstandby,2=Reboot,3=RestartGUI,4=Wakeup,5=Standby 
+			$xml = @simplexml_load_file($url); 
+			$E2_PowerstateStandby = (int)trim($xml->e2instandby); 
+
+			switch ($PowerStateNr) 
+			{ 
+				case 0: 
+					if ($E2_PowerstateStandby == true) 
+					{ 
+						$this->SetValueInteger("PowerStateVAR", 2); // STANDBY 
+						return true; 
+					} 
+					else 
+					{ 
+						$this->SetValueInteger("PowerStateVAR", 1); // AN 
+						return true;
+					} 
+				break; 
+
+				case 1: 
+					$this->SetValueInteger("PowerStateVAR", 0); // AUS 
+					return true; 
+				break; 
+
+				case 2: 
+					$this->SetValueInteger("PowerStateVAR", 0); // AUS 
+					return true; 
+				break; 
+
+				case 3: 
+					$this->SetValueInteger("PowerStateVAR", 1); // AN 
+					return true; 
+				break; 
+
+				case 4: 
+					$this->SetValueInteger("PowerStateVAR", 1); // AN 
+					return true; 
+				break; 
+
+				case 5: 
+					$this->SetValueInteger("PowerStateVAR", 2); // STANDBY 
+					return true; 
+				break; 
+			} 
+		} 
+		else 
+		{ 
+			return false; 
+		} 
+	}  
 				
-		public function GetTimerliste()
+	public function GetTimerliste()
     {
     		$IP = $this->ReadPropertyString("Enigma2IP");
     		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
@@ -1089,36 +1099,35 @@ class Enigma2BY extends IPSModule
     
     public function GetSenderliste()
     {
-    		if ($this->GetPowerState() != 0)
-    		{
-		    		$IP = $this->ReadPropertyString("Enigma2IP");
-		    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-		    		$url = "http://".$IP.":".$WebPort."/web/getallservices";
-						$xml = simplexml_load_file($url);
-		  			foreach ($xml->e2bouquet as $xmlnode1)
-						{
-						   foreach ($xmlnode1->e2servicelist->e2service as $xmlnode2)
-						   {
-									$Sendername = (string)$xmlnode2->e2servicename; // Sendername
-									$ServicesAR[$Sendername] = (string)$xmlnode2->e2servicereference; // SenderReference
-						   }
-						}
-						$SenderCount = count($ServicesAR);  // Anzahl der Sender
-						if ($SenderCount > 0)
-						{
-								$this->SetValueInteger("SenderAnzahlVAR", $SenderCount);
-								return $ServicesAR;
-						}
-						else
-						{
-								return false;
-						}
-					
-				}
-				else
+		if ($this->GetPowerState() != 0)
+		{
+			$IP = $this->ReadPropertyString("Enigma2IP");
+			$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+			$url = "http://".$IP.":".$WebPort."/web/getallservices";
+			$xml = simplexml_load_file($url);
+			foreach ($xml->e2bouquet as $xmlnode1)
+			{
+				foreach ($xmlnode1->e2servicelist->e2service as $xmlnode2)
 				{
-						return false;
+					$Sendername = (string)$xmlnode2->e2servicename; // Sendername
+					$ServicesAR[$Sendername] = (string)$xmlnode2->e2servicereference; // SenderReference
 				}
+			}
+			$SenderCount = count($ServicesAR);  // Anzahl der Sender
+			if ($SenderCount > 0)
+			{
+				$this->SetValueInteger("SenderAnzahlVAR", $SenderCount);
+				return $ServicesAR;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
     }
     
     public function EPGSuche(string $Suchstring)
@@ -1198,92 +1207,93 @@ class Enigma2BY extends IPSModule
     
     public function ZapTo(string $Sendername)
     {
-    		if ($this->GetPowerState() == 1)
-    		{
-		    		$ServicesAR = $this->GetSenderliste();
-		    		$ServiceRef = @$ServicesAR[$Sendername];
-		    		if ($ServiceRef != NULL)
-						{
-								$IP = $this->ReadPropertyString("Enigma2IP");
-								$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-					    	$url = "http://".$IP.":".$WebPort."/web/zap?sRef=".$ServiceRef;
-								$xml = @simplexml_load_file($url);
-								$result = $this->ResultAuswerten($xml->e2state);
-								$this->GetEPGInfos();
-								return $result;
-						}
-						else
-						{
-								return false;
-						}
-				}
-				else
-				{
-						return false;
-				}
+		if ($this->GetPowerState() == 1)
+		{
+			$ServicesAR = $this->GetSenderliste();
+			$ServiceRef = @$ServicesAR[$Sendername];
+			if ($ServiceRef != NULL)
+			{
+				$IP = $this->ReadPropertyString("Enigma2IP");
+				$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+				$url = "http://".$IP.":".$WebPort."/web/zap?sRef=".$ServiceRef;
+				$xml = @simplexml_load_file($url);
+				$result = $this->ResultAuswerten($xml->e2state);
+				$this->GetEPGInfos();
+				return $result;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
     }
     
     private function DistroCheck()
     {
-    		$IP = $this->ReadPropertyString("Enigma2IP");
-    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-    		if ($this->GetPowerState() != 0)
-    		{
-		    		$url = "http://".$IP.":".$WebPort."/web/about";
-						$xml = @simplexml_load_file($url);
-    				$E2_Distroversion = (string)trim(@$xml->e2about->e2distroversion);
-    				if ($E2_Distroversion == "openatv")
-    				{
-    						return false;
-    				}
-    				else
-    				{
-    						return true;
-    				}
-    		}
+		$IP = $this->ReadPropertyString("Enigma2IP");
+		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+		if ($this->GetPowerState() != 0)
+		{
+			$url = "http://".$IP.":".$WebPort."/web/about";
+			$xml = @simplexml_load_file($url);
+			$E2_Distroversion = (string)trim(@$xml->e2about->e2distroversion);
+			if ($E2_Distroversion == "openatv")
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
     }
     
     private function FeaturePreCheck($feature)
     {
-    		$IP = $this->ReadPropertyString("Enigma2IP");
-    		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
-    		if ($this->GetPowerState() != 0)
-    		{
-		    		$url = "http://".$IP.":".$WebPort."/web/".$feature;
-						$check = @Sys_GetURLContent($url);
-    				if ($check === false)
-    				{
-    						return false;
-    				}
-    				else
-    				{
-    						return true;
-    				}
-    		}
+		$IP = $this->ReadPropertyString("Enigma2IP");
+		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
+		if ($this->GetPowerState() != 0)
+		{
+			$url = "http://".$IP.":".$WebPort."/web/".$feature;
+			$check = @Sys_GetURLContent($url);
+			if ($check === false)
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
     }
     
     private function ResultAuswerten($result)
     {
-				switch ($result)
-				{
-						case "True":
-						   return true;
-						break;
-						case "False":
-						   return false;
-						break;
-				}
+			switch ($result)
+			{
+				case "True":
+					return true;
+				break;
+				
+				case "False":
+					return false;
+				break;
+			}
 		}
     
     private function SetValueInteger($Ident, $Value)
     {
-        $ID = $this->GetIDForIdent($Ident);
-        if (GetValueInteger($ID) <> $Value)
-        {
-            SetValueInteger($ID, intval($Value));
-            return true;
-        }
-        return false;
+		$ID = $this->GetIDForIdent($Ident);
+		if (GetValueInteger($ID) <> $Value)
+		{
+			SetValueInteger($ID, intval($Value));
+			return true;
+		}
+		return false;
     }
     
     private function SetValueFloat($Ident, $Value)
@@ -1320,18 +1330,19 @@ class Enigma2BY extends IPSModule
     }
     
     protected function RegisterProfileBoolean($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize) {
-        
-        if(!IPS_VariableProfileExists($Name)) {
-            IPS_CreateVariableProfile($Name, 0);
-        } else {
-            $profile = IPS_GetVariableProfile($Name);
-            if($profile['ProfileType'] != 0)
-            throw new Exception("Variable profile type does not match for profile ".$Name);
-        }
-        
-        IPS_SetVariableProfileIcon($Name, $Icon);
-        IPS_SetVariableProfileText($Name, $Prefix, $Suffix);
-        IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize);
+		if(!IPS_VariableProfileExists($Name))
+		{
+			IPS_CreateVariableProfile($Name, 0);
+		}
+		else
+		{
+			$profile = IPS_GetVariableProfile($Name);
+			if($profile['ProfileType'] != 0)
+			throw new Exception("Variable profile type does not match for profile ".$Name);
+		}
+		IPS_SetVariableProfileIcon($Name, $Icon);
+		IPS_SetVariableProfileText($Name, $Prefix, $Suffix);
+		IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize);
     }
     
     protected function RegisterProfileBooleanEx($Name, $Icon, $Prefix, $Suffix, $Associations) {

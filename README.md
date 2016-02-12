@@ -166,8 +166,8 @@ Liefert den Power-Zustand des Receiver zurück (0 = ausgeschaltet // 1 = eingesc
 ```php
   Enigma2BY_SetPowerState(integer $InstanzID, integer $PowerState);
 ```
-Steuert den Power-Zustand des Receiver (0 = Toggle Standby // 1 = Deep Standby // 2 = Reboot // 3 = Restart GUI).
-Liefert true/false zurück, ob der Power-State gesendet wurde oder nicht.
+Steuert den Power-Zustand des Receiver (0 = Toggle Standby // 1 = Deep Standby // 2 = Reboot // 3 = Restart GUI // 4 = Wakeup from Standby // 5 = Standby).
+Liefert true/false zurück, ob der Power-State an den Receiver gesendet werden konnte oder nicht.
 
 ```php
   Enigma2BY_GetVolume(integer $InstanzID);
