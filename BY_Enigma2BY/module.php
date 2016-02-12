@@ -439,7 +439,7 @@ class Enigma2BY extends IPSModule
 			$E2_CurSendungsrestdauerMin = (int)($E2_CurSendungsrestdauerSek / 60);
 			$E2_CurSendungsvergangenedauerSek = $E2_CurSendungsdauerSek - $E2_CurSendungsrestdauerSek;
 			$E2_CurSendungsvergangenedauerMin = (int)(($E2_CurSendungsdauerSek - $E2_CurSendungsrestdauerSek) / 60);
-			$E2_CurSendungsfortschritt_Proz = (int)($E2_CurSendungsrestdauerSek * 100 / $E2_CurSendungsdauerSek);
+			$E2_CurSendungsfortschritt_Proz = 100 - (int)($E2_CurSendungsrestdauerSek * 100 / $E2_CurSendungsdauerSek);
 			$E2_EPGInfo["AktSendungsdauerSek"] = $E2_CurSendungsdauerSek;
 			$E2_EPGInfo["AktSendungsdauerMin"] = $E2_CurSendungsdauerMin;
 			$E2_EPGInfo["AktSendungsdauerRestSek"] = $E2_CurSendungsrestdauerSek;
