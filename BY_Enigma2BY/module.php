@@ -451,7 +451,7 @@ class Enigma2BY extends IPSModule
 			$E2_EPGInfo["NextSendungsname"] = $E2_NextSendungsname;
 			$E2_EPGInfo["NextSendungsBeschrKurz"] = $E2_NextSendungsBeschrKurz;
 			$E2_EPGInfo["NextSendungsBeschrLang"] = $E2_NextSendungsBeschrLang;
-			$E2_NextSendungsStart_TS = date("H:i", $E2_NextSendungsStart_TS);
+			$E2_NextSendungsStart = date("H:i", $E2_NextSendungsStart_TS);
 			$E2_NextSendungsEnde_TS = $E2_NextSendungsStart_TS + ($E2_NextSendungsdauerSek);
 			$E2_NextSendungsEnde = date("H:i", $E2_NextSendungsEnde_TS);
 			$E2_EPGInfo["NextSendungsStart"] = $E2_NextSendungsStart;
