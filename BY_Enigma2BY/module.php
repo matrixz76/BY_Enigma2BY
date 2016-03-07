@@ -795,7 +795,7 @@ class Enigma2BY extends IPSModule
 		$WebPort = $this->ReadPropertyInteger("Enigma2WebPort");
 		if ($this->GetPowerState() == 1)
 		{
-			$url = "http://".$IP.":".$WebPort."/web/selectaudiotrack?id=".$TonspurID;;
+			$url = "http://".$IP.":".$WebPort."/web/selectaudiotrack?id=".$TonspurID;
 			$xml = @simplexml_load_file($url);
 			$result = (string)trim($xml[0]);
 			if ($result == "Success")
@@ -838,6 +838,7 @@ class Enigma2BY extends IPSModule
 					}
 					$i++;
 				}
+				return $TonspurenAR;
 			}
 			else
 			{
