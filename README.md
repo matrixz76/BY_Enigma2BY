@@ -35,7 +35,7 @@ Da manche Images nicht alle Informationen/Funkionen bieten (z.B. OpenATV), wird 
 **Tasten an den Receiver senden**
 - Funktion zum Senden verschiedener Taste an den Receiver<br>
     Verfügbare Tasten:
-    *Power,0,1,2,3,4,5,6,7,8,9,VolumeUp,VolumeDown,MUTE,Previous,Next,BouquetUp,BouquetDown,ArrowUp,ArrowDown,ArrowLeft,ArrowRight,Menu,OK,Info,Audio,Video,RED,GREEN,YELLOW,BLUE,TV,Radio,Text,Help,Exit,Rewind,Play,Stop,Rewind,Record*<br>
+    *Power,0,1,2,3,4,5,6,7,8,9,VolumeUp,VolumeDown,MUTE,Previous,Next,BouquetUp,BouquetDown,ArrowUp,ArrowDown,ArrowLeft,ArrowRight,Menu,OK,Info,Audio,Video,RED,GREEN,YELLOW,BLUE,TV,Radio,Text,Help,Exit,Rewind,Play,Stop,Forward,Record*<br>
 
 **Informationen über das Receiver-System auslesen (einstellbarer Intervall):**  
 - Enigma-Version
