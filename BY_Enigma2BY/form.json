@@ -2,7 +2,7 @@
   "elements":
   [
 
-    { "type": "Label", "label": "##### Enigma2BY v1.4 (13.02.2016 1.00Uhr) #####" },
+    { "type": "Label", "label": "##### Enigma2BY v1.4 (07.03.2016 20.00Uhr) #####" },
     { "type": "Label", "label": "IP-Adresse und WebIf-Port, unter der ein Receiver mit Enigma2 erreichbar ist:" },
     { "name": "Enigma2IP", "type": "ValidationTextBox", "caption": "Receiver IP-Adresse" },
     { "type": "NumberSpinner", "name": "Enigma2WebPort", "caption": "Receiver Web-Port" },
@@ -46,6 +46,11 @@
                     { "label": "ArrowRight", "value": "ArrowRight" },
                     { "label": "Previous", "value": "Previous" },
                     { "label": "Next", "value": "Next" },
+					{ "label": "Rewind", "value": "Rewind" },
+					{ "label": "Play", "value": "Play" },
+					{ "label": "Stop", "value": "Stop" },
+					{ "label": "Forward", "value": "Forward" },
+					{ "label": "Record", "value": "Record" },					
                     { "label": "TV", "value": "TV" },
                     { "label": "Radio", "value": "Radio" },
                     { "label": "Text", "value": "Text" },
@@ -86,14 +91,14 @@
     { "type": "Button", "label": "EPG durchsuchen", "onClick": "Enigma2BY_TestEPGSuche($id);" },
     { "type": "Button", "label": "Test-Nachricht senden", "onClick": "Enigma2BY_TestMsg($id);" },
     { "type": "Label", "label": "--------------------------------------------------------------------------------------------------------------------------------------------------------" },
-		{ "type": "Button", "label": "Lautstärke -5", "onClick": "Enigma2BY_TestVolDown5($id);" },
-		{ "type": "Button", "label": "Lautstärke +5", "onClick": "Enigma2BY_TestVolUp5($id);" },
-		{ "type": "Button", "label": "Mute Toggle", "onClick": "Enigma2BY_TestMute($id);" },
-		{ "type": "Label", "label": "--------------------------------------------------------------------------------------------------------------------------------------------------------" },
-		{ "type": "Button", "label": "Receiver Neustart", "onClick": "Enigma2BY_SetPowerState($id, 2);" },
+	{ "type": "Button", "label": "Lautstärke -5", "onClick": "Enigma2BY_TestVolDown5($id);" },
+	{ "type": "Button", "label": "Lautstärke +5", "onClick": "Enigma2BY_TestVolUp5($id);" },
+	{ "type": "Button", "label": "Mute Toggle", "onClick": "Enigma2BY_TestMute($id);" },
+	{ "type": "Label", "label": "--------------------------------------------------------------------------------------------------------------------------------------------------------" },
+	{ "type": "Button", "label": "Receiver Neustart", "onClick": "Enigma2BY_SetPowerState($id, 2);" },
     { "type": "Button", "label": "Receiver GUI-Neustart", "onClick": "Enigma2BY_SetPowerState($id, 3);" },
-		{ "type": "Label", "label": "--------------------------------------------------------------------------------------------------------------------------------------------------------" },
-		{ "type": "Button", "label": "Alle Daten aktualisieren", "onClick": "Enigma2BY_UpdateAll($id);" }
+	{ "type": "Label", "label": "--------------------------------------------------------------------------------------------------------------------------------------------------------" },
+	{ "type": "Button", "label": "Alle Daten aktualisieren", "onClick": "Enigma2BY_UpdateAll($id);" }
 
   ]
 }
