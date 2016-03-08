@@ -121,9 +121,9 @@ class Enigma2BY extends IPSModule
 			$this->RegisterVariableString("AktSenderSRefVAR", "Akt. Sender SRef");
 			$this->RegisterVariableString("AktSenderPRefVAR", "Akt. Sender PRef");
 			$this->RegisterVariableFloat("SignalSnrDbVAR", "Signal - SNR db", "E2BY.SNRdb");
-			$this->RegisterVariableInteger("SignalSnrVAR", "Signal - SNR");
+			$this->RegisterVariableInteger("SignalSnrVAR", "Signal - SNR", "~Intensity.100");
 			$this->RegisterVariableInteger("SignalBerVAR", "Signal - BER");
-			$this->RegisterVariableInteger("SignalAcgVAR", "Signal - ACG");
+			$this->RegisterVariableInteger("SignalAcgVAR", "Signal - ACG", "~Intensity.100");
 			$this->RegisterVariableString("LanIpVAR", "LAN - IP");
 			$this->RegisterVariableString("LanMacVAR", "LAN - MAC");
 			$this->RegisterVariableBoolean("LanDhcpVAR", "LAN - DHCP", "E2BY.inaktiv.aktiv");
