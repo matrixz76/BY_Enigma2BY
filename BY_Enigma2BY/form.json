@@ -2,7 +2,7 @@
   "elements":
   [
 
-    { "type": "Label", "label": "##### Enigma2BY v1.4 (08.03.2016 08.45Uhr) #####" },
+    { "type": "Label", "label": "##### Enigma2BY v1.4.1 (26.01.2024 21.30Uhr) #####" },
     { "type": "Label", "label": "IP-Adresse und WebIf-Port, unter der ein Receiver mit Enigma2 erreichbar ist:" },
     { "name": "Enigma2IP", "type": "ValidationTextBox", "caption": "Receiver IP-Adresse" },
     { "type": "NumberSpinner", "name": "Enigma2WebPort", "caption": "Receiver Web-Port" },
